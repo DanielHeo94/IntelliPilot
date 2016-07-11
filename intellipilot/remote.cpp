@@ -66,27 +66,27 @@ uint8_t remote::getCommands(float *data) {
 		ch1 = map(ch1, RC_LOW_YAW_CMD, RC_HIGH_YAW_CMD, YAW_SPEED_MIN, YAW_SPEED_MAX) + YAW_CMD_OFFSET;
 		ch2 = map(ch2, RC_LOW_PITCH_CMD, RC_HIGH_PITCH_CMD, PITCH_ANG_MIN, PITCH_ANG_MAX) + PITCH_CMD_OFFSET;
 		ch3 = map(ch3, RC_LOW_ROLL_CMD, RC_HIGH_ROLL_CMD, ROLL_ANG_MIN, ROLL_ANG_MAX) + ROLL_CMD_OFFSET;
-		ch4 = map(ch4, RC_LOW_ALT_CMD, RC_HIGH_ALT_CMD, CLIMB_RATE_MIN, CLIMB_RATE_MAX) + ALT_CMD_OFFSET;
+		ch4 = map(ch4, RC_LOW_ALT_CMD, RC_HIGH_ALT_CMD, MOTOR_PULSE_MIN, MOTOR_PULSE_MAX);
 
 		if ((ch1 < YAW_SPEED_MIN) || (ch1 > YAW_SPEED_MAX)) ch1 = ch1Last;
 		if ((ch2 < PITCH_ANG_MIN) || (ch2 > PITCH_ANG_MAX)) ch2 = ch2Last;
 		if ((ch3 < ROLL_ANG_MIN) || (ch3 > ROLL_ANG_MAX)) ch3 = ch3Last;
-		if ((ch4 < CLIMB_RATE_MIN) || (ch4 > CLIMB_RATE_MAX)) ch4 = ch4Last;
+		if ((ch4 < MOTOR_PULSE_MIN || (ch4 > MOTOR_PULSE_MAX)) ch4 = ch4Last;
 
 		ch1Last = ch1;
 		ch2Last = ch2;
 		ch3Last = ch3;
 		ch4Last = ch4;
-
-		data[0] = ch1;
+            
+		data[2] = ch1;
 		data[1] = ch2;
-		data[2] = ch3;
+		data[0] = ch3;
 		data[3] = ch4;
 
 		remote::sCounter();
 
 		remote::releaseLcok();
-		delay(5);
+		delay(1);
 		remote::acquireLock();
 
 		if (armCnt == 300 && !isArmed) {

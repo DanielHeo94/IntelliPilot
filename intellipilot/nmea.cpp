@@ -421,6 +421,7 @@ float nmea::f_speed_kmph()
 	return sk == GPS_INVALID_F_SPEED ? GPS_INVALID_F_SPEED : _GPS_KMPH_PER_KNOT * sk;
 }
 
+
 const float nmea::GPS_INVALID_F_ANGLE = 1000.0;
 const float nmea::GPS_INVALID_F_ALTITUDE = 1000000.0;
 const float nmea::GPS_INVALID_F_SPEED = -1.0;

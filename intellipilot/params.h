@@ -20,6 +20,9 @@ boolean isArmed = false;
 #define STATE_ARMING	1
 #define STATE_ARMED		2
 #define STATE_DISARMED	3
+#define STATE_ALT_HOLD  4
+#define STATE_POS_HOLD  5
+#define STATE_LOITER    6
 
 #endif
 

@@ -89,17 +89,17 @@ void tasks::getGpsThread( void* arg ) {
                 _nmea.encode(Serial2.read());
         } while (millis() - start < 100);
         
-        if( (numsats = (int) _nmea.satellites()) == nmea::GPS_INVALID_SATELLITES )
-        if( (hdop = (int) _nmea.hdop()) == nmea::GPS_INVALID_HDOP)
+        if( (numsats = (int) _nmea.satellites()) == nmea::GPS_INVALID_SATELLITES ) {}
+        if( (hdop = (int) _nmea.hdop()) == nmea::GPS_INVALID_HDOP ) {}
         _nmea.f_get_position( &latitude, &longitude, &_age);
-        if(latitude == nmea::GPS_INVALID_F_ANGLE)
-        if(longitude == nmea::GPS_INVALID_F_ANGLE)
-        if(_age == nmea::GPS_INVALID_AGE)
+        if(latitude == nmea::GPS_INVALID_F_ANGLE) {}
+        if(longitude == nmea::GPS_INVALID_F_ANGLE) {}
+        if(_age == nmea::GPS_INVALID_AGE) {}
         _nmea.crack_datetime( &year, &month, &day, &hour, &minute, &second, &hundredths, &__age);
-        if( __age == nmea::GPS_INVALID_AGE)
-        if( (gpsAlt = _nmea.f_altitude()) == nmea::GPS_INVALID_ALTITUDE)
-        if( (speed = _nmea.f_speed_kmph()) == nmea::GPS_INVALID_F_SPEED)
-        
+        if( __age == nmea::GPS_INVALID_AGE) {}
+        if( (gpsAlt = _nmea.f_altitude()) == nmea::GPS_INVALID_ALTITUDE) {}
+        if( (speed = _nmea.f_speed_kmph()) == nmea::GPS_INVALID_F_SPEED) {}
+
     }
 }
 
@@ -114,21 +114,21 @@ void tasks::getBaroThread( void* arg ) {
 
 void tasks::getCompThread( void* arg ) {
     for(;;) {
-        norm = _compass.readNormalize();
+        Vector norm = _compass.readNormalize();
         
         heading = atan2(norm.YAxis, norm.XAxis);
         
-        declinationAngle = (4.0 + (26.0 / 60.0)) / (180 / _math.M_PI);
+        declinationAngle = (4.0 + (26.0 / 60.0)) / (180 / M_PI);
         heading += declinationAngle;
         
         if (heading < 0)
         {
-            heading += 2 * _math.PI;
+            heading += 2 * PI;
         }
         
-        if (heading > 2 * _math.PI)
+        if (heading > 2 * PI)
         {
-            heading -= 2 * _math.PI;
+            heading -= 2 * PI;
         }
         
         headingDegrees = _math.radiantodegree(heading);

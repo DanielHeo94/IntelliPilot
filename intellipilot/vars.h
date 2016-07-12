@@ -10,12 +10,12 @@
 #define vars_h
 
 // AHRS vars
-float angle[3] = { 0, };
-float gyro[3] = { 0, };
+double angle[3] = { 0, };
+double gyro[3] = { 0, };
 
 // LiDAR vars
-float lidarAlt = 0;
-float lidarVel = 0;
+double lidarAlt = 0;
+double lidarVel = 0;
 
 // Barometer vars
 float temparature = 0;
@@ -37,7 +37,6 @@ byte month, day, hour, minute, second, hundredths;
 unsigned long __age;
 
 // Compass vars
-Vector norm;
 float heading, headingDegrees, declinationAngle = 0;
 
 // PID Computation vars
@@ -52,7 +51,7 @@ int force1, force2, force3, force4 = 0;
 
 
 // Remote Control vars
-float cmd[4] = { 0, }; // Roll, Pitch, Yaw, Throttle Commands.
+double cmd[4] = { 0, }; // Roll, Pitch, Yaw, Throttle Commands.
 
 
 

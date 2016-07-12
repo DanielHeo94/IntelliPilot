@@ -15,11 +15,11 @@
 #include "comp.h"
 #include "gps.h"
 
-ahrs _ahrs;
-baro _baro;
-lidar _lidar;
-comp _comp;
-gps _gps;
+extern ahrs _ahrs;
+extern baro _barometer;
+extern lidar _lidar;
+extern comp _compass;
+extern gps _gps;
 
 scheduler _scheduler;
 
@@ -32,6 +32,8 @@ void sys::config() {
     sys::configLidar();
     sys::configBaro();
     sys::configGps();
+    
+    _scheduler.taskCreate();
 }
 
 void sys::start() {
@@ -46,17 +48,17 @@ void sys::configAhrs() {
 
 void sys::configComp() {
     // Compass
-    while (!_comp.begin()) { delay(500); }
+    while (!_compass.begin()) { delay(500); }
     // Set measurement range
-    _comp.setRange(HMC5883L_RANGE_1_3GA);
+    _compass.setRange(HMC5883L_RANGE_1_3GA);
     // Set measurement mode
-    _comp.setMeasurementMode(HMC5883L_CONTINOUS);
+    _compass.setMeasurementMode(HMC5883L_CONTINOUS);
     // Set data rate
-    _comp.setDataRate(HMC5883L_DATARATE_30HZ);
+    _compass.setDataRate(HMC5883L_DATARATE_30HZ);
     // Set number of samples averaged
-    _comp.setSamples(HMC5883L_SAMPLES_8);
+    _compass.setSamples(HMC5883L_SAMPLES_8);
     // Set calibration offset. See HMC5883L_calibration.ino
-    _comp.setOffset(0, 0);
+    _compass.setOffset(0, 0);
 }
 
 void sys::configLidar() {
@@ -66,7 +68,7 @@ void sys::configLidar() {
 
 void sys::configBaro() {
     // Barometer
-    if (!_baro.begin()) while (1) {}
+    if (!_barometer.begin()) while (1) {}
 }
 
 void sys::configGps() {

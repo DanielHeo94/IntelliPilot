@@ -20,8 +20,6 @@
 
 #define MOTOR_START_DELAY	3000
 
-Servo m1, m2, m3, m4;
-
 class motors {
 public:
 	motors();

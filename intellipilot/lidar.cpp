@@ -17,7 +17,7 @@ void lidar::begin(int trigger_pin, int monitor_pin) {
 	digitalWrite(trigger_pin, LOW);
 }
 
-float lidar::getVerDistance() {
+double lidar::getVerDistance() {
 	pulse_width = pulseIn(monitor_pin, HIGH);
 	if (pulse_width != 0) {
 		pulse_width = pulse_width / 10;
@@ -30,7 +30,7 @@ float lidar::getVerDistance() {
 	return ver_distance;
 }
 
-float lidar::getVerVelocity() {
+double lidar::getVerVelocity() {
 	pulse_width = pulseIn(trigger_pin, HIGH);
 	if (pulse_width != 0) {
 		pulse_width = pulse_width / 10;

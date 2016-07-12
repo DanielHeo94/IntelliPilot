@@ -51,7 +51,7 @@ public:
 	remote();
 
 	void begin();
-	uint8_t getCommands(float *data);
+	uint8_t getCommands(double *data);
 
 private:
 

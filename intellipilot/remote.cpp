@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include "remote.h"
 
-float ch1, ch2, ch3, ch4;
-float ch1Last, ch2Last, ch3Last, ch4Last;
+double ch1, ch2, ch3, ch4;
+double ch1Last, ch2Last, ch3Last, ch4Last;
 
 boolean interruptLock = false;
 
@@ -51,7 +51,7 @@ void remote::begin() {
 }
 
 // NOTICE!! this function MUST be in loop.
-uint8_t remote::getCommands(float *data) {
+uint8_t remote::getCommands(double *data) {
 		
 		remote::acquireLock();
 
@@ -83,7 +83,7 @@ uint8_t remote::getCommands(float *data) {
 		remote::sCounter();
 
 		remote::releaseLock();
-		vTaskDelay(5);
+        delay(5);
 		remote::acquireLock();
 
 		if (armCnt == 300 && !isArmed) {

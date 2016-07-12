@@ -18,13 +18,13 @@ public:
 
 	int trigger_pin, monitor_pin;
 	
-	float ver_distance, ver_distanceLast;
-	float ver_velocity, ver_velocityLast;
+	double ver_distance, ver_distanceLast;
+	double ver_velocity, ver_velocityLast;
 
 	void begin(int trigger_pin = DEFAULT_TRIGGER_PIN, int monitor_pin = DEFAULT_MONITOR_PIN);
 
-	float getVerDistance();
-	float getVerVelocity();
+	double getVerDistance();
+	double getVerVelocity();
 };
 
 #endif

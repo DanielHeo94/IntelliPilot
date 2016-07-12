@@ -17,10 +17,10 @@ public:
 	
 	bool stabilize();
 
-	bool getEulerAngles(float *data); //default setting
-	bool getQuaternion(float *data);
-	bool getGyro(float *data);
-	bool getEulerAnglesGyro(float *data, float *data2);
+	bool getEulerAngles(double *data); //default setting
+	bool getQuaternion(double *data);
+	bool getGyro(double *data);
+	bool getEulerAnglesGyro(double *data, double *data2);
 
 private:
 };

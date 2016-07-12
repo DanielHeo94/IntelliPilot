@@ -27,13 +27,15 @@ int i = 0;
 char buf[RBUF_SIZE] = { 0, };
 char *seg;
 
-float dataLast[3] = { 0, };
-float samplingTime, samplingTimeLast;
+double dataLast[3] = { 0, };
+double samplingTime, samplingTimeLast;
 
 unsigned long t = 0;
 unsigned long tLast = 0;
 
-void seperator(char *SBuf, float *data, int size)
+double gar[3], gar2[3] = { 0, 0 };
+
+void seperator(char *SBuf, double *data, int size)
 {
 	seg = strtok(SBuf, ",");
 
@@ -43,11 +45,11 @@ void seperator(char *SBuf, float *data, int size)
 	}
 }
 
-void gyroCalc(float *data, float *data2)
+void gyroCalc(double *data, double *data2)
 {
 	t = millis();
 	samplingTimeLast = samplingTime;
-	samplingTime = (float)t - (float)tLast;
+	samplingTime = (double)t - (double)tLast;
 	tLast = t;
 
 	if (samplingTime < 0) samplingTime = samplingTimeLast;
@@ -79,7 +81,7 @@ void ahrs::begin(int baudrate)
 #endif
 }
 
-bool ahrs::getEulerAngles(float *data)
+bool ahrs::getEulerAngles(double *data)
 {
 #if AHRS_SERIAL_PIN == 1
 	if (Serial1.available()){
@@ -143,7 +145,7 @@ bool ahrs::getEulerAngles(float *data)
 #endif
 }
 
-bool ahrs::getQuaternion(float *data)
+bool ahrs::getQuaternion(double *data)
 {
 #if AHRS_SERIAL_PIN == 1
 	if (Serial1.available()){
@@ -207,7 +209,7 @@ bool ahrs::getQuaternion(float *data)
 #endif
 }
 
-bool ahrs::getGyro(float *data)
+bool ahrs::getGyro(double *data)
 {
 #if AHRS_SERIAL_PIN == 1
 	if (Serial1.available()){
@@ -271,7 +273,7 @@ bool ahrs::getGyro(float *data)
 #endif
 }
 
-bool ahrs::getEulerAnglesGyro(float *data, float *data2)
+bool ahrs::getEulerAnglesGyro(double *data, double *data2)
 {
 #if AHRS_SERIAL_PIN == 1
 	if (Serial1.available()){
@@ -346,7 +348,7 @@ bool ahrs::getEulerAnglesGyro(float *data, float *data2)
 bool ahrs::stabilize() {
 	Serial.println("Stabilizing AHRS...");
 
-	for (int i = 0; i < 50; i++) { while (ahrs::getEulerAnglesGyro(angle, gyro)) {} }
+	for (int i = 0; i < 50; i++) { while (ahrs::getEulerAnglesGyro(gar, gar2)) {} }
 
 	Serial.println("Done");
 }

@@ -9,11 +9,11 @@
 #include "scheduler.h"
 #include "tasks.h"
 
-#include "src/FreeRTOS_ARM.h"
+#include <FreeRTOS_ARM.h>
 
 tasks _tasks;
 
-scheduler::scheduler() {
+void scheduler::scheduler() {
     
     portBASE_TYPE sa1, sa2, sa3, sa4, sa5;
     portBASE_TYPE c1, c2;
@@ -28,11 +28,11 @@ scheduler::scheduler() {
     sa5 = xTaskCreate(_tasks.getGpsThread, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
     
     if (sem== NULL ||
-            s1 != pdPASS ||
-            s2 != pdPASS ||
-            s3 != pdPASS ||
-            s4 != pdPASS ||
-            s5 != pdPASS) {
+        s1 != pdPASS ||
+        s2 != pdPASS ||
+        s3 != pdPASS ||
+        s4 != pdPASS ||
+        s5 != pdPASS) {
         Serial.println(F("Creation problem"));
         while(1);
     }

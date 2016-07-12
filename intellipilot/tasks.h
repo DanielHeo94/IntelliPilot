@@ -20,15 +20,29 @@ public:
     
     tasks();
     
-    static void getEulerAnglesGyroThread(void* arg);
-    static void getHeightThread(void* arg);
-    static void getCommandsThread(void* arg);
-    static void getBaroThread(void* arg);
-    static void getCompThread(void* arg);
-    static void getGpsThread(void* arg);
+    // Sensors & Actuator
+    static void getEulerAnglesGyroThread(void* arg);    // Get roll, pitch, yaw, gyro.
+    static void getHeightThread(void* arg);             // Get highly accurate altitude.
+    static void getBaroThread(void* arg);               // Get temparature, pressure, altitude.
+    static void getCompThread(void* arg);               // Get heading.
+    static void getGpsThread(void* arg);                // Get the num of sats, lat, lon, date, hdop, alt.
     
-    static void computePidThread(void* arg);
-    static void runMotorsThread(void* arg);
+    // Communication
+    static void getCommandsThread(void* arg);   // Communication Copter <-> Controller.
+    static void commGcsThread(void* arg);       // Communication Copter <-> GCS ( Protocol : mavLink ).
+    
+    // Commands Processing
+    static void procCommandsThread(void* arg);
+    
+    // Flight Control
+    static void takeoffSequenceThread(void* arg);   // Automatic Take-off.
+    static void manualControlThread(void* arg);     // Manual.
+    static void posHoldControlThread(void* arg);    // GPS Hold.
+    static void waypointSequenceThread(void* arg);  // Autonomous Flight.
+    static void returnSequenceThread(void* arg);    // Return to home.
+    
+    // LED indicator
+    static void ledIndicatingThread(void* arg);     // Turn on or off as system state changes
     
 private:
 };

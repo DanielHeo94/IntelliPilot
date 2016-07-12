@@ -135,7 +135,7 @@ void tasks::getCompThread( void* arg ) {
     }
 }
 
-void tasks::computePidThread( void* arg ) {
+void tasks::manualControlThread( void* arg ) {
     
     rollAngleReg.Compute();
     rollRateReg.Compute();
@@ -144,15 +144,11 @@ void tasks::computePidThread( void* arg ) {
     pitchRateReg.Compute();
     
     yawRateReg.Compute();
-}
-
-void tasks::runMotorsThread( void* arg ) {
     
     force1 = (-pitchRateError + rollRateError) * ( 1 / 2 ) + yawRateError + cmd[3];
     force2 = (-pitchRateError - rollRateError) * ( 1 / 2 ) - yawRateError + cmd[3];
     force3 = (pitchRateError - rollRateError) * ( 1 / 2 ) + yawRateError + cmd[3];
     force4 = (pitchRateError + rollRateError) * ( 1 / 2 ) - yawRateError + cmd[3];
 }
-
 
 

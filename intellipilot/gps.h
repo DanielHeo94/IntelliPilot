@@ -18,16 +18,28 @@ class gps {
 public:
 	gps();
 
-	void begin(int baudrate);
+	void begin(int baudrate = 115200);
 	void configure(uint8_t mode = PED, 
 					  uint8_t datarate = 4,
 					  int portrate = 115200, 
 					  bool gll = true, bool gsa = true, bool gsv = true, bool rmc = true, bool vtg = true);
 
 private:
-
-	//Settings Array contains the following settings: [0]NavMode, [1]DataRate1, [2]DataRate2, [3]PortRateByte1, [4]PortRateByte2, [5]PortRateByte3,
-	//[6]NMEA GLL Sentence, [7]NMEA GSA Sentence, [8]NMEA GSV Sentence, [9]NMEA RMC Sentence, [10]NMEA VTG Sentence
+    
+    /*
+	*Settings Array contains the following settings:
+    *[0]NavMode,
+    *[1]DataRate1,
+    *[2]DataRate2,
+    *[3]PortRateByte1,
+    *[4]PortRateByte2,
+    *[5]PortRateByte3,
+	*[6]NMEA GLL Sentence,
+    *[7]NMEA GSA Sentence,
+    *[8]NMEA GSV Sentence,
+    *[9]NMEA RMC Sentence,
+    *[10]NMEA VTG Sentence
+     */
 
 	//NavMode:
 	const byte PedestrianMode = 0x03;

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6540707A1D3495FE007F9969 /* sys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 654070781D3495FE007F9969 /* sys.cpp */; };
+		6540707E1D34AE06007F9969 /* scheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6540707C1D34AE06007F9969 /* scheduler.cpp */; };
 		658298CE1D333D260028191E /* tasks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 658298CC1D3335E00028191E /* tasks.cpp */; };
 		659975BB1D3334EC0029DEC8 /* ahrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975A41D3334EC0029DEC8 /* ahrs.cpp */; };
 		659975BC1D3334EC0029DEC8 /* baro.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975A61D3334EC0029DEC8 /* baro.cpp */; };
@@ -33,6 +35,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		654070781D3495FE007F9969 /* sys.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sys.cpp; sourceTree = "<group>"; };
+		654070791D3495FE007F9969 /* sys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sys.h; sourceTree = "<group>"; };
+		6540707C1D34AE06007F9969 /* scheduler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduler.cpp; sourceTree = "<group>"; };
+		6540707D1D34AE06007F9969 /* scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scheduler.h; sourceTree = "<group>"; };
 		658298CC1D3335E00028191E /* tasks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 2; path = tasks.cpp; sourceTree = "<group>"; };
 		658298CD1D3335E00028191E /* tasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 2; path = tasks.h; sourceTree = "<group>"; };
 		659273051D33633B00FDA021 /* vars.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vars.h; sourceTree = "<group>"; };
@@ -118,6 +124,10 @@
 				658298CC1D3335E00028191E /* tasks.cpp */,
 				658298CD1D3335E00028191E /* tasks.h */,
 				659273051D33633B00FDA021 /* vars.h */,
+				654070781D3495FE007F9969 /* sys.cpp */,
+				654070791D3495FE007F9969 /* sys.h */,
+				6540707C1D34AE06007F9969 /* scheduler.cpp */,
+				6540707D1D34AE06007F9969 /* scheduler.h */,
 			);
 			path = intellipilot;
 			sourceTree = "<group>";
@@ -181,9 +191,11 @@
 				659975BD1D3334EC0029DEC8 /* comp.cpp in Sources */,
 				659975C21D3334EC0029DEC8 /* nmea.cpp in Sources */,
 				659975BF1D3334EC0029DEC8 /* lidar.cpp in Sources */,
+				6540707A1D3495FE007F9969 /* sys.cpp in Sources */,
 				659975BB1D3334EC0029DEC8 /* ahrs.cpp in Sources */,
 				659975C01D3334EC0029DEC8 /* math.cpp in Sources */,
 				659975C41D3334EC0029DEC8 /* remote.cpp in Sources */,
+				6540707E1D34AE06007F9969 /* scheduler.cpp in Sources */,
 				659975BC1D3334EC0029DEC8 /* baro.cpp in Sources */,
 				658298CE1D333D260028191E /* tasks.cpp in Sources */,
 				659975C31D3334EC0029DEC8 /* pid.cpp in Sources */,

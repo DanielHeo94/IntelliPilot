@@ -15,5 +15,13 @@ void loop() {
   mRemote.getCommands(ch);
 
   Serial.print("ch1 : ");
-  Serial.println(ch[0]);
+  Serial.print(ch[0]);
+  Serial.print("\tch2 : ");
+  Serial.print(ch[1]);
+  Serial.print("\tch3 : ");
+  Serial.print(ch[2]);
+  Serial.print("\tch4 : ");
+  Serial.println(ch[3]);
+  
+  
 }

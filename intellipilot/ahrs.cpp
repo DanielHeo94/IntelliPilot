@@ -346,7 +346,7 @@ bool ahrs::getEulerAnglesGyro(float *data, float *data2)
 bool ahrs::stabilize() {
 	Serial.println("Stabilizing AHRS...");
 
-	for (int i = 0; i < 20; i++) { while (ahrs::getEulerAnglesGyro(angle, gyro)) {} }
+	for (int i = 0; i < 50; i++) { while (ahrs::getEulerAnglesGyro(angle, gyro)) {} }
 
 	Serial.println("Done");
 }

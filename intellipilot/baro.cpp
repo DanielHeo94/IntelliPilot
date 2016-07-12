@@ -16,6 +16,7 @@
  ****************************************************/
 
 #include "baro.h"
+#include <FreeRTOS_ARM.h>
 
 baro::baro() {
 }
@@ -71,7 +72,7 @@ int32_t baro::computeB5(int32_t UT) {
 
 uint16_t baro::readRawTemperature(void) {
   write8(BMP085_CONTROL, BMP085_READTEMPCMD);
-  delay(5);
+  vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
 #if BMP085_DEBUG == 1
   Serial.print("Raw temp: "); Serial.println(read16(BMP085_TEMPDATA));
 #endif
@@ -84,13 +85,13 @@ uint32_t baro::readRawPressure(void) {
   write8(BMP085_CONTROL, BMP085_READPRESSURECMD + (oversampling << 6));
 
   if (oversampling == BMP085_ULTRALOWPOWER) 
-    delay(5);
+    vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
   else if (oversampling == BMP085_STANDARD) 
-    delay(8);
+    vTaskDelay((8L * configTICK_RATE_HZ) / 1000L);
   else if (oversampling == BMP085_HIGHRES) 
-    delay(14);
+    vTaskDelay((14L * configTICK_RATE_HZ) / 1000L);
   else 
-    delay(26);
+    vTaskDelay((26L * configTICK_RATE_HZ) / 1000L);
 
   raw = read16(BMP085_PRESSUREDATA);
 

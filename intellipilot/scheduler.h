@@ -15,6 +15,7 @@ class scheduler {
 public:
     scheduler();
 
+    static void taskCreate();
     static void taskStart();
     
 private:

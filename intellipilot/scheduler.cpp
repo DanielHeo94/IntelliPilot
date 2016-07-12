@@ -13,7 +13,9 @@
 
 tasks _tasks;
 
-void scheduler::scheduler() {
+scheduler::scheduler() {}
+
+void scheduler::taskCreate() {
     
     portBASE_TYPE sa1, sa2, sa3, sa4, sa5;
     portBASE_TYPE c1, c2;
@@ -27,12 +29,12 @@ void scheduler::scheduler() {
     sa4 = xTaskCreate(_tasks.getCompThread, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
     sa5 = xTaskCreate(_tasks.getGpsThread, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
     
-    if (sem== NULL ||
-        s1 != pdPASS ||
-        s2 != pdPASS ||
-        s3 != pdPASS ||
-        s4 != pdPASS ||
-        s5 != pdPASS) {
+    if (sa1 != pdPASS ||
+        sa2 != pdPASS ||
+        sa3 != pdPASS ||
+        sa4 != pdPASS ||
+        sa5 != pdPASS
+        ) {
         Serial.println(F("Creation problem"));
         while(1);
     }

@@ -253,7 +253,7 @@ bool ahrs::getGyro(double *data)
 			i = 0;
 			return true;
 		}
-	}
+    }
 	return false;
 
 #elif AHRS_SERIAL_PIN == 0
@@ -346,9 +346,7 @@ bool ahrs::getEulerAnglesGyro(double *data, double *data2)
 }
 
 bool ahrs::stabilize() {
-	Serial.println("Stabilizing AHRS...");
+	Serial.print("stabilizing AHRS...");
 
-	for (int i = 0; i < 50; i++) { while (ahrs::getEulerAnglesGyro(gar, gar2)) {} }
-
-	Serial.println("Done");
+	for (int i = 0; i < 50; i++) { while (!ahrs::getEulerAnglesGyro(gar, gar2)) {} }
 }

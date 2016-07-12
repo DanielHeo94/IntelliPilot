@@ -64,6 +64,7 @@ void tasks::getEulerAnglesGyroThread( void* arg ){
              *  Waiting for data ready
              */
         }
+        
     }
 }
 

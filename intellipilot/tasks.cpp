@@ -22,7 +22,7 @@
 #include "motors.h"
 #include "nmea.h"
 #include "pid.h"
-#include "remote.h"
+#include "radio.h"
 
 math _math;
 
@@ -33,7 +33,7 @@ gps _gps;
 lidar _lidar;
 motors _motors;
 nmea _nmea;
-remote _remote;
+radio _radio;
 
 pid rollAngleReg(&angle[0], &rollAngleError, &cmd[0], ROLL_OUTER_P_GAIN, 0, 0, DIRECT);
 pid rollRateReg(&gyro[0], &rollRateError, &rollAngleError,
@@ -64,11 +64,10 @@ void tasks::getEulerAnglesGyroThread( void* arg ){
              *  Waiting for data ready
              */
         }
-        
     }
 }
 
-void tasks::getHeightThread( void* arg ){
+void tasks::getAccAltThread( void* arg ){
     for(;;) {
         lidarAlt = _lidar.getVerDistance();
         lidarVel = _lidar.getVerVelocity();
@@ -77,7 +76,8 @@ void tasks::getHeightThread( void* arg ){
 
 void tasks::getCommandsThread( void* arg ){
     for(;;) {
-        _remote.getCommands(cmd);
+        _radio.getCommands(cmd);
+        Serial.println(cmd[0]);
     }
 }
 
@@ -101,7 +101,7 @@ void tasks::getGpsThread( void* arg ) {
         if( (gpsAlt = _nmea.f_altitude()) == nmea::GPS_INVALID_ALTITUDE) {}
         if( (speed = _nmea.f_speed_kmph()) == nmea::GPS_INVALID_F_SPEED) {}
 
-    }
+        }
 }
 
 void tasks::getBaroThread( void* arg ) {

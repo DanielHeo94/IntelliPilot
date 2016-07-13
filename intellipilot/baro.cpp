@@ -30,7 +30,8 @@ boolean baro::begin(uint8_t mode) {
   Wire.begin();
 
   if (read8(0xD0) != 0x55) return false;
-
+    
+    Serial.print("\t\tRead calibration data.");
   /* read calibration data */
   ac1 = read16(BMP085_CAL_AC1);
   ac2 = read16(BMP085_CAL_AC2);
@@ -45,6 +46,7 @@ boolean baro::begin(uint8_t mode) {
   mb = read16(BMP085_CAL_MB);
   mc = read16(BMP085_CAL_MC);
   md = read16(BMP085_CAL_MD);
+    Serial.println("\t\t\t Success.");
 #if (BMP085_DEBUG == 1)
   Serial.print("ac1 = "); Serial.println(ac1, DEC);
   Serial.print("ac2 = "); Serial.println(ac2, DEC);

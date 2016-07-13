@@ -15,11 +15,15 @@
 #include "comp.h"
 #include "gps.h"
 
+#include "radio.h"
+
 extern ahrs _ahrs;
 extern baro _barometer;
 extern lidar _lidar;
 extern comp _compass;
 extern gps _gps;
+
+extern radio _radio;
 
 scheduler _scheduler;
 
@@ -36,6 +40,8 @@ void sys::config() {
     sys::configBaro();
     sys::configGps();
     
+    sys::configRadio();
+    
     Serial.println("System configuration complete.");
     
     _scheduler.taskCreate();
@@ -47,49 +53,43 @@ void sys::start() {
 
 void sys::configAhrs() {
     // AHRS
-    Serial.println("configuring AHRS.");
+    Serial.println("configuring AHRS...");
     
     _ahrs.begin(115200);
     _ahrs.stabilize();
     
-    Serial.println("\t\t Success.");
+    Serial.println("\t\t\t Success.");
 }
 
 void sys::configComp() {
     // Compass
-    Serial.print("configuring Compass...");
+    Serial.println("configuring Compass...");
     
-    while (!_compass.begin()) { delay(500); }
+    while (!_compass.begin()) { Serial.println("\t\tCould not find a valid compass sensor, check wiring!"); delay(500); }
     // Set measurement range
-    _compass.setRange(HMC5883L_RANGE_1_3GA);
+    Serial.print("\t\tSet measurement range."); _compass.setRange(HMC5883L_RANGE_1_3GA); Serial.println("\t\t\t Success.");
     // Set measurement mode
-    _compass.setMeasurementMode(HMC5883L_CONTINOUS);
+    Serial.print("\t\tSet measurement mode."); _compass.setMeasurementMode(HMC5883L_CONTINOUS); Serial.println("\t\t\t Success.");
     // Set data rate
-    _compass.setDataRate(HMC5883L_DATARATE_30HZ);
+    Serial.print("\t\tSet data rate."); _compass.setDataRate(HMC5883L_DATARATE_30HZ); Serial.println("\t\t\t\t Success.");
     // Set number of samples averaged
-    _compass.setSamples(HMC5883L_SAMPLES_8);
+    Serial.print("\t\tSet number of samples averaged."); _compass.setSamples(HMC5883L_SAMPLES_8); Serial.println("\t\t Success.");
     // Set calibration offset. See HMC5883L_calibration.ino
-    _compass.setOffset(0, 0);
-    
-    Serial.println("\t\t Success.");
+    Serial.print("\t\tSet calibration offset."); _compass.setOffset(0, 0); Serial.println("\t\t\t Success.");
 }
 
 void sys::configLidar() {
     // LiDAR
-    Serial.print("configuring LiDAR...");
+    Serial.println("configuring LiDAR...");
     
     _lidar.begin();
-    
-    Serial.println("\t\t Success.");
 }
 
 void sys::configBaro() {
     // Barometer
-    Serial.print("configuring Barometer...");
+    Serial.println("configuring Barometer...");
     
     if (!_barometer.begin()) while (1) {}
-    
-    Serial.println("\t Success.");
 }
 
 void sys::configGps() {
@@ -98,4 +98,11 @@ void sys::configGps() {
     
     _gps.begin();
     _gps.configure();
+}
+
+void sys::configRadio() {
+    // Radio
+    Serial.println("configuring Radio...");
+    
+    _radio.begin();
 }

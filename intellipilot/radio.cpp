@@ -2,7 +2,7 @@
 // 
 // 
 #include <Arduino.h>
-#include "remote.h"
+#include "radio.h"
 
 double ch1, ch2, ch3, ch4;
 double ch1Last, ch2Last, ch3Last, ch4Last;
@@ -17,53 +17,50 @@ unsigned long rcLastChange4 = micros();
 int armCnt, disarmCnt;
 boolean isArmed = false;
 
-remote::remote() {}
+radio::radio() {}
 
-inline void rcInterrupt1() {
+inline void radioInterruptHandler1() {
 	if (!interruptLock) ch1 = micros() - rcLastChange1;
 	rcLastChange1 = micros();
 }
 
-inline void rcInterrupt2() {
+inline void radioInterruptHandler2() {
 	if (!interruptLock) ch2 = micros() - rcLastChange2;
 	rcLastChange2 = micros();
 }
 
-inline void rcInterrupt3() {
+inline void radioInterruptHandler3() {
 	if (!interruptLock) ch3 = micros() - rcLastChange3;
 	rcLastChange3 = micros();
 }
 
-inline void rcInterrupt4() {
+inline void radioInterruptHandler4() {
 	if (!interruptLock) ch4 = micros() - rcLastChange4;
 	rcLastChange4 = micros();
 }
 
-void remote::begin() {
-	Serial.println("Initializing RC");
+void radio::begin() {
 
-	attachInterrupt(RC_CH1, rcInterrupt1, CHANGE);
-	attachInterrupt(RC_CH2, rcInterrupt2, CHANGE);
-	attachInterrupt(RC_CH3, rcInterrupt3, CHANGE);
-	attachInterrupt(RC_CH4, rcInterrupt4, CHANGE);
-
-	Serial.println("Done");
+    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH1, radioInterruptHandler1, CHANGE); Serial.println("\t\tSuccess.");
+    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH2, radioInterruptHandler2, CHANGE); Serial.println("\t\tSuccess.");
+    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH3, radioInterruptHandler3, CHANGE); Serial.println("\t\tSuccess.");
+    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH4, radioInterruptHandler4, CHANGE); Serial.println("\t\tSuccess.");
 }
 
 // NOTICE!! this function MUST be in loop.
-uint8_t remote::getCommands(double *data) {
+uint8_t radio::getCommands(double *data) {
 		
-		remote::acquireLock();
+		radio::acquireLock();
 
 		ch1 = floor(ch1 / ROUNDING_BASE) * ROUNDING_BASE;
 		ch2 = floor(ch2 / ROUNDING_BASE) * ROUNDING_BASE;
 		ch3 = floor(ch3 / ROUNDING_BASE) * ROUNDING_BASE;
 		ch4 = floor(ch4 / ROUNDING_BASE) * ROUNDING_BASE;
     
-        if ((ch1 > RC_LOW_YAW_CMD) || (ch1 < RC_HIGH_YAW_CMD)) ch1 = ch1Last;
-        if ((ch2 > RC_LOW_PITCH_CMD) || (ch2 < RC_HIGH_PITCH_CMD)) ch2 = ch2Last;
-        if ((ch3 > RC_HIGH_ROLL_CMD) || (ch3 < RC_LOW_ROLL_CMD)) ch3 = ch3Last;
-        if ((ch4 > RC_LOW_ALT_CMD) || (ch4 < RC_HIGH_ALT_CMD)) ch4 = ch4Last;
+        if ((ch1 > RC_LOW_YAW_CMD) || (ch1 < RC_HIGH_YAW_CMD))      ch1 = ch1Last;
+        if ((ch2 > RC_LOW_PITCH_CMD) || (ch2 < RC_HIGH_PITCH_CMD))  ch2 = ch2Last;
+        if ((ch3 > RC_HIGH_ROLL_CMD) || (ch3 < RC_LOW_ROLL_CMD))    ch3 = ch3Last;
+        if ((ch4 > RC_LOW_ALT_CMD) || (ch4 < RC_HIGH_ALT_CMD))      ch4 = ch4Last;
     
         ch1Last = ch1;
         ch2Last = ch2;
@@ -80,11 +77,11 @@ uint8_t remote::getCommands(double *data) {
 		data[0] = ch3;
 		data[3] = ch4;
 
-		remote::sCounter();
+		radio::sCounter();
 
-		remote::releaseLock();
+		radio::releaseLock();
         delay(5);
-		remote::acquireLock();
+		radio::acquireLock();
 
 		if (armCnt == 300 && !isArmed) {
 			isArmed = true; return STATE_ARMED;
@@ -95,16 +92,16 @@ uint8_t remote::getCommands(double *data) {
 		}
 }
 
-void remote::sCounter() {
+void radio::sCounter() {
 	if ((int)ch1 == LSTICK_RIGHT && (int)ch4 == LSTICK_DOWN && !isArmed) armCnt++;
 	else if ((int)ch1 == LSTICK_LEFT && (int)ch4 == LSTICK_DOWN && isArmed) disarmCnt++;
 	else { armCnt = 0; disarmCnt = 0; }
 }
 
-void remote::acquireLock() {
+void radio::acquireLock() {
 	interruptLock = true;
 }
 
-void remote::releaseLock() {
+void radio::releaseLock() {
 	interruptLock = false;
 }

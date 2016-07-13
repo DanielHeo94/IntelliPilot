@@ -21,12 +21,15 @@ public:
     
 private:
     
+    // Sensors & Actuator
     static void configAhrs();
     static void configLidar();
     static void configBaro();
     static void configComp();
     static void configGps();
     
+    // Communication
+    static void configRadio();
 };
 
 #endif /* sys_h */

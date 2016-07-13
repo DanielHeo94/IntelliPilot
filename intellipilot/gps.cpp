@@ -17,7 +17,7 @@ void gps::begin(int baudrate) {
 
 void gps::configure(uint8_t mode, uint8_t datarate, int portrate, bool gll, bool gsa, bool gsv, bool rmc, bool vtg) {
 	byte gpsSetSuccess = 0;
-	Serial.println("setting u-Blox GPS initial state...");
+	Serial.println("\t\tsetting u-Blox GPS initial state...");
 
 	gps::setArray(mode, datarate, portrate, gll, gsa, gsv, rmc, vtg);
 
@@ -43,7 +43,7 @@ void gps::configure(uint8_t mode, uint8_t datarate, int portrate, bool gll, bool
 
 	while (gpsSetSuccess < 3)
 	{
-		Serial.print("setting Navigation Mode... ");
+		Serial.print("\t\tsetting Navigation Mode... ");
 		gps::sendUBX(&setNav[0], sizeof(setNav));  //Send UBX Packet
 		gpsSetSuccess += gps::getUBX_ACK(&setNav[2]); //Passes Class ID and Message ID to the ACK Receive function
 		if (gpsSetSuccess == 5) {
@@ -61,7 +61,7 @@ void gps::configure(uint8_t mode, uint8_t datarate, int portrate, bool gll, bool
 	if (gpsSetSuccess == 3) Serial.println("Navigation mode configuration failed.");
 	gpsSetSuccess = 0;
 	while (gpsSetSuccess < 3) {
-		Serial.print("setting Data Update Rate... ");
+		Serial.print("\t\tsetting Data Update Rate... ");
 		gps::sendUBX(&setDataRate[0], sizeof(setDataRate));  //Send UBX Packet
 		gpsSetSuccess += gps::getUBX_ACK(&setDataRate[2]); //Passes Class ID and Message ID to the ACK Receive function
 		if (gpsSetSuccess == 10) gpsStatus[1] = true;
@@ -122,7 +122,7 @@ void gps::configure(uint8_t mode, uint8_t datarate, int portrate, bool gll, bool
 
 	gpsSetSuccess = 0;
 	if (settingsArray[4] != 0x25) {
-		Serial.print("setting Port Baud Rate... ");
+		Serial.print("\t\tsetting Port Baud Rate... ");
 		gps::sendUBX(&setPortRate[0], sizeof(setPortRate));
 		gps::setBaud(settingsArray[4]);
 		Serial.println("Success!");
@@ -267,7 +267,7 @@ byte gps::getUBX_ACK(byte *msgID) {
 	}
 	if (msgID[0] == ackPacket[6] && msgID[1] == ackPacket[7] && CK_A == ackPacket[8] && CK_B == ackPacket[9]) {
 		Serial.println("Success!");
-		Serial.print("ACK Received! ");
+		Serial.print("\t\tACK Received! ");
 		gps::printHex(ackPacket, sizeof(ackPacket));
 		return 10;
 	}

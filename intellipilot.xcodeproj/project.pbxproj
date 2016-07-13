@@ -19,7 +19,7 @@
 		659975C11D3334EC0029DEC8 /* motors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975B21D3334EC0029DEC8 /* motors.cpp */; };
 		659975C21D3334EC0029DEC8 /* nmea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975B41D3334EC0029DEC8 /* nmea.cpp */; };
 		659975C31D3334EC0029DEC8 /* pid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975B71D3334EC0029DEC8 /* pid.cpp */; };
-		659975C41D3334EC0029DEC8 /* remote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975B91D3334EC0029DEC8 /* remote.cpp */; };
+		659975C41D3334EC0029DEC8 /* radio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 659975B91D3334EC0029DEC8 /* radio.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -64,8 +64,8 @@
 		659975B61D3334EC0029DEC8 /* params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params.h; sourceTree = "<group>"; };
 		659975B71D3334EC0029DEC8 /* pid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pid.cpp; sourceTree = "<group>"; };
 		659975B81D3334EC0029DEC8 /* pid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pid.h; sourceTree = "<group>"; };
-		659975B91D3334EC0029DEC8 /* remote.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = remote.cpp; sourceTree = "<group>"; };
-		659975BA1D3334EC0029DEC8 /* remote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = remote.h; sourceTree = "<group>"; };
+		659975B91D3334EC0029DEC8 /* radio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = radio.cpp; sourceTree = "<group>"; };
+		659975BA1D3334EC0029DEC8 /* radio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = radio.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,8 +119,8 @@
 				659975B61D3334EC0029DEC8 /* params.h */,
 				659975B71D3334EC0029DEC8 /* pid.cpp */,
 				659975B81D3334EC0029DEC8 /* pid.h */,
-				659975B91D3334EC0029DEC8 /* remote.cpp */,
-				659975BA1D3334EC0029DEC8 /* remote.h */,
+				659975B91D3334EC0029DEC8 /* radio.cpp */,
+				659975BA1D3334EC0029DEC8 /* radio.h */,
 				658298CC1D3335E00028191E /* tasks.cpp */,
 				658298CD1D3335E00028191E /* tasks.h */,
 				659273051D33633B00FDA021 /* vars.h */,
@@ -194,7 +194,7 @@
 				6540707A1D3495FE007F9969 /* sys.cpp in Sources */,
 				659975BB1D3334EC0029DEC8 /* ahrs.cpp in Sources */,
 				659975C01D3334EC0029DEC8 /* math.cpp in Sources */,
-				659975C41D3334EC0029DEC8 /* remote.cpp in Sources */,
+				659975C41D3334EC0029DEC8 /* radio.cpp in Sources */,
 				6540707E1D34AE06007F9969 /* scheduler.cpp in Sources */,
 				659975BC1D3334EC0029DEC8 /* baro.cpp in Sources */,
 				658298CE1D333D260028191E /* tasks.cpp in Sources */,

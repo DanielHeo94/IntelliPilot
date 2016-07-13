@@ -1,7 +1,7 @@
-// remote.h
+// radio.h
 
-#ifndef _REMOTE_h
-#define _REMOTE_h
+#ifndef _RADIO_h
+#define _RADIO_h
 
 #include "config.h"
 #include "params.h"
@@ -46,9 +46,9 @@
 #define ROLL_CMD_OFFSET		0
 #define ALT_CMD_OFFSET		0
 
-class remote {
+class radio {
 public:
-	remote();
+	radio();
 
 	void begin();
 	uint8_t getCommands(double *data);

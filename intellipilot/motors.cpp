@@ -16,7 +16,7 @@ bool motors::start() {
 
 	m1.attach(QUAD_MOTOR_A);
 	m2.attach(QUAD_MOTOR_B);
-	m3.attach(QUAD_MOTOR_B);
+	m3.attach(QUAD_MOTOR_C);
 	m4.attach(QUAD_MOTOR_D);
 
 	delay(1000);

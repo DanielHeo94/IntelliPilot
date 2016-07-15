@@ -154,13 +154,13 @@ void tasks::getCommandsThread( void* arg ){
 
 void tasks::manualControlThread( void* arg ) {
     
-    rollAngleReg.Compute();
-    rollRateReg.Compute();
+    manualRollAngleReg.Compute();
+    manualRollRateReg.Compute();
+
+    manualPitchAngleReg.Compute();
+    manualPitchRateReg.Compute();
     
-    pitchAngleReg.Compute();
-    pitchRateReg.Compute();
-    
-    yawRateReg.Compute();
+    manualYawRateReg.Compute();
     
     force1 = (-pitchRateError + rollRateError) * ( 1 / 2 ) + yawRateError + cmd[3];
     force2 = (-pitchRateError - rollRateError) * ( 1 / 2 ) - yawRateError + cmd[3];

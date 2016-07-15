@@ -30,6 +30,9 @@ private:
     
     // Communication
     static void configRadio();
+
+	// Motors
+	static void startMotors();
 };
 
 #endif /* sys_h */

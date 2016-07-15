@@ -31,7 +31,7 @@ void scheduler::taskCreate() {
     //Serial.print("\t\tgetCompThread...");            sa4 = xTaskCreate(_tasks.getCompThread, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);            Serial.println("\t\t\tSuccess.");
     Serial.print("\t\tgetPosThread...");             sa5 = xTaskCreate(_tasks.getPosThread, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);             Serial.println("\t\t\t\tSuccess.");
     
-    Serial.print("\t\tgetCommandsThread...");        c1 = xTaskCreate(_tasks.getCommandsThread, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);         Serial.println("\t\tSuccess.");
+    Serial.print("\t\tgetCommandsThread...");        c1 = xTaskCreate(_tasks.getCommandsThread, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);         Serial.println("\t\t\tSuccess.");
     
     if (sa1 != pdPASS
         || sa2 != pdPASS

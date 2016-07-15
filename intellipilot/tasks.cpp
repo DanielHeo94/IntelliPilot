@@ -139,14 +139,26 @@ void tasks::getCompThread(void* arg) {
 ######################################*/
 
 void tasks::getCommandsThread( void* arg ){
-    for(;;) {
+    for (;;) {
         _radio.getCommands(cmd);
     }
+}
+
+void tasks::commGcsThread(void* arg) {
+	for (;;) {
+
+	}
 }
 
 /*######################################
 		Commands Processing
 ######################################*/
+
+void tasks::procCommandsThread(void* arg) {
+	for (;;) {
+
+	}
+}
 
 /*######################################
 			Flight Control

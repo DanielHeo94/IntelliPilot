@@ -11,8 +11,8 @@
 
 
 
-double pulseWidth;
-double pulseWidthLast;
+int pulseWidth;
+int pulseWidthLast;
 
 boolean lidarInterruptLock = false;
 

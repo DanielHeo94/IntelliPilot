@@ -14,13 +14,14 @@ motors::motors(){}
 bool motors::start() {
 	Serial.println("Starting motors");
 
-	m1.attach(QUAD_MOTOR_A);
-	m2.attach(QUAD_MOTOR_B);
-	m3.attach(QUAD_MOTOR_C);
-	m4.attach(QUAD_MOTOR_D);
+	Serial.print("\t\tAttach M1."); m1.attach(QUAD_MOTOR_A); Serial.println("\t\tSuccess.");
+	Serial.print("\t\tAttach M1."); m2.attach(QUAD_MOTOR_B); Serial.println("\t\tSuccess.");
+	Serial.print("\t\tAttach M1."); m3.attach(QUAD_MOTOR_C); Serial.println("\t\tSuccess.");
+	Serial.print("\t\tAttach M1."); m4.attach(QUAD_MOTOR_D); Serial.println("\t\tSuccess.");
 
 	delay(1000);
 
+	Serial.print("\t\tPre-Arming...");
 	m1.writeMicroseconds(MOTOR_PULSE_MIN);
 	m2.writeMicroseconds(MOTOR_PULSE_MIN);
 	m3.writeMicroseconds(MOTOR_PULSE_MIN);
@@ -29,11 +30,11 @@ bool motors::start() {
 	delay(MOTOR_START_DELAY);
 
 	if (m1.attached() && m2.attached() && m3.attached() && m4.attached()) {
-		Serial.println("Success.");
+		Serial.println("\t\tSuccess.");
 		return true;
 	}
 	else {
-		Serial.println("Motor start fail");
+		Serial.println("\t\tMotor start fail");
 		return false;
 	}
 }

@@ -14,8 +14,8 @@ double angle[3] = { 0, };
 double gyro[3] = { 0, };
 
 // LiDAR vars
-double lidarAlt = 0;
-double lidarVel = 0;
+int lidarAlt = 0;
+int lidarVel = 0;
 
 // Barometer vars
 float temparature = 0;

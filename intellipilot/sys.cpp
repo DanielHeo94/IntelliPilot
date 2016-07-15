@@ -17,6 +17,8 @@
 
 #include "radio.h"
 
+#include "motors.h"
+
 extern ahrs _ahrs;
 extern baro _barometer;
 extern lidar _lidar;
@@ -24,6 +26,8 @@ extern comp _compass;
 extern gps _gps;
 
 extern radio _radio;
+
+extern motors _motors;
 
 scheduler _scheduler;
 
@@ -118,4 +122,9 @@ void sys::configRadio() {
     Serial.println("configuring Radio...");
     
     _radio.begin();
+}
+
+void sys::startMotors() {
+	Serial.println("Starting Motors...");
+	_motors.start();
 }

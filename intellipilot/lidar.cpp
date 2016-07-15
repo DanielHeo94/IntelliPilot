@@ -4,6 +4,8 @@
 
 #include "lidar.h"
 
+#include <FreeRTOS_ARM.h>
+
 #define SAMPLING_TIME	0.01
 #define ALPHA			0.35
 
@@ -52,19 +54,12 @@ double lidar::getVerDistance() {
 }
 
 double lidar::getVerVelocity() {
-	pulse_width = pulseIn(monitor_pin, HIGH);
-	if (pulse_width != 0) {
-		pulse_width = pulse_width / 10;
-
-		ver_distance = pulse_width;
-		ver_distance = ALPHA * ver_distanceLast + (1 - ALPHA) * ver_distance;
 
 		ver_velocity = (ver_distance - ver_distanceLast) / SAMPLING_TIME;
 		ver_velocity = ALPHA * ver_velocityLast + (1 - ALPHA) * ver_velocity;
 
-		ver_distanceLast = ver_distance;
 		ver_velocityLast = ver_velocity;
-	}
+	
 	return ver_velocity;
 }
 

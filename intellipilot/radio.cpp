@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include "radio.h"
 
+#include <FreeRTOS_ARM.h>
+
 double ch1, ch2, ch3, ch4;
 double ch1Last, ch2Last, ch3Last, ch4Last;
 

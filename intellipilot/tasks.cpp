@@ -71,13 +71,13 @@ void tasks::getAccAltThread( void* arg ){
     for(;;) {
         lidarAlt = _lidar.getVerDistance();
         //lidarVel = _lidar.getVerVelocity();
+		Serial.println(lidarAlt);
     }
 }
 
 void tasks::getCommandsThread( void* arg ){
     for(;;) {
         _radio.getCommands(cmd);
-        Serial.println(cmd[0]);
     }
 }
 

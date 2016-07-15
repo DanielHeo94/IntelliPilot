@@ -32,12 +32,24 @@ sys::sys() {}
 void sys::config() {
     
     Serial.begin(115200);
+
+	Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
+	Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
+	Serial.println("._. .___        __         .__  .__  .____________.__.__          __    ._.     ");
+	Serial.println("| | |   | _____/  |_  ____ |  | |  | |__\______   \__|  |   _____/  |_  | |     ");
+	Serial.println("|_| |   |/    \   __\/ __ \|  | |  | |  ||     ___/  |  |  /  _ \   __\ |_|     ");
+	Serial.println("|-| |   |   |  \  | \  ___/|  |_|  |_|  ||    |   |  |  |_(  <_> )  |   |-|     ");
+	Serial.println("| | |___|___|  /__|  \___  >____/____/__||____|   |__|____/\____/|__|   | |     ");
+	Serial.println("|_|          \/          \/                                             |_|     ");
+	Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
+	Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
+
     Serial.println("System configuration start.");
     
     sys::configAhrs();
-    sys::configComp();
+    //sys::configComp();
     sys::configLidar();
-    sys::configBaro();
+    //sys::configBaro();
     sys::configGps();
     
     sys::configRadio();

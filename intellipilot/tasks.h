@@ -25,7 +25,7 @@ public:
     static void getAccAltThread(void* arg);             // Get highly accurate altitude.
     static void getBaroThread(void* arg);               // Get temparature, pressure, altitude.
     static void getCompThread(void* arg);               // Get heading.
-    static void getGpsThread(void* arg);                // Get the num of sats, lat, lon, date, hdop, alt.
+    static void getPosThread(void* arg);                // Get the num of sats, lat, lon, date, hdop, alt.
     
     // Communication
     static void getCommandsThread(void* arg);   // Communication Copter <-> Controller.

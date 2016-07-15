@@ -29,7 +29,7 @@ bool motors::start() {
 	delay(MOTOR_START_DELAY);
 
 	if (m1.attached() && m2.attached() && m3.attached() && m4.attached()) {
-		Serial.println("Done");
+		Serial.println("Success.");
 		return true;
 	}
 	else {

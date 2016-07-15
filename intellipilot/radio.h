@@ -57,8 +57,8 @@ private:
 
 	void sCounter();
 	
-	void acquireLock();
-	void releaseLock();
+	static void acquireLock();
+	static void releaseLock();
 
 };
 

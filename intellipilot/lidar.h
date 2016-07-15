@@ -12,6 +12,9 @@
 #define DEFAULT_TRIGGER_PIN   34
 #define DEFAULT_MONITOR_PIN   46
 
+#define LOWEST_ALTITUDE			0
+#define HIGHEST_ALTITUDE		1500
+
 class lidar {
 public:
 	lidar();
@@ -25,7 +28,11 @@ public:
 
 	double getVerDistance();
 	double getVerVelocity();
+
+private:
+
+	static void acquireLock();
+	static void releaseLock();
 };
 
 #endif
-

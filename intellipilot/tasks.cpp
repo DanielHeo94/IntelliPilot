@@ -70,7 +70,7 @@ void tasks::getEulerAnglesGyroThread( void* arg ){
 void tasks::getAccAltThread( void* arg ){
     for(;;) {
         lidarAlt = _lidar.getVerDistance();
-        lidarVel = _lidar.getVerVelocity();
+        //lidarVel = _lidar.getVerVelocity();
     }
 }
 
@@ -81,7 +81,7 @@ void tasks::getCommandsThread( void* arg ){
     }
 }
 
-void tasks::getGpsThread( void* arg ) {
+void tasks::getPosThread( void* arg ) {
     for(;;) {
         unsigned long start = millis();
         do

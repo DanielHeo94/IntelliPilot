@@ -7,12 +7,12 @@
 double ch1, ch2, ch3, ch4;
 double ch1Last, ch2Last, ch3Last, ch4Last;
 
-boolean interruptLock = false;
+boolean radioInterruptLock = false;
 
-unsigned long rcLastChange1 = micros();
-unsigned long rcLastChange2 = micros();
-unsigned long rcLastChange3 = micros();
-unsigned long rcLastChange4 = micros();
+unsigned long radioLastChange1 = micros();
+unsigned long radioLastChange2 = micros();
+unsigned long radioLastChange3 = micros();
+unsigned long radioLastChange4 = micros();
 
 int armCnt, disarmCnt;
 boolean isArmed = false;
@@ -20,31 +20,31 @@ boolean isArmed = false;
 radio::radio() {}
 
 inline void radioInterruptHandler1() {
-	if (!interruptLock) ch1 = micros() - rcLastChange1;
-	rcLastChange1 = micros();
+	if (!radioInterruptLock) ch1 = micros() - radioLastChange1;
+	radioLastChange1 = micros();
 }
 
 inline void radioInterruptHandler2() {
-	if (!interruptLock) ch2 = micros() - rcLastChange2;
-	rcLastChange2 = micros();
+	if (!radioInterruptLock) ch2 = micros() - radioLastChange2;
+	radioLastChange2 = micros();
 }
 
 inline void radioInterruptHandler3() {
-	if (!interruptLock) ch3 = micros() - rcLastChange3;
-	rcLastChange3 = micros();
+	if (!radioInterruptLock) ch3 = micros() - radioLastChange3;
+	radioLastChange3 = micros();
 }
 
 inline void radioInterruptHandler4() {
-	if (!interruptLock) ch4 = micros() - rcLastChange4;
-	rcLastChange4 = micros();
+	if (!radioInterruptLock) ch4 = micros() - radioLastChange4;
+	radioLastChange4 = micros();
 }
 
 void radio::begin() {
 
     Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH1, radioInterruptHandler1, CHANGE); Serial.println("\t\tSuccess.");
-    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH2, radioInterruptHandler2, CHANGE); Serial.println("\t\tSuccess.");
-    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH3, radioInterruptHandler3, CHANGE); Serial.println("\t\tSuccess.");
-    Serial.print("\t\tAttach interrupt CH1..." ); attachInterrupt(RC_CH4, radioInterruptHandler4, CHANGE); Serial.println("\t\tSuccess.");
+    Serial.print("\t\tAttach interrupt CH2..." ); attachInterrupt(RC_CH2, radioInterruptHandler2, CHANGE); Serial.println("\t\tSuccess.");
+    Serial.print("\t\tAttach interrupt CH3..." ); attachInterrupt(RC_CH3, radioInterruptHandler3, CHANGE); Serial.println("\t\tSuccess.");
+    Serial.print("\t\tAttach interrupt CH4..." ); attachInterrupt(RC_CH4, radioInterruptHandler4, CHANGE); Serial.println("\t\tSuccess.");
 }
 
 // NOTICE!! this function MUST be in loop.
@@ -80,7 +80,7 @@ uint8_t radio::getCommands(double *data) {
 		radio::sCounter();
 
 		radio::releaseLock();
-        delay(5);
+		vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
 		radio::acquireLock();
 
 		if (armCnt == 300 && !isArmed) {
@@ -99,9 +99,9 @@ void radio::sCounter() {
 }
 
 void radio::acquireLock() {
-	interruptLock = true;
+	radioInterruptLock = true;
 }
 
 void radio::releaseLock() {
-	interruptLock = false;
+	radioInterruptLock = false;
 }

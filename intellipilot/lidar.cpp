@@ -5,33 +5,54 @@
 #include "lidar.h"
 
 #define SAMPLING_TIME	0.01
-#define ALPHA			0.96
+#define ALPHA			0.35
 
-unsigned long pulse_width;
+
+
+double pulseWidth;
+double pulseWidthLast;
+
+boolean lidarInterruptLock = false;
+
+unsigned long lidarLastChange = micros();
 
 lidar::lidar() {}
 
+inline void lidarInterruptHandler() {
+	if (!lidarInterruptLock) pulseWidth = micros() - lidarLastChange;
+	lidarLastChange = micros();
+}
+
 void lidar::begin(int trigger_pin, int monitor_pin) {
     Serial.print("\t\tSet trigger pin."); pinMode(trigger_pin, OUTPUT); Serial.println("\t\t\tSuccess.");
-    Serial.print("\t\tSet monitor pin."); pinMode(monitor_pin, INPUT); Serial.println("\t\t\tSuccess.");
+	Serial.print("\t\tAttach monitor pin."); attachInterrupt(monitor_pin, lidarInterruptHandler, CHANGE); Serial.println("\t\t\tSuccess.");
     Serial.print("\t\tSet trigger pin LOW state."); digitalWrite(trigger_pin, LOW); Serial.println("\t\tSuccess.");
 }
 
 double lidar::getVerDistance() {
-	pulse_width = pulseIn(monitor_pin, HIGH);
-	if (pulse_width != 0) {
-		pulse_width = pulse_width / 10;
 
-		ver_distance = pulse_width;
-		ver_distance = ALPHA * ver_distanceLast + (1 - ALPHA) * ver_distance;
+	lidar::acquireLock();
 
-		ver_distanceLast = ver_distance;
-	}
+	pulseWidth = floor(pulseWidth / 10) * 10;
+
+	if ((pulseWidth < LOWEST_ALTITUDE) || (pulseWidth > HIGHEST_ALTITUDE))      pulseWidth = pulseWidthLast;
+
+	pulseWidthLast = pulseWidth;
+
+	ver_distance = pulseWidth / 10;
+
+	ver_distance = ALPHA * ver_distanceLast + (1 - ALPHA) * ver_distance;
+	ver_distanceLast = ver_distance;
+	
+	lidar::releaseLock();
+	vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
+	lidar::acquireLock();
+
 	return ver_distance;
 }
 
 double lidar::getVerVelocity() {
-	pulse_width = pulseIn(trigger_pin, HIGH);
+	pulse_width = pulseIn(monitor_pin, HIGH);
 	if (pulse_width != 0) {
 		pulse_width = pulse_width / 10;
 
@@ -45,4 +66,12 @@ double lidar::getVerVelocity() {
 		ver_velocityLast = ver_velocity;
 	}
 	return ver_velocity;
+}
+
+void lidar::acquireLock() {
+	lidarInterruptLock = true;
+}
+
+void lidar::releaseLock() {
+	lidarInterruptLock = false;
 }

@@ -43,6 +43,10 @@ radio _radio;
 
 SemaphoreHandle_t sem;
 
+void *idleHandle;
+void *manualControlHandle;
+void *posHoldControlHandle;
+
 tasks::tasks() {}
 
 /*######################################
@@ -127,7 +131,23 @@ void tasks::getCompThread(void* arg) {
 
 void tasks::getCommandsThread( void* arg ){
     for (;;) {
-		if ((status = _radio.getCommands(cmd))) xSemaphoreGive(sem);
+
+		status = _radio.getCommands(cmd);
+		if ((status - statusLast) != 0) {
+			tasks::procCommands(status);
+		}
+		statusLast = status;
+
+		
+		Serial.print(cmd[0]);
+		Serial.print("\t");
+		Serial.print(cmd[1]);
+		Serial.print("\t");
+		Serial.print(cmd[2]);
+		Serial.print("\t");
+		Serial.println(cmd[3]);
+		
+		
     }
 }
 
@@ -139,8 +159,8 @@ void tasks::commGcsThread(void* arg) {
 		uint16_t _len = mavlink_msg_to_send_buffer(_buf, &_msg);
 		uint16_t _len2 = mavlink_msg_to_send_buffer(_buf2, &_msg2);
 
-		Serial.write(_buf, _len);
-		Serial.write(_buf2, _len2);
+		//Serial.write(_buf, _len);
+		//Serial.write(_buf2, _len2);
 
 		vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
 	}
@@ -151,34 +171,33 @@ void tasks::commGcsThread(void* arg) {
 ######################################*/
 
 void tasks::procCommands(int event) {
-	
-	xSemaphoreTake(sem, portMAX_DELAY);
 
-	switch (status)
-	{
-	case STATE_ARMED:
-		xTaskSuspend(idleHandle);
-		xTaskResume(manualControlHandle);
-		break;
+		switch (event)
+		{
+		case STATE_ARMED:
+			digitalWrite(49, HIGH);
+			vTaskResume(manualControlHandle);
+			break;
 
-	case STATE_DISARMED:
-		xTaskSuspend(manualControlHandle);
-		xTaskResume(idleHandle);
-		break;
+		case STATE_DISARMED:
+			digitalWrite(49, LOW);
+			vTaskSuspend(manualControlHandle);
+			_motors.stop();
+			break;
 
-	default:
-		break;
-	}
+		default:
+			break;
+
+		}
 }
 
 /*######################################
 			Flight Control
 ######################################*/
 
-void tasks::idle(void* arg) {
-
-	vTaskSuspend(manualControlHandle);
-	_motors.stop();
+void tasks::idle() {
+		
+		_motors.stop();
 }
 
 void tasks::manualControlThread( void* arg ) {
@@ -203,7 +222,20 @@ void tasks::manualControlThread( void* arg ) {
 		YAW_D_GAIN,
 		DIRECT);
 
+	manualRollAngleReg.SetMode(AUTOMATIC);
+	manualRollRateReg.SetMode(AUTOMATIC);
+
+	manualPitchAngleReg.SetMode(AUTOMATIC);
+	manualPitchRateReg.SetMode(AUTOMATIC);
+
+	manualYawRateReg.SetMode(AUTOMATIC);
+
 	for (;;) {
+
+		cmd[0] = map(cmd[0], RC_LOW_ROLL_CMD, RC_HIGH_ROLL_CMD, ROLL_ANG_MIN, ROLL_ANG_MAX);
+		cmd[1] = map(cmd[1], RC_LOW_PITCH_CMD, RC_HIGH_PITCH_CMD, PITCH_ANG_MIN, PITCH_ANG_MAX);
+		cmd[2] = map(cmd[2], RC_LOW_YAW_CMD, RC_HIGH_YAW_CMD, YAW_SPEED_MIN, YAW_SPEED_MAX);
+
 		manualRollAngleReg.Compute();
 		manualRollRateReg.Compute();
 
@@ -211,6 +243,8 @@ void tasks::manualControlThread( void* arg ) {
 		manualPitchRateReg.Compute();
 
 		manualYawRateReg.Compute();
+
+		Se
 
 		force1 = (-pitchRateError + rollRateError) * (1 / 2) + yawRateError + cmd[3];
 		force2 = (-pitchRateError - rollRateError) * (1 / 2) - yawRateError + cmd[3];

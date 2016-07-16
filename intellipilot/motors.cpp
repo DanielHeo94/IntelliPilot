@@ -15,9 +15,9 @@ bool motors::start() {
 	Serial.println("Starting motors");
 
 	Serial.print("\t\tAttach M1."); m1.attach(QUAD_MOTOR_A); Serial.println("\t\tSuccess.");
-	Serial.print("\t\tAttach M1."); m2.attach(QUAD_MOTOR_B); Serial.println("\t\tSuccess.");
-	Serial.print("\t\tAttach M1."); m3.attach(QUAD_MOTOR_C); Serial.println("\t\tSuccess.");
-	Serial.print("\t\tAttach M1."); m4.attach(QUAD_MOTOR_D); Serial.println("\t\tSuccess.");
+	Serial.print("\t\tAttach M2."); m2.attach(QUAD_MOTOR_B); Serial.println("\t\tSuccess.");
+	Serial.print("\t\tAttach M3."); m3.attach(QUAD_MOTOR_C); Serial.println("\t\tSuccess.");
+	Serial.print("\t\tAttach M4."); m4.attach(QUAD_MOTOR_D); Serial.println("\t\tSuccess.");
 
 	delay(1000);
 

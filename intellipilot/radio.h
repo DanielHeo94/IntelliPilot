@@ -22,7 +22,7 @@
 
 // RC pulse width limits configuration
 // ROLL
-#define RC_HIGH_ROLL_CMD	1960
+#define RC_HIGH_ROLL_CMD	1930
 #define RC_LOW_ROLL_CMD		1100
 
 // PITCH
@@ -30,12 +30,12 @@
 #define RC_LOW_PITCH_CMD	1900
 
 // YAW
-#define RC_HIGH_YAW_CMD		1080
-#define RC_LOW_YAW_CMD		1900
+#define RC_HIGH_YAW_CMD		1900
+#define RC_LOW_YAW_CMD		1090
 
 // ALT
-#define RC_HIGH_ALT_CMD		1150
-#define RC_LOW_ALT_CMD		1800
+#define RC_HIGH_ALT_CMD		1800
+#define RC_LOW_ALT_CMD		1150
 
 
 #define ROUNDING_BASE		10

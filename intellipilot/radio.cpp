@@ -59,10 +59,10 @@ uint8_t radio::getCommands(double *data) {
 		ch3 = floor(ch3 / ROUNDING_BASE) * ROUNDING_BASE;
 		ch4 = floor(ch4 / ROUNDING_BASE) * ROUNDING_BASE;
     
-        if ((ch1 > RC_LOW_YAW_CMD) || (ch1 < RC_HIGH_YAW_CMD))      ch1 = ch1Last;
+        if ((ch1 < RC_LOW_YAW_CMD) || (ch1 > RC_HIGH_YAW_CMD))      ch1 = ch1Last;
         if ((ch2 > RC_LOW_PITCH_CMD) || (ch2 < RC_HIGH_PITCH_CMD))  ch2 = ch2Last;
         if ((ch3 > RC_HIGH_ROLL_CMD) || (ch3 < RC_LOW_ROLL_CMD))    ch3 = ch3Last;
-        if ((ch4 > RC_LOW_ALT_CMD) || (ch4 < RC_HIGH_ALT_CMD))      ch4 = ch4Last;
+        if ((ch4 < RC_LOW_ALT_CMD) || (ch4 > RC_HIGH_ALT_CMD))      ch4 = ch4Last;
     
         ch1Last = ch1;
         ch2Last = ch2;
@@ -85,10 +85,11 @@ uint8_t radio::getCommands(double *data) {
 		vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
 		radio::acquireLock();
 
-		if (armCnt == 600 && !isArmed) {
-			isArmed = true; return STATE_ARMED;
+		if (armCnt == 300 && !isArmed) {
+			isArmed = true;
+			return STATE_ARMED;
 		}
-		else if (disarmCnt == 600 && isArmed) {
+		else if (disarmCnt == 300 && isArmed) {
 			isArmed = false;
 			return STATE_DISARMED;
 		}
@@ -98,8 +99,8 @@ uint8_t radio::getCommands(double *data) {
 }
 
 void radio::sCounter() {
-	if ((int)ch1 == RC_HIGH_YAW_CMD && (int)ch4 == RC_LOW_ALT_CMD && !isArmed) armCnt++;
-	else if ((int)ch1 == RC_LOW_YAW_CMD && (int)ch4 == RC_LOW_ALT_CMD && isArmed) disarmCnt++;
+	if ((int)ch3 >= (RC_HIGH_ROLL_CMD - 10) && (int)ch2 >= (RC_LOW_PITCH_CMD - 10) && !isArmed) armCnt++;
+	else if ((int)ch3 <= (RC_LOW_ROLL_CMD + 10) && (int)ch2 <= (RC_LOW_PITCH_CMD + 10) && isArmed) disarmCnt++;
 	else { armCnt = 0; disarmCnt = 0; }
 }
 

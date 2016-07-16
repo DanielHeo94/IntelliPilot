@@ -35,7 +35,9 @@ public:
     static void procCommands(int event);
     
     // Flight Control
-	static void idle(void* arg);
+
+	
+	static void idle();
 
     static void takeoffSequenceThread(void* arg);   // Automatic Take-off.
     static void manualControlThread(void* arg);     // Manual.

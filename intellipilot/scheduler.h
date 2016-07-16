@@ -15,8 +15,8 @@ class scheduler {
 public:
     scheduler();
 
-    static void taskCreate();
-    static void taskStart();
+    void taskCreate();
+    void taskStart();
     
 private:
     

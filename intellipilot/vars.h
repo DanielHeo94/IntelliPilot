@@ -40,10 +40,21 @@ unsigned long __age;
 float heading, headingDegrees, declinationAngle = 0;
 
 // PID Computation vars
-double pitchAngleError, pitchRateError = 0;
-double rollAngleError, rollRateError = 0;
-double yawRateError = 0;
-double altRateError = 0;
+float PITCH_ANG_ERR, PITCH_RATE_ERR = 0;
+float PITCH_RATE_ERR_PRE = 0;
+float PITCH_RATE_ERR_P, PITCH_RATE_ERR_I = 0;
+float PITCH_RATE_ERR_D = 0;
+float PITCH_BALANCE = 0;
+
+float ROLL_ANG_ERR, ROLL_RATE_ERR = 0;
+float ROLL_RATE_ERR_PRE = 0;
+float ROLL_RATE_ERR_P, ROLL_RATE_ERR_I = 0;
+float ROLL_RATE_ERR_D = 0;
+float ROLL_BALANCE = 0;
+
+float YAW_RATE_ERR, YAW_RATE_ERR_P = 0;
+float YAW_RATE_ERR_I = 0;
+float YAW_TORQUE = 0;
 
 // Motors vars
 int force1, force2, force3, force4 = 0;
@@ -53,6 +64,7 @@ double cmd[4] = { 0, }; // Roll, Pitch, Yaw, Throttle Commands.
 
 // Rotor status
 int status = 0;
+int statusLast = 0;
 
 
 

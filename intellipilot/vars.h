@@ -48,10 +48,11 @@ double altRateError = 0;
 // Motors vars
 int force1, force2, force3, force4 = 0;
 
-
-
 // Remote Control vars
 double cmd[4] = { 0, }; // Roll, Pitch, Yaw, Throttle Commands.
+
+// Rotor status
+int status = 0;
 
 
 

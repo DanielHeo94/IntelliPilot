@@ -10,16 +10,15 @@
 #endif
 
 // RC status
-#define LSTICK_RIGHT	19
+#define LSTICK_RIGHT	1080
 #define LSTICK_LEFT		-19
-#define LSTICK_DOWN		-50
+#define LSTICK_DOWN		1800
 
-#define STATE_ARMING	1
-#define STATE_ARMED		2
-#define STATE_DISARMED	3
-#define STATE_ALT_HOLD  4
-#define STATE_POS_HOLD  5
-#define STATE_LOITER    6
+#define STATE_ARMED			2
+#define STATE_DISARMED		3
+#define STATE_ALT_HOLD		4
+#define STATE_POS_HOLD		5
+#define STATE_LOITER 		6
 
 #endif
 

@@ -35,7 +35,7 @@ sys::sys() {}
 
 void sys::config() {
     
-    Serial.begin(115200);
+    Serial.begin(57600);
 	Serial.flush();
 
 	Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
@@ -58,6 +58,8 @@ void sys::config() {
     sys::configGps();
     
     sys::configRadio();
+
+	sys::startMotors();
     
     Serial.println("System configuration complete.");
     

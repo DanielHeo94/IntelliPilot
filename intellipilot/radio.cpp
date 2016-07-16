@@ -85,18 +85,21 @@ uint8_t radio::getCommands(double *data) {
 		vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
 		radio::acquireLock();
 
-		if (armCnt == 300 && !isArmed) {
+		if (armCnt == 600 && !isArmed) {
 			isArmed = true; return STATE_ARMED;
 		}
-		else if (disarmCnt == 300 && isArmed) {
+		else if (disarmCnt == 600 && isArmed) {
 			isArmed = false;
 			return STATE_DISARMED;
+		}
+		else {
+			return 0;
 		}
 }
 
 void radio::sCounter() {
-	if ((int)ch1 == LSTICK_RIGHT && (int)ch4 == LSTICK_DOWN && !isArmed) armCnt++;
-	else if ((int)ch1 == LSTICK_LEFT && (int)ch4 == LSTICK_DOWN && isArmed) disarmCnt++;
+	if ((int)ch1 == RC_HIGH_YAW_CMD && (int)ch4 == RC_LOW_ALT_CMD && !isArmed) armCnt++;
+	else if ((int)ch1 == RC_LOW_YAW_CMD && (int)ch4 == RC_LOW_ALT_CMD && isArmed) disarmCnt++;
 	else { armCnt = 0; disarmCnt = 0; }
 }
 

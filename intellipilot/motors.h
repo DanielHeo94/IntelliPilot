@@ -25,7 +25,9 @@ public:
 	motors();
 
 	bool start();
+
 	void rotate(int pulse_1, int pulse_2, int pulse_3, int pulse_4);
+	void stop(int pulse_1 = MOTOR_PULSE_MIN, int pulse_2 = MOTOR_PULSE_MIN, int pulse_3 = MOTOR_PULSE_MIN, int pulse_4 = MOTOR_PULSE_MIN);
 };
 
 #endif

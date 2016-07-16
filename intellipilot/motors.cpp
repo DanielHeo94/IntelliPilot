@@ -51,3 +51,11 @@ void motors::rotate(int pulse_1, int pulse_2, int pulse_3, int pulse_4) {
 	m3.writeMicroseconds(pulse_3);
 	m4.writeMicroseconds(pulse_4);
 }
+
+void motors::stop(int pulse_1, int pulse_2, int pulse_3, int pulse_4) {
+	
+	m1.writeMicroseconds(pulse_1);
+	m2.writeMicroseconds(pulse_2);
+	m3.writeMicroseconds(pulse_3);
+	m4.writeMicroseconds(pulse_4);
+}

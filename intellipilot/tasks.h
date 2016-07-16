@@ -32,9 +32,11 @@ public:
     static void commGcsThread(void* arg);       // Communication Copter <-> GCS ( Protocol : mavLink ).
     
     // Commands Processing
-    static void procCommandsThread(void* arg);
+    static void procCommands(int event);
     
     // Flight Control
+	static void idle(void* arg);
+
     static void takeoffSequenceThread(void* arg);   // Automatic Take-off.
     static void manualControlThread(void* arg);     // Manual.
     static void posHoldControlThread(void* arg);    // GPS Hold.

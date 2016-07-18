@@ -25,9 +25,24 @@ float sealevelpressure = 0;
 
 // GPS vars
 float gpsAlt = 0;
-float latitude, longitude, speed = 0;
+float lat, lng, speed = 0;
 
-int numsats, hdop = 0;
+// $GPGSA sentence
+char mode;
+int numsats = 0;
+int pdop, vdop, hdop = 0;
+int fixtype, fixquality = 0;
+
+// $GPGSV sentence
+
+int nummessages, messagenum, numsatsinview = 0;
+int prn, snr = 0;
+int elevation, azimuth = 0;
+
+// $GPGSV sentence
+float cog;
+uint64_t timestamp;
+
 
 unsigned long _age, date, chars = 0;
 unsigned short sentences, failed = 0;

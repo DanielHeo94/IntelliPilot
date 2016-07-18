@@ -78,6 +78,24 @@ void tasks::getAccAltThread( void* arg ){
 }
 
 void tasks::getPosThread(void* arg) {
+
+	nmeaCustom _mode(_nmea, "GPGSA", 1);
+	nmeaCustom _fixtype(_nmea, "GPGSA", 2);
+	nmeaCustom _pdop(_nmea, "GPGSA", 15);
+	nmeaCustom _hdop(_nmea, "GPGSA", 16);
+	nmeaCustom _vdop(_nmea, "GPGSA", 17);
+
+	nmeaCustom _nummessages(_nmea, "GPGSV", 1);
+	nmeaCustom _messagenum(_nema, "GPGSV", 2);
+	nmeaCustom _numsatsinview(_nmea, "GPGSV", 3);
+	nmeaCustom _prn(_nmea, "GPGSV", 4);
+	nmeaCustom _elevation(_nmea, "GPGSV", 5);
+	nmeaCustom _azimuth(_nmea, "GPGSV", 6);
+	nmeaCustom _snr(_nmea, "GPGSV", 7);
+
+	nmeaCustom _cog(_nmea, "GPRMC", 8);
+	nmeaCustom _timestamp(_nmea, "GPRMC", 1);
+
 	for (;;) {
 		unsigned long start = millis();
 		do
@@ -86,16 +104,31 @@ void tasks::getPosThread(void* arg) {
 				_nmea.encode(Serial2.read());
 		} while (millis() - start < 100);
 
-		if ((numsats = (int)_nmea.satellites()) == nmea::GPS_INVALID_SATELLITES) {}
-		if ((hdop = (int)_nmea.hdop()) == nmea::GPS_INVALID_HDOP) {}
-		_nmea.f_get_position(&latitude, &longitude, &_age);
-		if (latitude == nmea::GPS_INVALID_F_ANGLE) {}
-		if (longitude == nmea::GPS_INVALID_F_ANGLE) {}
-		if (_age == nmea::GPS_INVALID_AGE) {}
-		_nmea.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &__age);
-		if (__age == nmea::GPS_INVALID_AGE) {}
-		if ((gpsAlt = _nmea.f_altitude()) == nmea::GPS_INVALID_ALTITUDE) {}
-		if ((speed = _nmea.f_speed_mps()) == nmea::GPS_INVALID_F_SPEED) {}
+		numsats = _nmea.satellites.value();
+
+		mode = _mode.value();
+		fixtype = _fixtype.value();
+
+		pdop = _pdop.value();
+		hdop = _hdop.value();
+		vdop = _vdop.value();
+
+		lat = _nmea.location.lat();
+		lng = _nmea.location.lng();
+
+		gpsAlt = _nmea.altitude.meters();
+		speed = _nmea.speed.mps();
+
+		nummessages = _nummessages.value();
+		messagenum = _messagenum.value();
+		numsatsinview = _numsatsinview.value();
+		prn = _prn.value();
+		elevation = _elevation.value();
+		azimuth = _azimuth.value();
+		snr = _snr.value();
+
+		timestamp = _timestamp.value();
+		cog = _cog.value();
 	}
 }
 
@@ -156,11 +189,13 @@ void tasks::commGcsThread(void* arg) {
 
 		mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &_heartbeat_msg, TYPE, AUTOPILOT_TYPE, mavMode, CUSTOM_MODE, SYSTEM_STATE);
 		mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &_attitude_msg, 0, angle[0] * M_PI / 180, angle[1] * M_PI / 180, angle[2] * M_PI / 180, gyro[0] * M_PI / 180, gyro[1] * M_PI / 180, gyro[2] * M_PI / 180);
-		mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &_gps_pos_msg, 0, 3, (latitude * pow(10, 7)), (longitude * pow(10, 7)), (gpsAlt * 1000), hdop, UINT16_MAX, (speed * 100), UINT16_MAX, numsats);
+		mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &_gps_pos_msg, 0, fixtype, (lat * pow(10, 7)), (lng * pow(10, 7)), (gpsAlt * 1000), hdop, vdop, (speed * 100), cog * 100, numsats);
+		mavlink_msg_gps_status_pack(SYSTEM_ID, COM_ID, &_gps_stat_msg, numsatsinview, prn, 1, elevation, (255 * azimuth) / 360, snr);
 
 		_heartbeat_len = mavlink_msg_to_send_buffer(_heartbeat_buf, &_heartbeat_msg);
 		_attitude_len = mavlink_msg_to_send_buffer(_attitude_buf, &_attitude_msg);
 		_gps_pos_len = mavlink_msg_to_send_buffer(_gps_pos_buf, &_gps_pos_msg);
+		_gps_stat_len = mavlink_msg_to_send_buffer(_gps_stat_buf, &_gps_stat_msg);
 
 		// Wire
 		//Serial.write(_heartbeat_buf, _heartbeat_len);
@@ -171,6 +206,7 @@ void tasks::commGcsThread(void* arg) {
 		Serial3.write(_heartbeat_buf, _heartbeat_len);
 		Serial3.write(_attitude_buf, _attitude_len);
 		Serial3.write(_gps_pos_buf, _gps_pos_len);
+		Serial3.write(_gps_stat_buf, _gps_stat_len)
 
 		vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
 	}

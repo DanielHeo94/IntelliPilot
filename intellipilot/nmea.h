@@ -1,5 +1,5 @@
 /*
-TinyGPS++ - a small GPS library for Arduino providing universal NMEA parsing
+TinyGPS++ - a small GPS library for Arduino providing universal nmea parsing
 Based on work by and "distanceBetween" and "courseTo" courtesy of Maarten Lamers.
 Suggestion to add satellites, courseTo(), and cardinal() by Matt Monson.
 Location precision improvements suggested by Wayne Holder.
@@ -21,8 +21,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _NMEA_H_
-#define _NMEA_H_
+#ifndef _nmea_H_
+#define _nmea_H_
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -50,9 +50,9 @@ public:
    {}
 };
 
-struct NMEALocation
+struct nmeaLocation
 {
-   friend class NMEA;
+   friend class nmea;
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
@@ -62,7 +62,7 @@ public:
    double lat();
    double lng();
 
-   NMEALocation() : valid(false), updated(false)
+   nmeaLocation() : valid(false), updated(false)
    {}
 
 private:
@@ -74,9 +74,9 @@ private:
    void setLongitude(const char *term);
 };
 
-struct NMEADate
+struct nmeaDate
 {
-   friend class NMEA;
+   friend class nmea;
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
@@ -87,7 +87,7 @@ public:
    uint8_t month();
    uint8_t day();
 
-   NMEADate() : valid(false), updated(false), date(0)
+   nmeaDate() : valid(false), updated(false), date(0)
    {}
 
 private:
@@ -98,9 +98,9 @@ private:
    void setDate(const char *term);
 };
 
-struct NMEATime
+struct nmeaTime
 {
-   friend class NMEA;
+   friend class nmea;
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
@@ -112,7 +112,7 @@ public:
    uint8_t second();
    uint8_t centisecond();
 
-   NMEATime() : valid(false), updated(false), time(0)
+   nmeaTime() : valid(false), updated(false), time(0)
    {}
 
 private:
@@ -123,16 +123,16 @@ private:
    void setTime(const char *term);
 };
 
-struct NMEADecimal
+struct nmeaDecimal
 {
-   friend class NMEA;
+   friend class nmea;
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
    uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
    int32_t value()         { updated = false; return val; }
 
-   NMEADecimal() : valid(false), updated(false), val(0)
+   nmeaDecimal() : valid(false), updated(false), val(0)
    {}
 
 private:
@@ -143,16 +143,16 @@ private:
    void set(const char *term);
 };
 
-struct NMEAInteger
+struct nmeaInteger
 {
-   friend class NMEA;
+   friend class nmea;
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
    uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
    uint32_t value()        { updated = false; return val; }
 
-   NMEAInteger() : valid(false), updated(false), val(0)
+   nmeaInteger() : valid(false), updated(false), val(0)
    {}
 
 private:
@@ -163,7 +163,7 @@ private:
    void set(const char *term);
 };
 
-struct NMEASpeed : NMEADecimal
+struct nmeaSpeed : nmeaDecimal
 {
    double knots()    { return value() / 100.0; }
    double mph()      { return _GPS_MPH_PER_KNOT * value() / 100.0; }
@@ -171,12 +171,12 @@ struct NMEASpeed : NMEADecimal
    double kmph()     { return _GPS_KMPH_PER_KNOT * value() / 100.0; }
 };
 
-struct NMEACourse : public NMEADecimal
+struct nmeaCourse : public nmeaDecimal
 {
    double deg()      { return value() / 100.0; }
 };
 
-struct NMEAAltitude : NMEADecimal
+struct nmeaAltitude : nmeaDecimal
 {
    double meters()       { return value() / 100.0; }
    double miles()        { return _GPS_MILES_PER_METER * value() / 100.0; }
@@ -184,13 +184,13 @@ struct NMEAAltitude : NMEADecimal
    double feet()         { return _GPS_FEET_PER_METER * value() / 100.0; }
 };
 
-class NMEA;
-class NMEACustom
+class nmea;
+class nmeaCustom
 {
 public:
-   NMEACustom() {};
-   NMEACustom(NMEA &gps, const char *sentenceName, int termNumber);
-   void begin(NMEA &gps, const char *_sentenceName, int _termNumber);
+   nmeaCustom() {};
+   nmeaCustom(nmea &gps, const char *sentenceName, int termNumber);
+   void begin(nmea &gps, const char *_sentenceName, int _termNumber);
 
    bool isUpdated() const  { return updated; }
    bool isValid() const    { return valid; }
@@ -207,25 +207,25 @@ private:
    bool valid, updated;
    const char *sentenceName;
    int termNumber;
-   friend class NMEA;
-   NMEACustom *next;
+   friend class nmea;
+   nmeaCustom *next;
 };
 
-class NMEA
+class nmea
 {
 public:
-  NMEA();
+  nmea();
   bool encode(char c); // process one character received from GPS
-  NMEA &operator << (char c) {encode(c); return *this;}
+  nmea &operator << (char c) {encode(c); return *this;}
 
-  NMEALocation location;
-  NMEADate date;
-  NMEATime time;
-  NMEASpeed speed;
-  NMEACourse course;
-  NMEAAltitude altitude;
-  NMEAInteger satellites;
-  NMEADecimal hdop;
+  nmeaLocation location;
+  nmeaDate date;
+  nmeaTime time;
+  nmeaSpeed speed;
+  nmeaCourse course;
+  nmeaAltitude altitude;
+  nmeaInteger satellites;
+  nmeaDecimal hdop;
 
   static const char *libraryVersion() { return _GPS_VERSION; }
 
@@ -254,10 +254,10 @@ private:
   bool sentenceHasFix;
 
   // custom element support
-  friend class NMEACustom;
-  NMEACustom *customElts;
-  NMEACustom *customCandidates;
-  void insertCustom(NMEACustom *pElt, const char *sentenceName, int index);
+  friend class nmeaCustom;
+  nmeaCustom *customElts;
+  nmeaCustom *customCandidates;
+  void insertCustom(nmeaCustom *pElt, const char *sentenceName, int index);
 
   // statistics
   uint32_t encodedCharCount;
@@ -270,4 +270,4 @@ private:
   bool endOfTermHandler();
 };
 
-#endif // def(_NMEA_H_)
+#endif // def(_nmea_H_)

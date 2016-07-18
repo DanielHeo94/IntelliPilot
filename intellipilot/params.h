@@ -9,7 +9,7 @@
 	#include "WProgram.h"
 #endif
 
-#define PREFLIGHT_MODE_ARM_COUNT_MAX	300
+#define PREFLIGHT_MODE_ARM_COUNT_MAX	200
 
 // Rotor States
 #define STATE_PREFLIGHT_ARMED		1		

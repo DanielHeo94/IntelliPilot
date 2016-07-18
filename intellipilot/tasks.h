@@ -37,7 +37,7 @@ public:
     // Flight Control
 
 	
-	static void idle();
+	static void idle(void* arg);
 
     static void takeoffSequenceThread(void* arg);   // Automatic Take-off.
     static void manualControlThread(void* arg);     // Manual.

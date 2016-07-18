@@ -12,7 +12,6 @@ Servo m1, m2, m3, m4;
 motors::motors(){}
 
 bool motors::start() {
-	Serial.println("Starting motors");
 
 	Serial.print("\t\tAttach M1."); m1.attach(QUAD_MOTOR_A); Serial.println("\t\tSuccess.");
 	Serial.print("\t\tAttach M2."); m2.attach(QUAD_MOTOR_B); Serial.println("\t\tSuccess.");

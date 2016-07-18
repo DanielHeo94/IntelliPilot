@@ -41,11 +41,9 @@ motors _motors;
 nmea _nmea;
 radio _radio;
 
-SemaphoreHandle_t sem;
-
-void *idleHandle;
-void *manualControlHandle;
-void *posHoldControlHandle;
+TaskHandle_t idleHandle;
+TaskHandle_t manualControlHandle;
+TaskHandle_t posHoldControlHandle;
 
 tasks::tasks() {}
 
@@ -192,12 +190,13 @@ void tasks::procCommands(int event) {
 
 		case STATE_PREFLIGHT_DISARMED:
 			mavMode = MAV_MODE_PREFLIGHT;
+			vTaskResume(idleHandle);
 			vTaskSuspend(manualControlHandle);
-			_motors.stop();
 			break;
 
 		case STATE_MANUAL_ARMED:
 			mavMode = MAV_MODE_MANUAL_ARMED;
+			vTaskSuspend(idleHandle);
 			vTaskResume(manualControlHandle);
 			break;
 
@@ -232,12 +231,22 @@ void fcInit() {
 	yawRateError = 0;
 }
 
-void tasks::idle() {
-		
+void tasks::idle( void* arg ) {
+
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	const TickType_t xWakePeriod = 1000 / portTICK_PERIOD_MS;
+
+	for (;;) {
 		_motors.stop();
+
+		vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
+	}
 }
 
 void tasks::manualControlThread( void* arg ) {
+
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	const TickType_t xWakePeriod = 3 / portTICK_PERIOD_MS;
 
 	fcInit();
 
@@ -290,22 +299,39 @@ void tasks::manualControlThread( void* arg ) {
 		Serial.print("\t");
 		Serial.println(manualCmd[3]);
 		*/
+		
+		if (manualCmd[3] > MOTOR_PULSE_TAKEOFF) {
 
-		manualRollAngleReg.Compute();
-		manualRollRateReg.Compute();
+			manualRollAngleReg.Compute();
+			manualRollRateReg.Compute();
 
-		manualPitchAngleReg.Compute();
-		manualPitchRateReg.Compute();
+			manualPitchAngleReg.Compute();
+			manualPitchRateReg.Compute();
 
-		manualYawRateReg.Compute();
+			manualYawRateReg.Compute();
 
-		force1 = (-pitchRateError + rollRateError) * 0.5 - yawRateError + manualCmd[3];
-		force2 = (-pitchRateError - rollRateError) * 0.5 + yawRateError + manualCmd[3];
-		force3 = (pitchRateError - rollRateError) * 0.5 - yawRateError + manualCmd[3];
-		force4 = (pitchRateError + rollRateError) * 0.5 + yawRateError + manualCmd[3];
+			force1 = (-pitchRateError + rollRateError) * 0.5 - yawRateError + manualCmd[3];
+			force2 = (-pitchRateError - rollRateError) * 0.5 + yawRateError + manualCmd[3];
+			force3 = (pitchRateError - rollRateError) * 0.5 - yawRateError + manualCmd[3];
+			force4 = (pitchRateError + rollRateError) * 0.5 + yawRateError + manualCmd[3];
 
-		if (manualCmd[3] <= MOTOR_PULSE_TAKEOFF) _motors.stop();
-		else _motors.rotate(force1, force2, force3, force4);
+			_motors.rotate(force1, force2, force3, force4);
+
+			/*
+			Serial.print(force1);
+			Serial.print("\t");
+			Serial.print(force2);
+			Serial.print("\t");
+			Serial.print(force3);
+			Serial.print("\t");
+			Serial.println(force4);
+			*/
+		}
+		else {
+			_motors.stop();
+		}
+
+		vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
 	}  
 }
 

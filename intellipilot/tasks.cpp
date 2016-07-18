@@ -88,8 +88,7 @@ void tasks::getPosThread(void* arg) {
 		_nmea.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &__age);
 		if (__age == nmea::GPS_INVALID_AGE) {}
 		if ((gpsAlt = _nmea.f_altitude()) == nmea::GPS_INVALID_ALTITUDE) {}
-		if ((speed = _nmea.f_speed_kmph()) == nmea::GPS_INVALID_F_SPEED) {}
-
+		if ((speed = _nmea.f_speed_mps()) == nmea::GPS_INVALID_F_SPEED) {}
 	}
 }
 
@@ -137,30 +136,30 @@ void tasks::getCommandsThread( void* arg ){
 			tasks::procCommands(status);
 		}
 		statusLast = status;
-
-		
-		Serial.print(cmd[0]);
-		Serial.print("\t");
-		Serial.print(cmd[1]);
-		Serial.print("\t");
-		Serial.print(cmd[2]);
-		Serial.print("\t");
-		Serial.println(cmd[3]);
-		
-		
     }
 }
 
 void tasks::commGcsThread(void* arg) {
+
+	//TickType_t xLastWakeTime;
+	//const TickType_t xFrequency = 5;
+
+	//xLastWakeTime = xTaskGetTickCount();
+
 	for (;;) {
-		mavlink_msg_heartbeat_pack(sysid, compid, &_msg, type, autopilot_type, system_mode, custom_mode, system_state);
-		mavlink_msg_attitude_pack(sysid, compid, &_msg2, 0, angle[0] * M_PI / 180, angle[1] * M_PI / 180, angle[2] * M_PI / 180, gyro[0] * M_PI / 180, gyro[1] * M_PI / 180, gyro[2] * M_PI / 180);
+		//vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
-		uint16_t _len = mavlink_msg_to_send_buffer(_buf, &_msg);
-		uint16_t _len2 = mavlink_msg_to_send_buffer(_buf2, &_msg2);
+		mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &_heartbeat_msg, TYPE, AUTOPILOT_TYPE, mavMode, CUSTOM_MODE, SYSTEM_STATE);
+		mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &_attitude_msg, 0, angle[0] * M_PI / 180, angle[1] * M_PI / 180, angle[2] * M_PI / 180, gyro[0] * M_PI / 180, gyro[1] * M_PI / 180, gyro[2] * M_PI / 180);
+		mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &_gps_pos_msg, 0, 3, (latitude * pow(10, 7)), (longitude * pow(10, 7)), (gpsAlt * 1000), hdop, UINT16_MAX, (speed * 100), UINT16_MAX, numsats);
 
-		//Serial.write(_buf, _len);
-		//Serial.write(_buf2, _len2);
+		_heartbeat_len = mavlink_msg_to_send_buffer(_heartbeat_buf, &_heartbeat_msg);
+		_attitude_len = mavlink_msg_to_send_buffer(_attitude_buf, &_attitude_msg);
+		_gps_pos_len = mavlink_msg_to_send_buffer(_gps_pos_buf, &_gps_pos_msg);
+
+		Serial3.write(_heartbeat_buf, _heartbeat_len);
+		Serial3.write(_attitude_buf, _attitude_len);
+		Serial3.write(_gps_pos_buf, _gps_pos_len);
 
 		vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
 	}
@@ -175,12 +174,14 @@ void tasks::procCommands(int event) {
 		switch (event)
 		{
 		case STATE_ARMED:
-			digitalWrite(49, HIGH);
+			mavMode = MAV_MODE_MANUAL_ARMED;
+			digitalWrite(12, HIGH);
 			vTaskResume(manualControlHandle);
 			break;
 
 		case STATE_DISARMED:
-			digitalWrite(49, LOW);
+			mavMode = MAV_MODE_MANUAL_DISARMED;
+			digitalWrite(12, LOW);
 			vTaskSuspend(manualControlHandle);
 			_motors.stop();
 			break;
@@ -202,39 +203,45 @@ void tasks::idle() {
 
 void tasks::manualControlThread( void* arg ) {
 
-	pid manualRollAngleReg(&angle[0], &rollAngleError, &cmd[0], ROLL_OUTER_P_GAIN, 0, 0, DIRECT);
+	pid manualRollAngleReg(&angle[0], &rollAngleError, &manualCmd[0], ROLL_OUTER_P_GAIN, 0, 0, DIRECT);
 	pid manualRollRateReg(&gyro[0], &rollRateError, &rollAngleError,
 		ROLL_INNER_P_GAIN,
 		ROLL_INNER_I_GAIN,
 		ROLL_INNER_D_GAIN,
 		DIRECT);
 
-	pid manualPitchAngleReg(&angle[1], &pitchAngleError, &cmd[1], PITCH_OUTER_P_GAIN, 0, 0, REVERSE);
+	pid manualPitchAngleReg(&angle[1], &pitchAngleError, &manualCmd[1], PITCH_OUTER_P_GAIN, 0, 0, REVERSE);
 	pid manualPitchRateReg(&gyro[1], &pitchRateError, &pitchAngleError,
 		PITCH_INNER_P_GAIN,
 		PITCH_INNER_I_GAIN,
 		PITCH_INNER_D_GAIN,
 		REVERSE);
 
-	pid manualYawRateReg(&angle[2], &yawRateError, &cmd[2],
+	pid manualYawRateReg(&angle[2], &yawRateError, &manualCmd[2],
 		YAW_P_GAIN,
 		YAW_I_GAIN,
 		YAW_D_GAIN,
 		DIRECT);
 
 	manualRollAngleReg.SetMode(AUTOMATIC);
+	manualRollAngleReg.SetOutputLimits(-1000, 1000);
 	manualRollRateReg.SetMode(AUTOMATIC);
+	manualRollRateReg.SetOutputLimits(-700, 700);
 
 	manualPitchAngleReg.SetMode(AUTOMATIC);
+	manualPitchAngleReg.SetOutputLimits(-1000, 1000);
 	manualPitchRateReg.SetMode(AUTOMATIC);
+	manualPitchRateReg.SetOutputLimits(-700, 700);
 
 	manualYawRateReg.SetMode(AUTOMATIC);
+	manualYawRateReg.SetOutputLimits(-700, 700);
 
 	for (;;) {
 
-		cmd[0] = map(cmd[0], RC_LOW_ROLL_CMD, RC_HIGH_ROLL_CMD, ROLL_ANG_MIN, ROLL_ANG_MAX);
-		cmd[1] = map(cmd[1], RC_LOW_PITCH_CMD, RC_HIGH_PITCH_CMD, PITCH_ANG_MIN, PITCH_ANG_MAX);
-		cmd[2] = map(cmd[2], RC_LOW_YAW_CMD, RC_HIGH_YAW_CMD, YAW_SPEED_MIN, YAW_SPEED_MAX);
+		manualCmd[0] = map(cmd[0], RC_CH3_LOW, RC_CH3_HIGH, ROLL_ANG_MIN, ROLL_ANG_MAX);
+		manualCmd[1] = map(cmd[1], RC_CH2_LOW, RC_CH2_HIGH, PITCH_ANG_MIN, PITCH_ANG_MAX);
+		manualCmd[2] = map(cmd[2], RC_CH1_LOW, RC_CH1_HIGH, YAW_SPEED_MIN, YAW_SPEED_MAX);
+		manualCmd[3] = map(cmd[3], RC_CH4_LOW, RC_CH4_HIGH, MOTOR_PULSE_MIN, MOTOR_PULSE_MAX);
 
 		manualRollAngleReg.Compute();
 		manualRollRateReg.Compute();
@@ -244,14 +251,13 @@ void tasks::manualControlThread( void* arg ) {
 
 		manualYawRateReg.Compute();
 
-		Se
+		force1 = (-pitchRateError + rollRateError) * 0.5 + yawRateError + manualCmd[3];
+		force2 = (-pitchRateError - rollRateError) * 0.5 - yawRateError + manualCmd[3];
+		force3 = (pitchRateError - rollRateError) * 0.5 + yawRateError + manualCmd[3];
+		force4 = (pitchRateError + rollRateError) * 0.5 - yawRateError + manualCmd[3];
 
-		force1 = (-pitchRateError + rollRateError) * (1 / 2) + yawRateError + cmd[3];
-		force2 = (-pitchRateError - rollRateError) * (1 / 2) - yawRateError + cmd[3];
-		force3 = (pitchRateError - rollRateError) * (1 / 2) + yawRateError + cmd[3];
-		force4 = (pitchRateError + rollRateError) * (1 / 2) - yawRateError + cmd[3];
-
-		_motors.rotate(force1, force2, force3, force4);
+		if (manualCmd[3] <= MOTOR_PULSE_TAKEOFF) _motors.stop();
+		else _motors.rotate(force1, force2, force3, force4);
 	}  
 }
 

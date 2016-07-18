@@ -69,7 +69,7 @@ class pid
                                   //   what these values are.  with pointers we'll just know.
 			  
 	unsigned long lastTime;
-	double ITerm, lastInput;
+	double ITerm, lastInput, lastError;
 
 	unsigned long SampleTime;
 	double outMin, outMax;

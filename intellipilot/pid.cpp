@@ -21,13 +21,10 @@ pid::pid(double* Input, double* Output, double* Setpoint,
 	
 	pid::SetOutputLimits(0, 255);				//default output limit corresponds to 
 												//the arduino pwm limits
-
-    SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
+    SampleTime = 10;							//default Controller Sample Time is 0.01 seconds
 
     pid::SetControllerDirection(ControllerDirection);
-    pid::SetTunings(Kp, Ki, Kd);
-
-    lastTime = millis()-SampleTime;				
+    pid::SetTunings(Kp, Ki, Kd);		
 }
  
  
@@ -40,31 +37,25 @@ pid::pid(double* Input, double* Output, double* Setpoint,
 bool pid::Compute()
 {
    if(!inAuto) return false;
-   unsigned long now = millis();
-   unsigned long timeChange = (now - lastTime);
-   if(timeChange>=SampleTime)
-   {
+
       /*Compute all the working error variables*/
 	  double input = *myInput;
       double error = *mySetpoint - input;
       ITerm+= (ki * error);
       if(ITerm > outMax) ITerm= outMax;
       else if(ITerm < outMin) ITerm= outMin;
-      double dInput = (input - lastInput);
+	  double dInput = (error - lastError);
  
       /*Compute pid Output*/
-      double output = kp * error + ITerm- kd * dInput;
+      double output = kp * error + ITerm + kd * dInput;
       
 	  if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
 	  *myOutput = output;
 	  
       /*Remember some variables for next time*/
-      lastInput = input;
-      lastTime = now;
+	  lastError = error;
 	  return true;
-   }
-   else return false;
 }
 
 

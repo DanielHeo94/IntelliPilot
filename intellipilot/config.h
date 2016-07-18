@@ -23,9 +23,9 @@
 #define CLIMB_RATE_MAX  50
 
 // Motor input config
-#define MOTOR_PULSE_MIN		1100
-#define MOTOR_PULSE_MAX		1800
-#define MOTOR_PULSE_TAKEOFF	1200
+#define MOTOR_PULSE_MIN		800
+#define MOTOR_PULSE_MAX		2200
+#define MOTOR_PULSE_TAKEOFF	850
 
 // Angle offset
 #define PITCH_ANG_OFFSET    1

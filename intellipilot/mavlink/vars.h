@@ -9,23 +9,29 @@
 	#include "WProgram.h"
 #endif
 
-int sysid = 20;                   ///< ID 20 for this airplane
-int compid = MAV_COMP_ID_IMU;     ///< The component sending the message is the IMU, it could be also a Linux process
-int type = MAV_TYPE_QUADROTOR;   ///< This system is an airplane / fixed wing
+#define SYSTEM_ID		20                   ///< ID 20 for this airplane
+static int COM_ID =		MAV_COMP_ID_IMU;     ///< The component sending the message is the IMU, it could be also a Linux process
+static int TYPE	  =		MAV_TYPE_QUADROTOR;   ///< This system is an airplane / fixed wing
 
 								 // Define the system type, in this case an airplane
-uint8_t system_type = MAV_TYPE_FIXED_WING;
-uint8_t autopilot_type = MAV_AUTOPILOT_GENERIC;
+static uint8_t SYSTEM_TYPE =	MAV_TYPE_FIXED_WING;
+static uint8_t AUTOPILOT_TYPE = MAV_AUTOPILOT_GENERIC;
 
-uint8_t system_mode = MAV_MODE_PREFLIGHT; ///< Booting up
-uint32_t custom_mode = 0;                 ///< Custom mode, can be defined by user/adopter
-uint8_t system_state = MAV_STATE_STANDBY; ///< System ready for flight
+static uint8_t SYSTEM_MODE =	MAV_MODE_PREFLIGHT; ///< Booting up
+static uint32_t CUSTOM_MODE =	0;                 ///< Custom mode, can be defined by user/adopter
+static uint8_t SYSTEM_STATE =	MAV_STATE_STANDBY; ///< System ready for flight
 										  // Initialize the required buffers
-mavlink_message_t _msg;
-mavlink_message_t _msg2;
+mavlink_message_t _heartbeat_msg;
+mavlink_message_t _attitude_msg;
+mavlink_message_t _gps_pos_msg;
 
-uint8_t _buf[MAVLINK_MAX_PACKET_LEN];
-uint8_t _buf2[MAVLINK_MAX_PACKET_LEN];
+uint8_t _heartbeat_buf[MAVLINK_MAX_PACKET_LEN];
+uint8_t _attitude_buf[MAVLINK_MAX_PACKET_LEN];
+uint8_t _gps_pos_buf[MAVLINK_MAX_PACKET_LEN];
+
+uint16_t _heartbeat_len;
+uint16_t _attitude_len;
+uint16_t _gps_pos_len;
 
 #endif
 

@@ -45,7 +45,7 @@ void scheduler::taskCreate() {
 	fc2 = xTaskCreate(_tasks.manualControlThread, NULL, 300, NULL, 1, &manualControlHandle);
 
     if (sa1 != pdPASS
-        //|| sa2 != pdPASS
+        || sa2 != pdPASS
         //|| sa3 != pdPASS
         //|| sa4 != pdPASS
         || sa5 != pdPASS

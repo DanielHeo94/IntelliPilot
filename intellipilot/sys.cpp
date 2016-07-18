@@ -38,6 +38,8 @@ void sys::config() {
     Serial.begin(115200);
 	Serial.flush();
 
+	Serial3.begin(57600);
+
 	Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
 	Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
 	Serial.println("._. .___        __         .__  .__  .____________.__.__          __    ._.     ");
@@ -51,8 +53,8 @@ void sys::config() {
 
     Serial.println("System configuration start.");
 
-	pinMode(49, OUTPUT);
-	digitalWrite(49, LOW);
+	pinMode(12, OUTPUT);
+	digitalWrite(12, LOW);
     
     sys::configAhrs();
     //sys::configComp();

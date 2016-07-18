@@ -20,23 +20,19 @@
 #define RC_CH3	32
 #define RC_CH4	33
 
-// RC pulse width limits configuration
-// ROLL
-#define RC_HIGH_ROLL_CMD	1930
-#define RC_LOW_ROLL_CMD		1100
-
-// PITCH
-#define RC_HIGH_PITCH_CMD	1100
-#define RC_LOW_PITCH_CMD	1900
-
-// YAW
-#define RC_HIGH_YAW_CMD		1900
-#define RC_LOW_YAW_CMD		1090
-
-// ALT
-#define RC_HIGH_ALT_CMD		1800
-#define RC_LOW_ALT_CMD		1150
-
+// Radio pulse width limits configuration
+// CH1
+#define RC_CH1_HIGH		1050
+#define RC_CH1_LOW		1940
+// CH2
+#define RC_CH2_HIGH		1090
+#define RC_CH2_LOW		1910
+// CH3
+#define RC_CH3_HIGH		1960
+#define RC_CH3_LOW		1090
+// CH4
+#define RC_CH4_HIGH		1130
+#define RC_CH4_LOW		1800
 
 #define ROUNDING_BASE		10
 

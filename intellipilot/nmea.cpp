@@ -1,18 +1,21 @@
 /*
-TinyGPS - a small GPS library for Arduino providing basic NMEA parsing
-Based on work by and "distance_to" and "course_to" courtesy of Maarten Lamers.
-Suggestion to add satellites(), course_to(), and cardinal(), by Matt Monson.
-Precision improvements suggested by Wayne Holder.
+TinyGPS++ - a small GPS library for Arduino providing universal NMEA parsing
+Based on work by and "distanceBetween" and "courseTo" courtesy of Maarten Lamers.
+Suggestion to add satellites, courseTo(), and cardinal() by Matt Monson.
+Location precision improvements suggested by Wayne Holder.
 Copyright (C) 2008-2013 Mikal Hart
 All rights reserved.
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version.
+
 This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
+
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -20,408 +23,481 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "nmea.h"
 
-#define _GPRMC_TERM   "GPRMC"
-#define _GPGGA_TERM   "GPGGA"
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
 
-nmea::nmea()
-	: _time(GPS_INVALID_TIME)
-	, _date(GPS_INVALID_DATE)
-	, _latitude(GPS_INVALID_ANGLE)
-	, _longitude(GPS_INVALID_ANGLE)
-	, _altitude(GPS_INVALID_ALTITUDE)
-	, _speed(GPS_INVALID_SPEED)
-	, _course(GPS_INVALID_ANGLE)
-	, _hdop(GPS_INVALID_HDOP)
-	, _numsats(GPS_INVALID_SATELLITES)
-	, _last_time_fix(GPS_INVALID_FIX_TIME)
-	, _last_position_fix(GPS_INVALID_FIX_TIME)
-	, _parity(0)
-	, _is_checksum_term(false)
-	, _sentence_type(_GPS_SENTENCE_OTHER)
-	, _term_number(0)
-	, _term_offset(0)
-	, _gps_data_good(false)
-#ifndef _GPS_NO_STATS
-	, _encoded_characters(0)
-	, _good_sentences(0)
-	, _failed_checksum(0)
-#endif
+#define _GPRMCterm   "GPRMC"
+#define _GPGGAterm   "GPGGA"
+
+NMEA::NMEA()
+  :  parity(0)
+  ,  isChecksumTerm(false)
+  ,  curSentenceType(GPS_SENTENCE_OTHER)
+  ,  curTermNumber(0)
+  ,  curTermOffset(0)
+  ,  sentenceHasFix(false)
+  ,  customElts(0)
+  ,  customCandidates(0)
+  ,  encodedCharCount(0)
+  ,  sentencesWithFixCount(0)
+  ,  failedChecksumCount(0)
+  ,  passedChecksumCount(0)
 {
-	_term[0] = '\0';
+  term[0] = '\0';
 }
 
 //
 // public methods
 //
 
-bool nmea::encode(char c)
+bool NMEA::encode(char c)
 {
-	bool valid_sentence = false;
+  ++encodedCharCount;
 
-#ifndef _GPS_NO_STATS
-	++_encoded_characters;
-#endif
-	switch (c)
-	{
-	case ',': // term terminators
-		_parity ^= c;
-	case '\r':
-	case '\n':
-	case '*':
-		if (_term_offset < sizeof(_term))
-		{
-			_term[_term_offset] = 0;
-			valid_sentence = term_complete();
-		}
-		++_term_number;
-		_term_offset = 0;
-		_is_checksum_term = c == '*';
-		return valid_sentence;
+  switch(c)
+  {
+  case ',': // term terminators
+    parity ^= (uint8_t)c;
+  case '\r':
+  case '\n':
+  case '*':
+    {
+      bool isValidSentence = false;
+      if (curTermOffset < sizeof(term))
+      {
+        term[curTermOffset] = 0;
+        isValidSentence = endOfTermHandler();
+      }
+      ++curTermNumber;
+      curTermOffset = 0;
+      isChecksumTerm = c == '*';
+      return isValidSentence;
+    }
+    break;
 
-	case '$': // sentence begin
-		_term_number = _term_offset = 0;
-		_parity = 0;
-		_sentence_type = _GPS_SENTENCE_OTHER;
-		_is_checksum_term = false;
-		_gps_data_good = false;
-		return valid_sentence;
-	}
+  case '$': // sentence begin
+    curTermNumber = curTermOffset = 0;
+    parity = 0;
+    curSentenceType = GPS_SENTENCE_OTHER;
+    isChecksumTerm = false;
+    sentenceHasFix = false;
+    return false;
 
-	// ordinary characters
-	if (_term_offset < sizeof(_term) - 1)
-		_term[_term_offset++] = c;
-	if (!_is_checksum_term)
-		_parity ^= c;
+  default: // ordinary characters
+    if (curTermOffset < sizeof(term) - 1)
+      term[curTermOffset++] = c;
+    if (!isChecksumTerm)
+      parity ^= c;
+    return false;
+  }
 
-	return valid_sentence;
+  return false;
 }
-
-#ifndef _GPS_NO_STATS
-void nmea::stats(unsigned long *chars, unsigned short *sentences, unsigned short *failed_cs)
-{
-	if (chars) *chars = _encoded_characters;
-	if (sentences) *sentences = _good_sentences;
-	if (failed_cs) *failed_cs = _failed_checksum;
-}
-#endif
 
 //
 // internal utilities
 //
-int nmea::from_hex(char a)
+int NMEA::fromHex(char a)
 {
-	if (a >= 'A' && a <= 'F')
-		return a - 'A' + 10;
-	else if (a >= 'a' && a <= 'f')
-		return a - 'a' + 10;
-	else
-		return a - '0';
+  if (a >= 'A' && a <= 'F')
+    return a - 'A' + 10;
+  else if (a >= 'a' && a <= 'f')
+    return a - 'a' + 10;
+  else
+    return a - '0';
 }
 
-unsigned long nmea::parse_decimal()
+// static
+// Parse a (potentially negative) number with up to 2 decimal digits -xxxx.yy
+int32_t NMEA::parseDecimal(const char *term)
 {
-	char *p = _term;
-	bool isneg = *p == '-';
-	if (isneg) ++p;
-	unsigned long ret = 100UL * gpsatol(p);
-	while (gpsisdigit(*p)) ++p;
-	if (*p == '.')
-	{
-		if (gpsisdigit(p[1]))
-		{
-			ret += 10 * (p[1] - '0');
-			if (gpsisdigit(p[2]))
-				ret += p[2] - '0';
-		}
-	}
-	return isneg ? -ret : ret;
+  bool negative = *term == '-';
+  if (negative) ++term;
+  int32_t ret = 100 * (int32_t)atol(term);
+  while (isdigit(*term)) ++term;
+  if (*term == '.' && isdigit(term[1]))
+  {
+    ret += 10 * (term[1] - '0');
+    if (isdigit(term[2]))
+      ret += term[2] - '0';
+  }
+  return negative ? -ret : ret;
 }
 
-// Parse a string in the form ddmm.mmmmmmm...
-unsigned long nmea::parse_degrees()
+// static
+// Parse degrees in that funny NMEA format DDMM.MMMM
+void NMEA::parseDegrees(const char *term, RawDegrees &deg)
 {
-	char *p;
-	unsigned long left_of_decimal = gpsatol(_term);
-	unsigned long hundred1000ths_of_minute = (left_of_decimal % 100UL) * 100000UL;
-	for (p = _term; gpsisdigit(*p); ++p);
-	if (*p == '.')
-	{
-		unsigned long mult = 10000;
-		while (gpsisdigit(*++p))
-		{
-			hundred1000ths_of_minute += mult * (*p - '0');
-			mult /= 10;
-		}
-	}
-	return (left_of_decimal / 100) * 1000000 + (hundred1000ths_of_minute + 3) / 6;
+  uint32_t leftOfDecimal = (uint32_t)atol(term);
+  uint16_t minutes = (uint16_t)(leftOfDecimal % 100);
+  uint32_t multiplier = 10000000UL;
+  uint32_t tenMillionthsOfMinutes = minutes * multiplier;
+
+  deg.deg = (int16_t)(leftOfDecimal / 100);
+
+  while (isdigit(*term))
+    ++term;
+
+  if (*term == '.')
+    while (isdigit(*++term))
+    {
+      multiplier /= 10;
+      tenMillionthsOfMinutes += (*term - '0') * multiplier;
+    }
+
+  deg.billionths = (5 * tenMillionthsOfMinutes + 1) / 3;
+  deg.negative = false;
 }
 
 #define COMBINE(sentence_type, term_number) (((unsigned)(sentence_type) << 5) | term_number)
 
 // Processes a just-completed term
 // Returns true if new sentence has just passed checksum test and is validated
-bool nmea::term_complete()
+bool NMEA::endOfTermHandler()
 {
-	if (_is_checksum_term)
-	{
-		byte checksum = 16 * from_hex(_term[0]) + from_hex(_term[1]);
-		if (checksum == _parity)
-		{
-			if (_gps_data_good)
-			{
-#ifndef _GPS_NO_STATS
-				++_good_sentences;
-#endif
-				_last_time_fix = _new_time_fix;
-				_last_position_fix = _new_position_fix;
+  // If it's the checksum term, and the checksum checks out, commit
+  if (isChecksumTerm)
+  {
+    byte checksum = 16 * fromHex(term[0]) + fromHex(term[1]);
+    if (checksum == parity)
+    {
+      passedChecksumCount++;
+      if (sentenceHasFix)
+        ++sentencesWithFixCount;
 
-				switch (_sentence_type)
-				{
-				case _GPS_SENTENCE_GPRMC:
-					_time = _new_time;
-					_date = _new_date;
-					_latitude = _new_latitude;
-					_longitude = _new_longitude;
-					_speed = _new_speed;
-					_course = _new_course;
-					break;
-				case _GPS_SENTENCE_GPGGA:
-					_altitude = _new_altitude;
-					_time = _new_time;
-					_latitude = _new_latitude;
-					_longitude = _new_longitude;
-					_numsats = _new_numsats;
-					_hdop = _new_hdop;
-					break;
-				}
+      switch(curSentenceType)
+      {
+      case GPS_SENTENCE_GPRMC:
+        date.commit();
+        time.commit();
+        if (sentenceHasFix)
+        {
+           location.commit();
+           speed.commit();
+           course.commit();
+        }
+        break;
+      case GPS_SENTENCE_GPGGA:
+        time.commit();
+        if (sentenceHasFix)
+        {
+          location.commit();
+          altitude.commit();
+        }
+        satellites.commit();
+        hdop.commit();
+        break;
+      }
 
-				return true;
-			}
-		}
+      // Commit all custom listeners of this sentence type
+      for (NMEACustom *p = customCandidates; p != NULL && strcmp(p->sentenceName, customCandidates->sentenceName) == 0; p = p->next)
+         p->commit();
+      return true;
+    }
 
-#ifndef _GPS_NO_STATS
-		else
-			++_failed_checksum;
-#endif
-		return false;
-	}
+    else
+    {
+      ++failedChecksumCount;
+    }
 
-	// the first term determines the sentence type
-	if (_term_number == 0)
-	{
-		if (!gpsstrcmp(_term, _GPRMC_TERM))
-			_sentence_type = _GPS_SENTENCE_GPRMC;
-		else if (!gpsstrcmp(_term, _GPGGA_TERM))
-			_sentence_type = _GPS_SENTENCE_GPGGA;
-		else
-			_sentence_type = _GPS_SENTENCE_OTHER;
-		return false;
-	}
+    return false;
+  }
 
-	if (_sentence_type != _GPS_SENTENCE_OTHER && _term[0])
-		switch (COMBINE(_sentence_type, _term_number))
-		{
-		case COMBINE(_GPS_SENTENCE_GPRMC, 1): // Time in both sentences
-		case COMBINE(_GPS_SENTENCE_GPGGA, 1):
-			_new_time = parse_decimal();
-			_new_time_fix = millis();
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 2): // GPRMC validity
-			_gps_data_good = _term[0] == 'A';
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 3): // Latitude
-		case COMBINE(_GPS_SENTENCE_GPGGA, 2):
-			_new_latitude = parse_degrees();
-			_new_position_fix = millis();
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 4): // N/S
-		case COMBINE(_GPS_SENTENCE_GPGGA, 3):
-			if (_term[0] == 'S')
-				_new_latitude = -_new_latitude;
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 5): // Longitude
-		case COMBINE(_GPS_SENTENCE_GPGGA, 4):
-			_new_longitude = parse_degrees();
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 6): // E/W
-		case COMBINE(_GPS_SENTENCE_GPGGA, 5):
-			if (_term[0] == 'W')
-				_new_longitude = -_new_longitude;
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 7): // Speed (GPRMC)
-			_new_speed = parse_decimal();
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 8): // Course (GPRMC)
-			_new_course = parse_decimal();
-			break;
-		case COMBINE(_GPS_SENTENCE_GPRMC, 9): // Date (GPRMC)
-			_new_date = gpsatol(_term);
-			break;
-		case COMBINE(_GPS_SENTENCE_GPGGA, 6): // Fix data (GPGGA)
-			_gps_data_good = _term[0] > '0';
-			break;
-		case COMBINE(_GPS_SENTENCE_GPGGA, 7): // Satellites used (GPGGA)
-			_new_numsats = (unsigned char)atoi(_term);
-			break;
-		case COMBINE(_GPS_SENTENCE_GPGGA, 8): // HDOP
-			_new_hdop = parse_decimal();
-			break;
-		case COMBINE(_GPS_SENTENCE_GPGGA, 9): // Altitude (GPGGA)
-			_new_altitude = parse_decimal();
-			break;
-		}
+  // the first term determines the sentence type
+  if (curTermNumber == 0)
+  {
+    if (!strcmp(term, _GPRMCterm))
+      curSentenceType = GPS_SENTENCE_GPRMC;
+    else if (!strcmp(term, _GPGGAterm))
+      curSentenceType = GPS_SENTENCE_GPGGA;
+    else
+      curSentenceType = GPS_SENTENCE_OTHER;
 
-	return false;
-}
+    // Any custom candidates of this sentence type?
+    for (customCandidates = customElts; customCandidates != NULL && strcmp(customCandidates->sentenceName, term) < 0; customCandidates = customCandidates->next);
+    if (customCandidates != NULL && strcmp(customCandidates->sentenceName, term) > 0)
+       customCandidates = NULL;
 
-long nmea::gpsatol(const char *str)
-{
-	long ret = 0;
-	while (gpsisdigit(*str))
-		ret = 10 * ret + *str++ - '0';
-	return ret;
-}
+    return false;
+  }
 
-int nmea::gpsstrcmp(const char *str1, const char *str2)
-{
-	while (*str1 && *str1 == *str2)
-		++str1, ++str2;
-	return *str1;
+  if (curSentenceType != GPS_SENTENCE_OTHER && term[0])
+    switch(COMBINE(curSentenceType, curTermNumber))
+  {
+    case COMBINE(GPS_SENTENCE_GPRMC, 1): // Time in both sentences
+    case COMBINE(GPS_SENTENCE_GPGGA, 1):
+      time.setTime(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 2): // GPRMC validity
+      sentenceHasFix = term[0] == 'A';
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 3): // Latitude
+    case COMBINE(GPS_SENTENCE_GPGGA, 2):
+      location.setLatitude(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 4): // N/S
+    case COMBINE(GPS_SENTENCE_GPGGA, 3):
+      location.rawNewLatData.negative = term[0] == 'S';
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 5): // Longitude
+    case COMBINE(GPS_SENTENCE_GPGGA, 4):
+      location.setLongitude(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 6): // E/W
+    case COMBINE(GPS_SENTENCE_GPGGA, 5):
+      location.rawNewLngData.negative = term[0] == 'W';
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 7): // Speed (GPRMC)
+      speed.set(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 8): // Course (GPRMC)
+      course.set(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPRMC, 9): // Date (GPRMC)
+      date.setDate(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPGGA, 6): // Fix data (GPGGA)
+      sentenceHasFix = term[0] > '0';
+      break;
+    case COMBINE(GPS_SENTENCE_GPGGA, 7): // Satellites used (GPGGA)
+      satellites.set(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPGGA, 8): // HDOP
+      hdop.set(term);
+      break;
+    case COMBINE(GPS_SENTENCE_GPGGA, 9): // Altitude (GPGGA)
+      altitude.set(term);
+      break;
+  }
+
+  // Set custom values as needed
+  for (NMEACustom *p = customCandidates; p != NULL && strcmp(p->sentenceName, customCandidates->sentenceName) == 0 && p->termNumber <= curTermNumber; p = p->next)
+    if (p->termNumber == curTermNumber)
+         p->set(term);
+
+  return false;
 }
 
 /* static */
-float nmea::distance_between(float lat1, float long1, float lat2, float long2)
+double NMEA::distanceBetween(double lat1, double long1, double lat2, double long2)
 {
-	// returns distance in meters between two positions, both specified 
-	// as signed decimal-degrees latitude and longitude. Uses great-circle 
-	// distance computation for hypothetical sphere of radius 6372795 meters.
-	// Because Earth is no exact sphere, rounding errors may be up to 0.5%.
-	// Courtesy of Maarten Lamers
-	float delta = radians(long1 - long2);
-	float sdlong = sin(delta);
-	float cdlong = cos(delta);
-	lat1 = radians(lat1);
-	lat2 = radians(lat2);
-	float slat1 = sin(lat1);
-	float clat1 = cos(lat1);
-	float slat2 = sin(lat2);
-	float clat2 = cos(lat2);
-	delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
-	delta = sq(delta);
-	delta += sq(clat2 * sdlong);
-	delta = sqrt(delta);
-	float denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
-	delta = atan2(delta, denom);
-	return delta * 6372795;
+  // returns distance in meters between two positions, both specified
+  // as signed decimal-degrees latitude and longitude. Uses great-circle
+  // distance computation for hypothetical sphere of radius 6372795 meters.
+  // Because Earth is no exact sphere, rounding errors may be up to 0.5%.
+  // Courtesy of Maarten Lamers
+  double delta = radians(long1-long2);
+  double sdlong = sin(delta);
+  double cdlong = cos(delta);
+  lat1 = radians(lat1);
+  lat2 = radians(lat2);
+  double slat1 = sin(lat1);
+  double clat1 = cos(lat1);
+  double slat2 = sin(lat2);
+  double clat2 = cos(lat2);
+  delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
+  delta = sq(delta);
+  delta += sq(clat2 * sdlong);
+  delta = sqrt(delta);
+  double denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
+  delta = atan2(delta, denom);
+  return delta * 6372795;
 }
 
-float nmea::course_to(float lat1, float long1, float lat2, float long2)
+double NMEA::courseTo(double lat1, double long1, double lat2, double long2)
 {
-	// returns course in degrees (North=0, West=270) from position 1 to position 2,
-	// both specified as signed decimal-degrees latitude and longitude.
-	// Because Earth is no exact sphere, calculated course may be off by a tiny fraction.
-	// Courtesy of Maarten Lamers
-	float dlon = radians(long2 - long1);
-	lat1 = radians(lat1);
-	lat2 = radians(lat2);
-	float a1 = sin(dlon) * cos(lat2);
-	float a2 = sin(lat1) * cos(lat2) * cos(dlon);
-	a2 = cos(lat1) * sin(lat2) - a2;
-	a2 = atan2(a1, a2);
-	if (a2 < 0.0)
-	{
-		a2 += TWO_PI;
-	}
-	return degrees(a2);
+  // returns course in degrees (North=0, West=270) from position 1 to position 2,
+  // both specified as signed decimal-degrees latitude and longitude.
+  // Because Earth is no exact sphere, calculated course may be off by a tiny fraction.
+  // Courtesy of Maarten Lamers
+  double dlon = radians(long2-long1);
+  lat1 = radians(lat1);
+  lat2 = radians(lat2);
+  double a1 = sin(dlon) * cos(lat2);
+  double a2 = sin(lat1) * cos(lat2) * cos(dlon);
+  a2 = cos(lat1) * sin(lat2) - a2;
+  a2 = atan2(a1, a2);
+  if (a2 < 0.0)
+  {
+    a2 += TWO_PI;
+  }
+  return degrees(a2);
 }
 
-const char *nmea::cardinal(float course)
+const char *NMEA::cardinal(double course)
 {
-	static const char* directions[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
-
-	int direction = (int)((course + 11.25f) / 22.5f);
-	return directions[direction % 16];
+  static const char* directions[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
+  int direction = (int)((course + 11.25f) / 22.5f);
+  return directions[direction % 16];
 }
 
-// lat/long in MILLIONTHs of a degree and age of fix in milliseconds
-// (note: versions 12 and earlier gave this value in 100,000ths of a degree.
-void nmea::get_position(long *latitude, long *longitude, unsigned long *fix_age)
+void NMEALocation::commit()
 {
-	if (latitude) *latitude = _latitude;
-	if (longitude) *longitude = _longitude;
-	if (fix_age) *fix_age = _last_position_fix == GPS_INVALID_FIX_TIME ?
-		GPS_INVALID_AGE : millis() - _last_position_fix;
+   rawLatData = rawNewLatData;
+   rawLngData = rawNewLngData;
+   lastCommitTime = millis();
+   valid = updated = true;
 }
 
-// date as ddmmyy, time as hhmmsscc, and age in milliseconds
-void nmea::get_datetime(unsigned long *date, unsigned long *time, unsigned long *age)
+void 
+
+Location::setLatitude(const char *term)
 {
-	if (date) *date = _date;
-	if (time) *time = _time;
-	if (age) *age = _last_time_fix == GPS_INVALID_FIX_TIME ?
-		GPS_INVALID_AGE : millis() - _last_time_fix;
+   NMEA::parseDegrees(term, rawNewLatData);
 }
 
-void nmea::f_get_position(float *latitude, float *longitude, unsigned long *fix_age)
+void NMEALocation::setLongitude(const char *term)
 {
-	long lat, lon;
-	get_position(&lat, &lon, fix_age);
-	*latitude = lat == GPS_INVALID_ANGLE ? GPS_INVALID_F_ANGLE : (lat / 1000000.0);
-	*longitude = lat == GPS_INVALID_ANGLE ? GPS_INVALID_F_ANGLE : (lon / 1000000.0);
+   NMEA::parseDegrees(term, rawNewLngData);
 }
 
-void nmea::crack_datetime(int *year, byte *month, byte *day,
-	byte *hour, byte *minute, byte *second, byte *hundredths, unsigned long *age)
+double NMEALocation::lat()
 {
-	unsigned long date, time;
-	get_datetime(&date, &time, age);
-	if (year)
-	{
-		*year = date % 100;
-		*year += *year > 80 ? 1900 : 2000;
-	}
-	if (month) *month = (date / 100) % 100;
-	if (day) *day = date / 10000;
-	if (hour) *hour = time / 1000000;
-	if (minute) *minute = (time / 10000) % 100;
-	if (second) *second = (time / 100) % 100;
-	if (hundredths) *hundredths = time % 100;
+   updated = false;
+   double ret = rawLatData.deg + rawLatData.billionths / 1000000000.0;
+   return rawLatData.negative ? -ret : ret;
 }
 
-float nmea::f_altitude()
+double NMEALocation::lng()
 {
-	return _altitude == GPS_INVALID_ALTITUDE ? GPS_INVALID_F_ALTITUDE : _altitude / 100.0;
+   updated = false;
+   double ret = rawLngData.deg + rawLngData.billionths / 1000000000.0;
+   return rawLngData.negative ? -ret : ret;
 }
 
-float nmea::f_course()
+void NMEADate::commit()
 {
-	return _course == GPS_INVALID_ANGLE ? GPS_INVALID_F_ANGLE : _course / 100.0;
+   date = newDate;
+   lastCommitTime = millis();
+   valid = updated = true;
 }
 
-float nmea::f_speed_knots()
+void NMEATime::commit()
 {
-	return _speed == GPS_INVALID_SPEED ? GPS_INVALID_F_SPEED : _speed / 100.0;
+   time = newTime;
+   lastCommitTime = millis();
+   valid = updated = true;
 }
 
-float nmea::f_speed_mph()
+void NMEATime::setTime(const char *term)
 {
-	float sk = f_speed_knots();
-	return sk == GPS_INVALID_F_SPEED ? GPS_INVALID_F_SPEED : _GPS_MPH_PER_KNOT * sk;
+   newTime = (uint32_t)NMEA::parseDecimal(term);
 }
 
-float nmea::f_speed_mps()
+void NMEADate::setDate(const char *term)
 {
-	float sk = f_speed_knots();
-	return sk == GPS_INVALID_F_SPEED ? GPS_INVALID_F_SPEED : _GPS_MPS_PER_KNOT * sk;
+   newDate = atol(term);
 }
 
-float nmea::f_speed_kmph()
+uint16_t NMEADate::year()
 {
-	float sk = f_speed_knots();
-	return sk == GPS_INVALID_F_SPEED ? GPS_INVALID_F_SPEED : _GPS_KMPH_PER_KNOT * sk;
+   updated = false;
+   uint16_t year = date % 100;
+   return year + 2000;
 }
 
+uint8_t NMEADate::month()
+{
+   updated = false;
+   return (date / 100) % 100;
+}
 
-const float nmea::GPS_INVALID_F_ANGLE = 1000.0;
-const float nmea::GPS_INVALID_F_ALTITUDE = 1000000.0;
-const float nmea::GPS_INVALID_F_SPEED = -1.0;
+uint8_t NMEADate::day()
+{
+   updated = false;
+   return date / 10000;
+}
+
+uint8_t NMEATime::hour()
+{
+   updated = false;
+   return time / 1000000;
+}
+
+uint8_t NMEATime::minute()
+{
+   updated = false;
+   return (time / 10000) % 100;
+}
+
+uint8_t NMEATime::second()
+{
+   updated = false;
+   return (time / 100) % 100;
+}
+
+uint8_t NMEATime::centisecond()
+{
+   updated = false;
+   return time % 100;
+}
+
+void NMEADecimal::commit()
+{
+   val = newval;
+   lastCommitTime = millis();
+   valid = updated = true;
+}
+
+void NMEADecimal::set(const char *term)
+{
+   newval = NMEA::parseDecimal(term);
+}
+
+void NMEAInteger::commit()
+{
+   val = newval;
+   lastCommitTime = millis();
+   valid = updated = true;
+}
+
+void NMEAInteger::set(const char *term)
+{
+   newval = atol(term);
+}
+
+NMEACustom::NMEACustom(NMEA &gps, const char *_sentenceName, int _termNumber)
+{
+   begin(gps, _sentenceName, _termNumber);
+}
+
+void NMEACustom::begin(NMEA &gps, const char *_sentenceName, int _termNumber)
+{
+   lastCommitTime = 0;
+   updated = valid = false;
+   sentenceName = _sentenceName;
+   termNumber = _termNumber;
+   memset(stagingBuffer, '\0', sizeof(stagingBuffer));
+   memset(buffer, '\0', sizeof(buffer));
+
+   // Insert this item into the GPS tree
+   gps.insertCustom(this, _sentenceName, _termNumber);
+}
+
+void NMEACustom::commit()
+{
+   strcpy(this->buffer, this->stagingBuffer);
+   lastCommitTime = millis();
+   valid = updated = true;
+}
+
+void NMEACustom::set(const char *term)
+{
+   strncpy(this->stagingBuffer, term, sizeof(this->stagingBuffer));
+}
+
+void NMEA::insertCustom(NMEACustom *pElt, const char *sentenceName, int termNumber)
+{
+   NMEACustom **ppelt;
+
+   for (ppelt = &this->customElts; *ppelt != NULL; ppelt = &(*ppelt)->next)
+   {
+      int cmp = strcmp(sentenceName, (*ppelt)->sentenceName);
+      if (cmp < 0 || (cmp == 0 && termNumber < (*ppelt)->termNumber))
+         break;
+   }
+
+   pElt->next = *ppelt;
+   *ppelt = pElt;
+}

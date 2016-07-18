@@ -52,9 +52,6 @@ void sys::config() {
 	Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
 
     Serial.println("System configuration start.");
-
-	pinMode(12, OUTPUT);
-	digitalWrite(12, LOW);
     
     sys::configAhrs();
     //sys::configComp();

@@ -60,6 +60,15 @@ void tasks::getEulerAnglesGyroThread( void* arg ){
              *  Waiting for data ready
              */
         }
+
+		/*
+		Serial.print(angle[0]);
+		Serial.print("\t");
+		Serial.print(angle[1]);
+		Serial.print("\t");
+		Serial.println(angle[2]);
+		*/
+
     }
 }
 
@@ -132,9 +141,7 @@ void tasks::getCommandsThread( void* arg ){
     for (;;) {
 
 		status = _radio.getCommands(cmd);
-		if ((status - statusLast) != 0) {
-			tasks::procCommands(status);
-		}
+		if ((status - statusLast) != 0) tasks::procCommands(status);
 		statusLast = status;
     }
 }
@@ -157,6 +164,12 @@ void tasks::commGcsThread(void* arg) {
 		_attitude_len = mavlink_msg_to_send_buffer(_attitude_buf, &_attitude_msg);
 		_gps_pos_len = mavlink_msg_to_send_buffer(_gps_pos_buf, &_gps_pos_msg);
 
+		// Wire
+		//Serial.write(_heartbeat_buf, _heartbeat_len);
+		//Serial.write(_attitude_buf, _attitude_len);
+		//Serial.write(_gps_pos_buf, _gps_pos_len);
+
+		// Wireless
 		Serial3.write(_heartbeat_buf, _heartbeat_len);
 		Serial3.write(_attitude_buf, _attitude_len);
 		Serial3.write(_gps_pos_buf, _gps_pos_len);
@@ -173,15 +186,29 @@ void tasks::procCommands(int event) {
 
 		switch (event)
 		{
-		case STATE_ARMED:
+		case STATE_PREFLIGHT_ARMED:
+			mavMode = MAV_MODE_PREFLIGHT;
+			break;
+
+		case STATE_PREFLIGHT_DISARMED:
+			mavMode = MAV_MODE_PREFLIGHT;
+			vTaskSuspend(manualControlHandle);
+			_motors.stop();
+			break;
+
+		case STATE_MANUAL_ARMED:
 			mavMode = MAV_MODE_MANUAL_ARMED;
-			digitalWrite(12, HIGH);
 			vTaskResume(manualControlHandle);
 			break;
 
-		case STATE_DISARMED:
-			mavMode = MAV_MODE_MANUAL_DISARMED;
-			digitalWrite(12, LOW);
+		case STATE_HOLD_ARMED:
+			mavMode = MAV_MODE_GUIDED_ARMED;
+			vTaskSuspend(manualControlHandle);
+			_motors.stop();
+			break;
+
+		case STATE_AUTO_ARMED:
+			mavMode = MAV_MODE_AUTO_ARMED;
 			vTaskSuspend(manualControlHandle);
 			_motors.stop();
 			break;
@@ -196,12 +223,23 @@ void tasks::procCommands(int event) {
 			Flight Control
 ######################################*/
 
+void fcInit() {
+
+	rollAngleError = 0;
+	rollRateError = 0;
+	pitchAngleError = 0;
+	pitchRateError = 0;
+	yawRateError = 0;
+}
+
 void tasks::idle() {
 		
 		_motors.stop();
 }
 
 void tasks::manualControlThread( void* arg ) {
+
+	fcInit();
 
 	pid manualRollAngleReg(&angle[0], &rollAngleError, &manualCmd[0], ROLL_OUTER_P_GAIN, 0, 0, DIRECT);
 	pid manualRollRateReg(&gyro[0], &rollRateError, &rollAngleError,
@@ -217,7 +255,7 @@ void tasks::manualControlThread( void* arg ) {
 		PITCH_INNER_D_GAIN,
 		REVERSE);
 
-	pid manualYawRateReg(&angle[2], &yawRateError, &manualCmd[2],
+	pid manualYawRateReg(&gyro[2], &yawRateError, &manualCmd[2],
 		YAW_P_GAIN,
 		YAW_I_GAIN,
 		YAW_D_GAIN,
@@ -234,7 +272,7 @@ void tasks::manualControlThread( void* arg ) {
 	manualPitchRateReg.SetOutputLimits(-700, 700);
 
 	manualYawRateReg.SetMode(AUTOMATIC);
-	manualYawRateReg.SetOutputLimits(-700, 700);
+	manualYawRateReg.SetOutputLimits(-300, 300);
 
 	for (;;) {
 
@@ -242,6 +280,16 @@ void tasks::manualControlThread( void* arg ) {
 		manualCmd[1] = map(cmd[1], RC_CH2_LOW, RC_CH2_HIGH, PITCH_ANG_MIN, PITCH_ANG_MAX);
 		manualCmd[2] = map(cmd[2], RC_CH1_LOW, RC_CH1_HIGH, YAW_SPEED_MIN, YAW_SPEED_MAX);
 		manualCmd[3] = map(cmd[3], RC_CH4_LOW, RC_CH4_HIGH, MOTOR_PULSE_MIN, MOTOR_PULSE_MAX);
+
+		/*
+		Serial.print(manualCmd[0]);
+		Serial.print("\t");
+		Serial.print(manualCmd[1]);
+		Serial.print("\t");
+		Serial.print(manualCmd[2]);
+		Serial.print("\t");
+		Serial.println(manualCmd[3]);
+		*/
 
 		manualRollAngleReg.Compute();
 		manualRollRateReg.Compute();
@@ -251,10 +299,10 @@ void tasks::manualControlThread( void* arg ) {
 
 		manualYawRateReg.Compute();
 
-		force1 = (-pitchRateError + rollRateError) * 0.5 + yawRateError + manualCmd[3];
-		force2 = (-pitchRateError - rollRateError) * 0.5 - yawRateError + manualCmd[3];
-		force3 = (pitchRateError - rollRateError) * 0.5 + yawRateError + manualCmd[3];
-		force4 = (pitchRateError + rollRateError) * 0.5 - yawRateError + manualCmd[3];
+		force1 = (-pitchRateError + rollRateError) * 0.5 - yawRateError + manualCmd[3];
+		force2 = (-pitchRateError - rollRateError) * 0.5 + yawRateError + manualCmd[3];
+		force3 = (pitchRateError - rollRateError) * 0.5 - yawRateError + manualCmd[3];
+		force4 = (pitchRateError + rollRateError) * 0.5 + yawRateError + manualCmd[3];
 
 		if (manualCmd[3] <= MOTOR_PULSE_TAKEOFF) _motors.stop();
 		else _motors.rotate(force1, force2, force3, force4);

@@ -19,6 +19,7 @@
 #define RC_CH2	31
 #define RC_CH3	32
 #define RC_CH4	33
+#define RC_CH5	35
 
 // Radio pulse width limits configuration
 // CH1
@@ -33,6 +34,10 @@
 // CH4
 #define RC_CH4_HIGH		1130
 #define RC_CH4_LOW		1800
+// CH5
+#define RC_CH5_HIGH		1090
+#define RC_CH5_MID		1510
+#define RC_CH5_LOW		1930
 
 #define ROUNDING_BASE		10
 

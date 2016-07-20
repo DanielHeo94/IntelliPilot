@@ -10,42 +10,44 @@
 #define vars_h
 
 // AHRS vars
-double angle[3] = { 0, };
-double gyro[3] = { 0, };
+double angle[3];
+double gyro[3];
 
 // LiDAR vars
-int lidarAlt = 0;
-int lidarVel = 0;
+int lidarAlt;
+int lidarVel;
 
 // Barometer vars
-float temparature = 0;
-float pressure = 0;
-float baroAlt = 0;
-float sealevelpressure = 0;
+float temparature;
+float pressure;
+float baroAlt;
+float sealevelpressure;
 
 // GPS vars
-float gpsAlt = 0;
-float lat, lng, speed = 0;
+double gpsAlt;
+double lat, lng, speed;
 
 // $GPGSA sentence
-char mode;
-int numsats = 0;
-int pdop, vdop, hdop = 0;
-int fixtype, fixquality = 0;
+const char *mode;
+int numsats;
+const char *pdop, *vdop;
+int32_t hdop;
+const char *fixtype, *fixquality;
 
 // $GPGSV sentence
 
-int nummessages, messagenum, numsatsinview = 0;
-int prn, snr = 0;
-int elevation, azimuth = 0;
+const char *nummessages, *messagenum;
+const char *numsatsinview;
+const char *prn, *snr;
+const char *elevation, *azimuth;
 
 // $GPGSV sentence
-float cog;
-uint64_t timestamp;
+double cog;
+const char *timestamp;
 
 
-unsigned long _age, date, chars = 0;
-unsigned short sentences, failed = 0;
+unsigned long _age, date, chars;
+unsigned short sentences, failed;
 
 int year;
 byte month, day, hour, minute, second, hundredths;
@@ -55,20 +57,25 @@ unsigned long __age;
 float heading, headingDegrees, declinationAngle = 0;
 
 // PID Computation vars
-double rollAngleError, rollRateError = 0;
-double pitchAngleError, pitchRateError = 0;
-double yawRateError = 0;
+double rollAngleError, rollRateError;
+double pitchAngleError, pitchRateError;
+double yawRateError;
 
 // Motors vars
-int force1, force2, force3, force4 = 0;
+int force1, force2, force3, force4;
 
 // Remote Control vars
-double cmd[4] = { 0, }; // Pulses signal from the radio.
-double manualCmd[4] = { 0, }; // Attitude Commands into manual control.
+double cmd[4]; // Pulses signal from the radio.
+double manualCmd[4]; // Attitude Commands into manual control.
 
 // Rotor status
-int status = 0;
-int statusLast = 0; // detect change of status
+int status;
+int statusLast; // detect change of status
+
+const double MAX_BATTERY_VOLTAGE = 3.1; // Voltages
+double batteryVoltage;					// Voltages
+int batteryPercent;						// Min : 0%, Max : 100%
+int batteryTimeRemain;					// Minutes
 
 // Mavlink
 int mavMode = 0;

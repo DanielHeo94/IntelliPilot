@@ -23,6 +23,7 @@ private:
     
     // Sensors & Actuator
     static void configAhrs();
+	static void configImu();
     static void configLidar();
     static void configBaro();
     static void configComp();

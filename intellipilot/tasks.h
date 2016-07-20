@@ -21,7 +21,8 @@ public:
     tasks();
     
     // Sensors & Actuator
-    static void getEulerAnglesGyroThread(void* arg);    // Get roll, pitch, yaw, gyro.
+    static void getAttitudeThread(void* arg);			// Get roll, pitch, yaw.
+	static void getGyroThread(void* arg);				// Get 3-axis gyro.
     static void getAccAltThread(void* arg);             // Get highly accurate altitude.
     static void getBaroThread(void* arg);               // Get temparature, pressure, altitude.
     static void getCompThread(void* arg);               // Get heading.
@@ -35,8 +36,6 @@ public:
     static void procCommands(int event);
     
     // Flight Control
-
-	
 	static void idle(void* arg);
 
     static void takeoffSequenceThread(void* arg);   // Automatic Take-off.
@@ -46,7 +45,10 @@ public:
     static void returnSequenceThread(void* arg);    // Return to home.
     
     // LED indicator
-    static void ledIndicatingThread(void* arg);     // Turn on or off as system state changes
+    static void ledIndicateThread(void* arg);     // Turn on or off as system state changes
+
+	// Battery checker
+	static void batteryCheckThread(void* arg);
     
 private:
 };

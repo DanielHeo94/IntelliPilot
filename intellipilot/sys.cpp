@@ -10,6 +10,7 @@
 #include "scheduler.h"
 
 #include "ahrs.h"
+#include "imu.h";
 #include "baro.h"
 #include "lidar.h"
 #include "comp.h"
@@ -19,7 +20,10 @@
 
 #include "motors.h"
 
+#include "led.h"
+
 extern ahrs _ahrs;
+extern imu _imu;
 extern baro _barometer;
 extern lidar _lidar;
 extern comp _compass;
@@ -28,6 +32,8 @@ extern gps _gps;
 extern radio _radio;
 
 extern motors _motors;
+
+extern led _led;
 
 scheduler _scheduler;
 
@@ -38,7 +44,9 @@ void sys::config() {
     Serial.begin(115200);
 	Serial.flush();
 
-	Serial3.begin(57600);
+	Serial3.begin(9600);
+
+	_led.begin();
 
 	Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
 	Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
@@ -54,6 +62,7 @@ void sys::config() {
     Serial.println("System configuration start.");
     
     sys::configAhrs();
+	sys::configImu();
     //sys::configComp();
     sys::configLidar();
     //sys::configBaro();
@@ -80,6 +89,15 @@ void sys::configAhrs() {
     _ahrs.stabilize();
     
     Serial.println("\t\t\t Success.");
+}
+
+void sys::configImu() {
+
+	Serial.println("configuring IMU...");
+
+	_imu.setup();
+
+	Serial.println("\t\t\t Succes.");
 }
 
 void sys::configComp() {

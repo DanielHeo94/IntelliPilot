@@ -340,9 +340,7 @@ void nmeaLocation::commit()
    valid = updated = true;
 }
 
-void 
-
-Location::setLatitude(const char *term)
+void nmeaLocation::setLatitude(const char *term)
 {
    nmea::parseDegrees(term, rawNewLatData);
 }

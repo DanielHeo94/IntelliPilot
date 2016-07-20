@@ -19,9 +19,9 @@ pid::pid(double* Input, double* Output, double* Setpoint,
     mySetpoint = Setpoint;
 	inAuto = false;
 	
-	pid::SetOutputLimits(0, 255);				//default output limit corresponds to 
+	//pid::SetOutputLimits(0, 255);				//default output limit corresponds to 
 												//the arduino pwm limits
-    SampleTime = 3;							//default Controller Sample Time is 0.01 seconds
+    SampleTime = 3;							//default Controller Sample Time is 0.003 seconds
 
     pid::SetControllerDirection(ControllerDirection);
     pid::SetTunings(Kp, Ki, Kd);		
@@ -40,7 +40,15 @@ bool pid::Compute()
 
       /*Compute all the working error variables*/
 	  double input = *myInput;
-      double error = *mySetpoint - input;
+
+	  double error;
+	  if (controllerDirection == REVERSE) {
+		  error = *mySetpoint + input;
+	  }
+	  else {
+		  error = *mySetpoint - input;
+	  }
+
       ITerm+= (ki * error);
       if(ITerm > outMax) ITerm= outMax;
       else if(ITerm < outMin) ITerm= outMin;
@@ -74,13 +82,15 @@ void pid::SetTunings(double Kp, double Ki, double Kd)
    kp = Kp;
    ki = Ki * SampleTimeInSec;
    kd = Kd / SampleTimeInSec;
- 
-  if(controllerDirection ==REVERSE)
+	
+   /*
+  if(controllerDirection == REVERSE)
    {
       kp = (0 - kp);
       ki = (0 - ki);
       kd = (0 - kd);
    }
+   */
 }
   
 /* SetSampleTime(...) *********************************************************
@@ -157,12 +167,14 @@ void pid::Initialize()
  ******************************************************************************/
 void pid::SetControllerDirection(int Direction)
 {
+	/*
    if(inAuto && Direction !=controllerDirection)
    {
 	  kp = (0 - kp);
       ki = (0 - ki);
       kd = (0 - kd);
-   }   
+   } 
+   */
    controllerDirection = Direction;
 }
 

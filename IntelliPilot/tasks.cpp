@@ -92,6 +92,12 @@ void tasks::getGyroThread(void* arg) {
 	for (;;) {
 		_imu.getGyro(gyro);
 
+		Serial.print(gyro[0]);
+		Serial.print("\t");
+		Serial.print(gyro[1]);
+		Serial.print("\t");
+		Serial.println(gyro[2]);
+
 		vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
 	}
 }
@@ -224,11 +230,11 @@ void tasks::commGcsThread(void* arg) {
 		_bat_stat_len = mavlink_msg_to_send_buffer(_bat_stat_buf, &_bat_stat_msg);
 
 		// Wire
-		Serial.write(_heartbeat_buf, _heartbeat_len);
-		Serial.write(_attitude_buf, _attitude_len);
-		Serial.write(_gps_pos_buf, _gps_pos_len);
+		//Serial.write(_heartbeat_buf, _heartbeat_len);
+		//Serial.write(_attitude_buf, _attitude_len);
+		//Serial.write(_gps_pos_buf, _gps_pos_len);
 		//Serial.write(_gps_stat_buf, _gps_stat_len);
-		Serial.write(_bat_stat_buf, _bat_stat_len);
+		//Serial.write(_bat_stat_buf, _bat_stat_len);
 
 		// Wireless
 		Serial3.write(_heartbeat_buf, _heartbeat_len);

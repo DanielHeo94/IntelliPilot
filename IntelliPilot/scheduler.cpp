@@ -31,7 +31,7 @@ void scheduler::taskCreate() {
 	portBASE_TYPE b1;
     
     Serial.print("\t\tgetAttitudeThread...");		 sa1 = xTaskCreate(_tasks.getAttitudeThread, NULL, configMINIMAL_STACK_SIZE + 300, NULL, 1, NULL);	   Serial.println("\t\tSuccess.");
-	//Serial.print("\t\tgetGyroThread...");			 sa2 = xTaskCreate(_tasks.getGyroThread, NULL, configMINIMAL_STACK_SIZE + 300, NULL, 1, NULL);		   Serial.println("\t\tSuccess.");
+	Serial.print("\t\tgetGyroThread...");			 sa2 = xTaskCreate(_tasks.getGyroThread, NULL, configMINIMAL_STACK_SIZE + 300, NULL, 1, NULL);		   Serial.println("\t\tSuccess.");
 	//Serial.print("\t\tgetAccAltThread...");        sa3 = xTaskCreate(_tasks.getAccAltThread, NULL, configMINIMAL_STACK_SIZE + 200, NULL, 1, NULL);	   Serial.println("\t\t\tSuccess.");
     //Serial.print("\t\tgetBaroThread...");          sa4 = xTaskCreate(_tasks.getBaroThread, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);               Serial.println("\t\t\tSuccess.");
     //Serial.print("\t\tgetCompThread...");          sa5 = xTaskCreate(_tasks.getCompThread, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);               Serial.println("\t\t\tSuccess.");

@@ -41,10 +41,11 @@ AR:=$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-ar
 #like olikraus does in his makefile.
 DEFINES:=-Dprintf=iprintf -DF_CPU=84000000L -DARDUINO=152 -D__SAM3X8E__ -DUSB_PID=0x003e -DUSB_VID=0x2341 -DUSBCON
 
-INCLUDES:=-I$(ADIR)/$(LIBSAM) -I$(ADIR)/$(CMSIS)/CMSIS/Include/ -I$(ADIR)/$(CMSIS)/Device/ATMEL/ -I$(ADIR)/$(SAM)/cores/arduino -I$(ADIR)/$(SAM)/variants/arduino_due_x
+INCLUDES:=-I$(ADIR)/$(LIBSAM) -I$(ADIR)/$(CMSIS)/CMSIS/Include/ -I$(ADIR)/$(CMSIS)/Device/ATMEL/ -I$(ADIR)/$(SAM)/cores/arduino -I$(ADIR)/$(SAM)/variants/arduino_due_x -I$(ADIR)/$(SAM)/cores/arduino
 
 #also include the current dir for convenience
 INCLUDES += -I.
+INCLUDES += -I$(shell pwd)/IntelliCopter -I$(shell pwd)/libraries -I$(shell pwd)/FreeRTOS
 
 #compilation flags common to both c and c++
 COMMON_FLAGS:=-g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3  -mthumb
@@ -157,8 +158,8 @@ $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
 #upload to the arduino by first resetting it (stty) and the running bossac
 upload: $(TMPDIR)/$(PROJNAME).bin
 	stty -F $(PORT) 1200
-	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port==$(PORTNAME) -U false -i
-	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port==$(PORTNAME) -U false -e -w -v -b $(TMPDIR)/$(PROJNAME).bin -R
+	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -i
+	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -e -w -v -b $(TMPDIR)/$(PROJNAME).bin -R
 
 #to view the serial port with screen.
 monitor:

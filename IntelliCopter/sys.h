@@ -9,9 +9,12 @@
 #ifndef _SYS_H_
 #define _SYS_H_
 
+#include <Arduino.h>
+
 #include <stdio.h>
 
-#include "../libraries/"
+#include <IC_GPS/gps.h>
+#include <IC_GPS/nmea.h>
 
 class sys{
 public:

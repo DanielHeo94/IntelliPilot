@@ -1,10 +1,9 @@
-
+#include <sys.h>
+sys _sys;
 
 void setup() {
-  Serial.begin(115200);
+  _sys.config();
+  _sys.start();
 }
 
-void loop() { /* Not used */ 
-  Serial.println("Hello World!");
-  delay(1000);
-  }
+void loop() { /* Not used */ }

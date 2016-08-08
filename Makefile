@@ -42,6 +42,7 @@ AR:=$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-ar
 DEFINES:=-Dprintf=iprintf -DF_CPU=84000000L -DARDUINO=152 -D__SAM3X8E__ -DUSB_PID=0x003e -DUSB_VID=0x2341 -DUSBCON
 
 INCLUDES:=-I$(ADIR)/$(LIBSAM) -I$(ADIR)/$(CMSIS)/CMSIS/Include/ -I$(ADIR)/$(CMSIS)/Device/ATMEL/ -I$(ADIR)/$(SAM)/cores/arduino -I$(ADIR)/$(SAM)/variants/arduino_due_x -I$(ADIR)/$(SAM)/cores/arduino
+INCLUDES += -I$(ADIR)/$(SAM)/libraries/HID/src -I$(ADIR)/$(SAM)/libraries/SPI/src -I$(ADIR)/$(SAM)/libraries/Wire/src
 
 #also include the current dir for convenience
 INCLUDES += -I.
@@ -64,7 +65,7 @@ MYSRCFILES:=$(NEWMAINFILE) $(shell ls *.cpp 2>/dev/null)
 MYOBJFILES:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCFILES))))
 
 #These source files are the ones forming core.a
-CORESRCXX:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.cpp ${ADIR}/${SAM}/cores/arduino/USB/*.cpp  ${ADIR}/${SAM}/variants/arduino_due_x/variant.cpp ${ADIR}/${SAM}/libraries/HID/src/*.cpp)
+CORESRCXX:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.cpp ${ADIR}/${SAM}/cores/arduino/USB/*.cpp  ${ADIR}/${SAM}/variants/arduino_due_x/variant.cpp ${ADIR}/${SAM}/libraries/HID/src/*.cpp ${ADIR}/${SAM}/libraries/SPI/src/*.cpp ${ADIR}/${SAM}/libraries/Wire/src/*.cpp)
 CORESRC:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.c)
 
 #convert the core source files to object files. assume no clashes.
@@ -137,6 +138,8 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/USBCore.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/CDC.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/HID.cpp.o
+	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/SPI.cpp.o
+	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/Wire.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/wiring_pulse.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/UARTClass.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/main.cpp.o

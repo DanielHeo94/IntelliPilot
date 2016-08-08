@@ -1,35 +1,24 @@
-// config.h
+//
+//  config.h
+//  IntelliCopter
+//
+//  Created by Daniel Heo on 2016. 7. 12.
+//  Copyright © 2016 http://dronix.kr. All rights reserved.
+//
 
-#ifndef _CONFIG_h
-#define _CONFIG_h
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
-
-// Attitude commands config
-#define PITCH_ANG_MIN   -30
-#define PITCH_ANG_MAX   30
-
-#define ROLL_ANG_MIN    -30
-#define ROLL_ANG_MAX    30
-
-#define YAW_SPEED_MIN    -20
-#define YAW_SPEED_MAX    20
-
-#define CLIMB_RATE_MIN  -50
-#define CLIMB_RATE_MAX  50
-
-// Motor input config
-#define MOTOR_PULSE_MIN		800
-#define MOTOR_PULSE_MAX		2200
-#define MOTOR_PULSE_TAKEOFF	850
-
-// Angle offset
-#define PITCH_ANG_OFFSET    1
-#define ROLL_ANG_OFFSET     -0.9
+#define TASK_GET_ATTITUDE						1
+#define TASK_GET_LIDAR_ALT_ON				1
+#define TASK_GET_BARO_ALT_ON				1
+#define TASK_GET_BEARING_ON					1
+#define TASK_GET_POSITION_ON				1
+#define TASK_GET_COMMANDS_ON				1
+#define TASK_COMM_GCS_ON						1
+#define TASK_FC_IDLE_ON							1
+#define TASK_FC_MANUAL_CONTROL_ON		1
+#define TASK_LED_INDICATOR_ON				1
+#define TASK_BATTERY_CHECK_ON				1
 
 #endif
-

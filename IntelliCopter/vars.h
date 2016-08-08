@@ -1,9 +1,9 @@
 //
-//  vars.h
-//  intellipilot
+//  var.h
+//  IntelliCopter
 //
-//  Created by 허진수 on 2016. 7. 11..
-//  Copyright © 2016년 dronix.kr. All rights reserved.
+//  Created by Daniel Heo on 2016. 7. 12.
+//  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
 
 #ifndef vars_h

@@ -1,9 +1,9 @@
 //
-//  sys.hpp
-//  intellipilot
+//  sys.h
+//  IntelliCopter
 //
-//  Created by 허진수 on 2016. 7. 12..
-//  Copyright © 2016년 dronix.kr. All rights reserved.
+//  Created by Daniel Heo on 2016. 7. 12.
+//  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
 
 #ifndef _SYS_H_
@@ -11,10 +11,24 @@
 
 #include <Arduino.h>
 
+#include <FreeRTOS_ARM/src/FreeRTOS_ARM.h>
+
 #include <stdio.h>
 
-#include <IC_GPS/gps.h>
-#include <IC_GPS/nmea.h>
+#include <IC_GPS/IC_GPS.h>
+#include <IC_GPS/parser.h>
+
+#include <IC_InertialSensor/BMP085.h>
+#include <IC_InertialSensor/EBIMU9DOFV2.h>
+#include <IC_InertialSensor/HMC5883L.h>
+#include <IC_InertialSensor/LIDARLite2.h>
+#include <IC_InertialSensor/MPU6050.h>
+
+#include <IC_LED/IC_LED.h>
+#include <IC_Math/IC_Math.h>
+#include <IC_Motors/IC_Motors.h>
+#include <IC_PID/IC_PID.h>
+#include <IC_Radio/IC_Radio.h>
 
 class sys{
 public:

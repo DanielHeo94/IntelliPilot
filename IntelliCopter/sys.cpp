@@ -7,40 +7,11 @@
 //
 
 #include "sys.h"
-#include "scheduler.h"
-
-#include "ahrs.h"
-#include "imu.h";
-#include "baro.h"
-#include "lidar.h"
-#include "comp.h"
-#include "gps.h"
-
-#include "radio.h"
-
-#include "motors.h"
-
-#include "led.h"
-
-extern ahrs _ahrs;
-extern imu _imu;
-extern baro _barometer;
-extern lidar _lidar;
-extern comp _compass;
-extern gps _gps;
-
-extern radio _radio;
-
-extern motors _motors;
-
-extern led _led;
-
-scheduler _scheduler;
 
 sys::sys() {}
 
 void sys::config() {
-    
+
     Serial.begin(115200);
 	Serial.flush();
 
@@ -60,20 +31,20 @@ void sys::config() {
 	Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
 
     Serial.println("System configuration start.");
-    
+
     sys::configAhrs();
 	sys::configImu();
     //sys::configComp();
     sys::configLidar();
     //sys::configBaro();
     sys::configGps();
-    
+
     sys::configRadio();
 
 	sys::startMotors();
-    
+
     Serial.println("System configuration complete.");
-    
+
     _scheduler.taskCreate();
 }
 
@@ -84,10 +55,10 @@ void sys::start() {
 void sys::configAhrs() {
     // AHRS
     Serial.println("configuring AHRS...");
-    
+
     _ahrs.begin(115200);
     _ahrs.stabilize();
-    
+
     Serial.println("\t\t\t Success.");
 }
 
@@ -103,7 +74,7 @@ void sys::configImu() {
 void sys::configComp() {
     // Compass
     Serial.println("configuring Compass...");
-    
+
     while (!_compass.begin()) { Serial.println("\t\tCould not find a valid compass sensor, check wiring!"); delay(500); }
     // Set measurement range
     Serial.print("\t\tSet measurement range."); _compass.setRange(HMC5883L_RANGE_1_3GA); Serial.println("\t\t\t Success.");
@@ -120,21 +91,21 @@ void sys::configComp() {
 void sys::configLidar() {
     // LiDAR
     Serial.println("configuring LiDAR...");
-    
+
     _lidar.begin();
 }
 
 void sys::configBaro() {
     // Barometer
     Serial.println("configuring Barometer...");
-    
+
     if (!_barometer.begin()) while (1) {}
 }
 
 void sys::configGps() {
     // GPS
     Serial.println("configuring GPS...");
-    
+
     _gps.begin();
     _gps.configure();
 }
@@ -142,7 +113,7 @@ void sys::configGps() {
 void sys::configRadio() {
     // Radio
     Serial.println("configuring Radio...");
-    
+
     _radio.begin();
 }
 

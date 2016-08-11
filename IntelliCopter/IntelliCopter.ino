@@ -1,9 +1,9 @@
-#include <sys.h>
-sys _sys;
+#include <System.h>
 
 void setup() {
-  _sys.config();
-  _sys.start();
+
+  copter.config();
+  copter.start();
 }
 
-void loop() { /* Not used */ }
+void loop() { /* Not used */ };

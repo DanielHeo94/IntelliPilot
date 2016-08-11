@@ -28,9 +28,9 @@ public:
    {}
 };
 
-struct nmeaLocation
+struct gpsLocation
 {
-   friend class nmea;
+   friend class gps;
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
@@ -40,7 +40,7 @@ public:
    double lat();
    double lng();
 
-   nmeaLocation() : valid(false), updated(false)
+   gpsLocation() : valid(false), updated(false)
    {}
 
 private:
@@ -52,9 +52,9 @@ private:
    void setLongitude(const char *term);
 };
 
-struct nmeaDate
+struct gpsDate
 {
-   friend class nmea;
+   friend class gps;
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
@@ -65,7 +65,7 @@ public:
    uint8_t month();
    uint8_t day();
 
-   nmeaDate() : valid(false), updated(false), date(0)
+   gpsDate() : valid(false), updated(false), date(0)
    {}
 
 private:
@@ -76,9 +76,9 @@ private:
    void setDate(const char *term);
 };
 
-struct nmeaTime
+struct gpsTime
 {
-   friend class nmea;
+   friend class gps;
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
@@ -90,7 +90,7 @@ public:
    uint8_t second();
    uint8_t centisecond();
 
-   nmeaTime() : valid(false), updated(false), time(0)
+   gpsTime() : valid(false), updated(false), time(0)
    {}
 
 private:
@@ -101,16 +101,16 @@ private:
    void setTime(const char *term);
 };
 
-struct nmeaDecimal
+struct gpsDecimal
 {
-   friend class nmea;
+   friend class gps;
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
    uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
    int32_t value()         { updated = false; return val; }
 
-   nmeaDecimal() : valid(false), updated(false), val(0)
+   gpsDecimal() : valid(false), updated(false), val(0)
    {}
 
 private:
@@ -121,16 +121,16 @@ private:
    void set(const char *term);
 };
 
-struct nmeaInteger
+struct gpsInteger
 {
-   friend class nmea;
+   friend class gps;
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
    uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
    uint32_t value()        { updated = false; return val; }
 
-   nmeaInteger() : valid(false), updated(false), val(0)
+   gpsInteger() : valid(false), updated(false), val(0)
    {}
 
 private:
@@ -141,7 +141,7 @@ private:
    void set(const char *term);
 };
 
-struct nmeaSpeed : nmeaDecimal
+struct gpsSpeed : gpsDecimal
 {
    double knots()    { return value() / 100.0; }
    double mph()      { return _GPS_MPH_PER_KNOT * value() / 100.0; }
@@ -149,12 +149,12 @@ struct nmeaSpeed : nmeaDecimal
    double kmph()     { return _GPS_KMPH_PER_KNOT * value() / 100.0; }
 };
 
-struct nmeaCourse : public nmeaDecimal
+struct gpsCourse : public gpsDecimal
 {
    double deg()      { return value() / 100.0; }
 };
 
-struct nmeaAltitude : nmeaDecimal
+struct gpsAltitude : gpsDecimal
 {
    double meters()       { return value() / 100.0; }
    double miles()        { return _GPS_MILES_PER_METER * value() / 100.0; }
@@ -162,13 +162,13 @@ struct nmeaAltitude : nmeaDecimal
    double feet()         { return _GPS_FEET_PER_METER * value() / 100.0; }
 };
 
-class nmea;
-class nmeaCustom
+class gps;
+class gpsCustom
 {
 public:
-   nmeaCustom() {};
-   nmeaCustom(nmea &gps, const char *sentenceName, int termNumber);
-   void begin(nmea &gps, const char *_sentenceName, int _termNumber);
+   gpsCustom() {};
+   gpsCustom(gps &gps, const char *sentenceName, int termNumber);
+   void begin(gps &gps, const char *_sentenceName, int _termNumber);
 
    bool isUpdated() const  { return updated; }
    bool isValid() const    { return valid; }
@@ -185,25 +185,25 @@ private:
    bool valid, updated;
    const char *sentenceName;
    int termNumber;
-   friend class nmea;
-   nmeaCustom *next;
+   friend class gps;
+   gpsCustom *next;
 };
 
-class nmea
+class gps
 {
 public:
-  nmea();
+  gps();
   bool encode(char c); // process one character received from GPS
-  nmea &operator << (char c) {encode(c); return *this;}
+  gps &operator << (char c) {encode(c); return *this;}
 
-  nmeaLocation location;
-  nmeaDate date;
-  nmeaTime time;
-  nmeaSpeed speed;
-  nmeaCourse course;
-  nmeaAltitude altitude;
-  nmeaInteger satellites;
-  nmeaDecimal hdop;
+  gpsLocation location;
+  gpsDate date;
+  gpsTime time;
+  gpsSpeed speed;
+  gpsCourse course;
+  gpsAltitude altitude;
+  gpsInteger satellites;
+  gpsDecimal hdop;
 
   static const char *libraryVersion() { return _GPS_VERSION; }
 
@@ -232,10 +232,10 @@ private:
   bool sentenceHasFix;
 
   // custom element support
-  friend class nmeaCustom;
-  nmeaCustom *customElts;
-  nmeaCustom *customCandidates;
-  void insertCustom(nmeaCustom *pElt, const char *sentenceName, int index);
+  friend class gpsCustom;
+  gpsCustom *customElts;
+  gpsCustom *customCandidates;
+  void insertCustom(gpsCustom *pElt, const char *sentenceName, int index);
 
   // statistics
   uint32_t encodedCharCount;
@@ -248,4 +248,4 @@ private:
   bool endOfTermHandler();
 };
 
-#endif // def(_nmea_H_)
+#endif // def(_gps_H_)

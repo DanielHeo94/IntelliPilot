@@ -1,7 +1,7 @@
 // gps.h
 
-#ifndef _GPS_H_
-#define _GPS_H_
+#ifndef _IC_GPS_H_
+#define _IC_GPS_H_
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "Arduino.h"
@@ -14,9 +14,9 @@
 #define SEA		3
 #define AIR		4
 
-class gps {
+class IC_GPS {
 public:
-	gps();
+	IC_GPS();
 
 	void begin(int baudrate = 115200);
 	void configure(uint8_t mode = PED,

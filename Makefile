@@ -42,11 +42,11 @@ AR:=$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-ar
 DEFINES:=-Dprintf=iprintf -DF_CPU=84000000L -DARDUINO=152 -D__SAM3X8E__ -DUSB_PID=0x003e -DUSB_VID=0x2341 -DUSBCON
 
 INCLUDES:=-I$(ADIR)/$(LIBSAM) -I$(ADIR)/$(CMSIS)/CMSIS/Include/ -I$(ADIR)/$(CMSIS)/Device/ATMEL/ -I$(ADIR)/$(SAM)/cores/arduino -I$(ADIR)/$(SAM)/variants/arduino_due_x -I$(ADIR)/$(SAM)/cores/arduino
-INCLUDES += -I$(ADIR)/$(SAM)/libraries/HID/src -I$(ADIR)/$(SAM)/libraries/SPI/src -I$(ADIR)/$(SAM)/libraries/Wire/src
+INCLUDES += -I$(ADIR)/$(SAM)/libraries/HID/src -I$(ADIR)/$(SAM)/libraries/SPI/src -I$(ADIR)/$(SAM)/libraries/Wire/src -I$(ADIR)/$(SAM)/libraries/Servo/src
 
 #also include the current dir for convenience
 INCLUDES += -I.
-INCLUDES += -I$(shell pwd)/IntelliCopter -I$(shell pwd)/libraries -I$(shell pwd)/FreeRTOS
+INCLUDES += -I$(shell pwd)/IntelliCopter -I$(shell pwd)/libraries -I$(shell pwd)/FreeRTOS_ARM/src -I$(shell pwd)/FreeRTOS_ARM/src/utility
 
 #compilation flags common to both c and c++
 COMMON_FLAGS:=-g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3  -mthumb
@@ -62,11 +62,15 @@ NEWMAINFILE:=$(TMPDIR)/$(PROJNAME).ino.cpp
 
 #our own sourcefiles is the (converted) ino file and any local cpp files
 MYSRCFILES:=$(NEWMAINFILE) $(shell ls *.cpp 2>/dev/null)
+MYSRCFILES+=$(shell ls $(shell pwd)/FreeRTOS_ARM/src/*.c $(shell pwd)/FreeRTOS_ARM/src/utility/*.c)
+MYSRCXXFILES:=$(shell ls $(shell pwd)/IntelliCopter/*.cpp $(shell pwd)/libraries/IC_GPS/*.cpp $(shell pwd)/libraries/IC_InertialSensor/*.cpp $(shell pwd)/libraries/IC_LED/*.cpp $(shell pwd)/libraries/IC_Math/*.cpp $(shell pwd)/libraries/IC_Motors/*.cpp $(shell pwd)/libraries/IC_PID/*.cpp $(shell pwd)/libraries/IC_Radio/*.cpp $(shell pwd)/FreeRTOS_ARM/src/*.cpp)
 MYOBJFILES:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCFILES))))
+MYOBJFILESXX:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCXXFILES))))
 
 #These source files are the ones forming core.a
 CORESRCXX:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.cpp ${ADIR}/${SAM}/cores/arduino/USB/*.cpp  ${ADIR}/${SAM}/variants/arduino_due_x/variant.cpp ${ADIR}/${SAM}/libraries/HID/src/*.cpp ${ADIR}/${SAM}/libraries/SPI/src/*.cpp ${ADIR}/${SAM}/libraries/Wire/src/*.cpp)
 CORESRC:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.c)
+
 
 #convert the core source files to object files. assume no clashes.
 COREOBJSXX:=$(addprefix $(TMPDIR)/core/,$(notdir $(CORESRCXX)) )
@@ -94,8 +98,9 @@ $(foreach src,$(CORESRCXX), $(eval $(call OBJ_template,$(src),$(addsuffix .o,$(a
 #...and for c sources:
 $(foreach src,$(CORESRC), $(eval $(call OBJ_template,$(src),$(addsuffix .o,$(addprefix $(TMPDIR)/core/,$(notdir $(src)))),) ) )
 
-#and our own c++ sources
-$(foreach src,$(MYSRCFILES), $(eval $(call OBJ_template,$(src),$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(src)))),XX) ) )
+#and our own c and c++ sources
+$(foreach src,$(MYSRCXXFILES), $(eval $(call OBJ_template,$(src),$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(src)))),XX) ) )
+$(foreach src,$(MYSRCFILES), $(eval $(call OBJ_template,$(src),$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(src)))),) ) )
 
 
 clean:
@@ -117,6 +122,7 @@ $(NEWMAINFILE): $(shell pwd)/IntelliCopter/$(PROJNAME).ino
 
 #include the dependencies for our own files
 -include $(MYOBJFILES:.o=.d)
+-include $(MYOBJFILESXX:.o=.d)
 
 #create the core library from the core objects. Do this EXACTLY as the
 #arduino IDE does it, seems *really* picky about this.
@@ -151,7 +157,7 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/variant.cpp.o
 
 #link our own object files with core to form the elf file
-$(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILES)
+$(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILES) $(MYOBJFILESXX)
 	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILES) $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
 
 #copy from the hex to our bin file (why?)

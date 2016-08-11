@@ -1,5 +1,5 @@
 /*
-TinyGPS++ - a small GPS library for Arduino providing universal nmea parsing
+TinyGPS++ - a small GPS library for Arduino providing universal gps parsing
 Based on work by and "distanceBetween" and "courseTo" courtesy of Maarten Lamers.
 Suggestion to add satellites, courseTo(), and cardinal() by Matt Monson.
 Location precision improvements suggested by Wayne Holder.
@@ -21,7 +21,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "nmea.h"
+#include "parser.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -30,7 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _GPRMCterm   "GPRMC"
 #define _GPGGAterm   "GPGGA"
 
-nmea::nmea()
+gps::gps()
   :  parity(0)
   ,  isChecksumTerm(false)
   ,  curSentenceType(GPS_SENTENCE_OTHER)
@@ -51,7 +51,7 @@ nmea::nmea()
 // public methods
 //
 
-bool nmea::encode(char c)
+bool gps::encode(char c)
 {
   ++encodedCharCount;
 
@@ -98,7 +98,7 @@ bool nmea::encode(char c)
 //
 // internal utilities
 //
-int nmea::fromHex(char a)
+int gps::fromHex(char a)
 {
   if (a >= 'A' && a <= 'F')
     return a - 'A' + 10;
@@ -110,7 +110,7 @@ int nmea::fromHex(char a)
 
 // static
 // Parse a (potentially negative) number with up to 2 decimal digits -xxxx.yy
-int32_t nmea::parseDecimal(const char *term)
+int32_t gps::parseDecimal(const char *term)
 {
   bool negative = *term == '-';
   if (negative) ++term;
@@ -126,8 +126,8 @@ int32_t nmea::parseDecimal(const char *term)
 }
 
 // static
-// Parse degrees in that funny nmea format DDMM.MMMM
-void nmea::parseDegrees(const char *term, RawDegrees &deg)
+// Parse degrees in that funny gps format DDMM.MMMM
+void gps::parseDegrees(const char *term, RawDegrees &deg)
 {
   uint32_t leftOfDecimal = (uint32_t)atol(term);
   uint16_t minutes = (uint16_t)(leftOfDecimal % 100);
@@ -154,7 +154,7 @@ void nmea::parseDegrees(const char *term, RawDegrees &deg)
 
 // Processes a just-completed term
 // Returns true if new sentence has just passed checksum test and is validated
-bool nmea::endOfTermHandler()
+bool gps::endOfTermHandler()
 {
   // If it's the checksum term, and the checksum checks out, commit
   if (isChecksumTerm)
@@ -191,7 +191,7 @@ bool nmea::endOfTermHandler()
       }
 
       // Commit all custom listeners of this sentence type
-      for (nmeaCustom *p = customCandidates; p != NULL && strcmp(p->sentenceName, customCandidates->sentenceName) == 0; p = p->next)
+      for (gpsCustom *p = customCandidates; p != NULL && strcmp(p->sentenceName, customCandidates->sentenceName) == 0; p = p->next)
          p->commit();
       return true;
     }
@@ -272,7 +272,7 @@ bool nmea::endOfTermHandler()
   }
 
   // Set custom values as needed
-  for (nmeaCustom *p = customCandidates; p != NULL && strcmp(p->sentenceName, customCandidates->sentenceName) == 0 && p->termNumber <= curTermNumber; p = p->next)
+  for (gpsCustom *p = customCandidates; p != NULL && strcmp(p->sentenceName, customCandidates->sentenceName) == 0 && p->termNumber <= curTermNumber; p = p->next)
     if (p->termNumber == curTermNumber)
          p->set(term);
 
@@ -280,7 +280,7 @@ bool nmea::endOfTermHandler()
 }
 
 /* static */
-double nmea::distanceBetween(double lat1, double long1, double lat2, double long2)
+double gps::distanceBetween(double lat1, double long1, double lat2, double long2)
 {
   // returns distance in meters between two positions, both specified
   // as signed decimal-degrees latitude and longitude. Uses great-circle
@@ -305,7 +305,7 @@ double nmea::distanceBetween(double lat1, double long1, double lat2, double long
   return delta * 6372795;
 }
 
-double nmea::courseTo(double lat1, double long1, double lat2, double long2)
+double gps::courseTo(double lat1, double long1, double lat2, double long2)
 {
   // returns course in degrees (North=0, West=270) from position 1 to position 2,
   // both specified as signed decimal-degrees latitude and longitude.
@@ -325,14 +325,14 @@ double nmea::courseTo(double lat1, double long1, double lat2, double long2)
   return degrees(a2);
 }
 
-const char *nmea::cardinal(double course)
+const char *gps::cardinal(double course)
 {
   static const char* directions[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
   int direction = (int)((course + 11.25f) / 22.5f);
   return directions[direction % 16];
 }
 
-void nmeaLocation::commit()
+void gpsLocation::commit()
 {
    rawLatData = rawNewLatData;
    rawLngData = rawNewLngData;
@@ -340,127 +340,127 @@ void nmeaLocation::commit()
    valid = updated = true;
 }
 
-void nmeaLocation::setLatitude(const char *term)
+void gpsLocation::setLatitude(const char *term)
 {
-   nmea::parseDegrees(term, rawNewLatData);
+   gps::parseDegrees(term, rawNewLatData);
 }
 
-void nmeaLocation::setLongitude(const char *term)
+void gpsLocation::setLongitude(const char *term)
 {
-   nmea::parseDegrees(term, rawNewLngData);
+   gps::parseDegrees(term, rawNewLngData);
 }
 
-double nmeaLocation::lat()
+double gpsLocation::lat()
 {
    updated = false;
    double ret = rawLatData.deg + rawLatData.billionths / 1000000000.0;
    return rawLatData.negative ? -ret : ret;
 }
 
-double nmeaLocation::lng()
+double gpsLocation::lng()
 {
    updated = false;
    double ret = rawLngData.deg + rawLngData.billionths / 1000000000.0;
    return rawLngData.negative ? -ret : ret;
 }
 
-void nmeaDate::commit()
+void gpsDate::commit()
 {
    date = newDate;
    lastCommitTime = millis();
    valid = updated = true;
 }
 
-void nmeaTime::commit()
+void gpsTime::commit()
 {
    time = newTime;
    lastCommitTime = millis();
    valid = updated = true;
 }
 
-void nmeaTime::setTime(const char *term)
+void gpsTime::setTime(const char *term)
 {
-   newTime = (uint32_t)nmea::parseDecimal(term);
+   newTime = (uint32_t)gps::parseDecimal(term);
 }
 
-void nmeaDate::setDate(const char *term)
+void gpsDate::setDate(const char *term)
 {
    newDate = atol(term);
 }
 
-uint16_t nmeaDate::year()
+uint16_t gpsDate::year()
 {
    updated = false;
    uint16_t year = date % 100;
    return year + 2000;
 }
 
-uint8_t nmeaDate::month()
+uint8_t gpsDate::month()
 {
    updated = false;
    return (date / 100) % 100;
 }
 
-uint8_t nmeaDate::day()
+uint8_t gpsDate::day()
 {
    updated = false;
    return date / 10000;
 }
 
-uint8_t nmeaTime::hour()
+uint8_t gpsTime::hour()
 {
    updated = false;
    return time / 1000000;
 }
 
-uint8_t nmeaTime::minute()
+uint8_t gpsTime::minute()
 {
    updated = false;
    return (time / 10000) % 100;
 }
 
-uint8_t nmeaTime::second()
+uint8_t gpsTime::second()
 {
    updated = false;
    return (time / 100) % 100;
 }
 
-uint8_t nmeaTime::centisecond()
+uint8_t gpsTime::centisecond()
 {
    updated = false;
    return time % 100;
 }
 
-void nmeaDecimal::commit()
+void gpsDecimal::commit()
 {
    val = newval;
    lastCommitTime = millis();
    valid = updated = true;
 }
 
-void nmeaDecimal::set(const char *term)
+void gpsDecimal::set(const char *term)
 {
-   newval = nmea::parseDecimal(term);
+   newval = gps::parseDecimal(term);
 }
 
-void nmeaInteger::commit()
+void gpsInteger::commit()
 {
    val = newval;
    lastCommitTime = millis();
    valid = updated = true;
 }
 
-void nmeaInteger::set(const char *term)
+void gpsInteger::set(const char *term)
 {
    newval = atol(term);
 }
 
-nmeaCustom::nmeaCustom(nmea &gps, const char *_sentenceName, int _termNumber)
+gpsCustom::gpsCustom(gps &gps, const char *_sentenceName, int _termNumber)
 {
    begin(gps, _sentenceName, _termNumber);
 }
 
-void nmeaCustom::begin(nmea &gps, const char *_sentenceName, int _termNumber)
+void gpsCustom::begin(gps &gps, const char *_sentenceName, int _termNumber)
 {
    lastCommitTime = 0;
    updated = valid = false;
@@ -473,21 +473,21 @@ void nmeaCustom::begin(nmea &gps, const char *_sentenceName, int _termNumber)
    gps.insertCustom(this, _sentenceName, _termNumber);
 }
 
-void nmeaCustom::commit()
+void gpsCustom::commit()
 {
    strcpy(this->buffer, this->stagingBuffer);
    lastCommitTime = millis();
    valid = updated = true;
 }
 
-void nmeaCustom::set(const char *term)
+void gpsCustom::set(const char *term)
 {
    strncpy(this->stagingBuffer, term, sizeof(this->stagingBuffer));
 }
 
-void nmea::insertCustom(nmeaCustom *pElt, const char *sentenceName, int termNumber)
+void gps::insertCustom(gpsCustom *pElt, const char *sentenceName, int termNumber)
 {
-   nmeaCustom **ppelt;
+   gpsCustom **ppelt;
 
    for (ppelt = &this->customElts; *ppelt != NULL; ppelt = &(*ppelt)->next)
    {

@@ -1,13 +1,7 @@
 // gains.h
 
-#ifndef _VARS_h
-#define _VARS_h
-
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
+#ifndef _VARS_H_
+#define _VARS_H_
 
 #define SYSTEM_ID		20                   ///< ID 20 for this airplane
 static int COM_ID =		MAV_COMP_ID_IMU;     ///< The component sending the message is the IMU, it could be also a Linux process
@@ -42,4 +36,3 @@ uint16_t _gps_stat_len;
 uint16_t _bat_stat_len;
 
 #endif
-

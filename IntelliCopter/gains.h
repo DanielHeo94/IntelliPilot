@@ -3,12 +3,6 @@
 #ifndef _GAINS_h
 #define _GAINS_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
-
 // Gains
 #define PITCH_OUTER_P_GAIN  4.750
 #define PITCH_OUTER_I_GAIN  0
@@ -33,4 +27,3 @@
 #define ALT_D_GAIN			0
 
 #endif
-

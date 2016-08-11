@@ -64,13 +64,12 @@ int main( void )
 
 	return 0;
 }
-#include <sys.h>
-sys _sys;
+#include <System.h>
 
 void setup() {
-  _sys.config();
-  _sys.start();
+  copter.config();
+  copter.start();
 }
 
-void loop() { /* Not used */ }
+void loop() { /* Not used */ };
 extern "C" void __cxa_pure_virtual() {while (true);}

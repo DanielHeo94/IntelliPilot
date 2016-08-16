@@ -35,3 +35,6 @@
 # binary files
 *.bin
 *.elf
+
+# build files
+build/

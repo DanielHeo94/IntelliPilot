@@ -3,7 +3,7 @@
 
 [![Build Travis CI](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=master)](https://travis-ci.org/DanielHeo94/IntelliPilot)
 
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/5331/badge.svg)](https://scan.coverity.com/projects/danielheo94-intellipilot)
+[![Coverity Scan](https://scan.coverity.com/projects/9895/badge.svg?flat=1)](https://scan.coverity.com/projects/danielheo94-intellipilot)
 
 ### Installation
 >>#### to build

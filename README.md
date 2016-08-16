@@ -1,7 +1,9 @@
 # IntelliPilot Project
 [![Gitter](https://badges.gitter.im/intellipilot-gitter/Lobby.svg)](https://gitter.im/intellipilot-gitter/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-[![Build Status](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=master)](https://travis-ci.org/DanielHeo94/IntelliPilot)
+[![Build Travis CI](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=master)](https://travis-ci.org/DanielHeo94/IntelliPilot)
+
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/5331/badge.svg)](https://scan.coverity.com/projects/danielheo94-intellipilot)
 
 ### Installation
 >>#### to build

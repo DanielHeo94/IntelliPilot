@@ -62,7 +62,7 @@ COREOBJS:=$(addprefix $(TMPDIR)/core/,$(notdir $(CORESRC)) )
 COREOBJS:=$(addsuffix .o,$(COREOBJS))
 
 default:
-	@echo default rule, does nothing. Try make build or make upload or make monitor.
+	@echo default rule, does nothing. Try make build or make flash or make screen.
 
 #This rule is good to just make sure stuff compiles, without having to wait
 #for bossac.
@@ -151,11 +151,11 @@ $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
 	$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-objcopy -O binary $< $@
 
 #upload to the arduino by first resetting it (stty) and the running bossac
-upload: $(TMPDIR)/$(PROJNAME).bin
+flash: $(TMPDIR)/$(PROJNAME).bin
 	stty -F $(PORT) 1200
 	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -i
 	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -e -w $(VERIFY) -b $(TMPDIR)/$(PROJNAME).bin -R
 
 #to view the serial port with screen.
-monitor:
+screen:
 	screen $(PORT) 115200

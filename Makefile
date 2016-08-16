@@ -62,11 +62,11 @@ COREOBJS:=$(addprefix $(TMPDIR)/core/,$(notdir $(CORESRC)) )
 COREOBJS:=$(addsuffix .o,$(COREOBJS))
 
 default:
-	@echo default rule, does nothing. Try make compile or make upload or make monitor.
+	@echo default rule, does nothing. Try make build or make upload or make monitor.
 
 #This rule is good to just make sure stuff compiles, without having to wait
 #for bossac.
-compile: $(TMPDIR)/$(PROJNAME).elf
+build: $(TMPDIR)/$(PROJNAME).elf
 
 #This is a make rule template to create object files from the source files.
 # arg 1=src file

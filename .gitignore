@@ -31,5 +31,6 @@
 # Dependency files
 *.d
 
+# .ip build files
 *.ip.cpp
 *.ip.cpp.map

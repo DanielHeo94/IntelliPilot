@@ -14,7 +14,7 @@
 #include <WProgram.h>
 #endif
 
-#include <FreeRTOS_ARM/src/FreeRTOS_ARM.h>
+#include <FreeRTOS_ARM.h>
 
 #include <stdio.h>
 
@@ -29,7 +29,6 @@
 #include <IC_InertialSensor/HMC5883L.h>
 #include <IC_InertialSensor/LIDARLiteV2.h>
 #include <IC_InertialSensor/MPU6050_6Axis_MotionApps20.h>
-#include <IC_InertialSensor/I2Cdev.h>
 
 #include <IC_LED/IC_LED.h>
 #include <IC_Math/IC_Math.h>

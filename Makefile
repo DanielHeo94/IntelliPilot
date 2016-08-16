@@ -1,21 +1,3 @@
-#!/usr/bin/make
-# makefile for the arduino due.
-#
-# USAGE: put this file in the same dir as your .ino file is.
-# configure the PORT variable and ADIR at the top of the file
-# to match your local configuration.
-# Type make upload to compile and upload.
-# Type make monitor to watch the serial port with gnu screen.
-#
-# TODO: split into user specific settings and the rest
-#
-# LICENSE: GPLv2 or later (at your option)
-#
-# This file can be found at https://github.com/pauldreik/arduino-due-makefile
-#
-# By Paul Dreik 20130503 http://www.pauldreik.se/
-
-
 #user specific settings:
 #where to find the IDE
 ADIR:=$(shell pwd)/.arduino15/packages/arduino
@@ -23,7 +5,7 @@ ADIR:=$(shell pwd)/.arduino15/packages/arduino
 PORT:=/dev/ttyACM0
 PORTNAME:=ttyACM0
 #if we want to verify the bossac upload, define this to -v
-VERIFY:=
+VERIFY:= -v
 
 
 #then some general settings. They should not be necessary to modify.
@@ -157,8 +139,8 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/variant.cpp.o
 
 #link our own object files with core to form the elf file
-$(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILES) $(MYOBJFILESXX)
-	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILES) $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
+$(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES)
+	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map $< -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
 
 #copy from the hex to our bin file (why?)
 $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
@@ -168,7 +150,7 @@ $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
 upload: $(TMPDIR)/$(PROJNAME).bin
 	stty -F $(PORT) 1200
 	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -i
-	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -e -w -v -b $(TMPDIR)/$(PROJNAME).bin -R
+	$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -e -w $(VERIFY) -b $(TMPDIR)/$(PROJNAME).bin -R
 
 #to view the serial port with screen.
 monitor:

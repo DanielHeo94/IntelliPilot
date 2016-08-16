@@ -167,17 +167,21 @@
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/RingBuffer.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/Stream.h \
  /home/daniel/workspace/IntelliPilot/IntelliCopter/System.h \
- FreeRTOS_ARM/src/FreeRTOS_ARM.h FreeRTOS_ARM/src/utility/FreeRTOS.h \
- FreeRTOS_ARM/src/utility/FreeRTOSConfig.h \
- FreeRTOS_ARM/src/utility/projdefs.h FreeRTOS_ARM/src/utility/portable.h \
- FreeRTOS_ARM/src/utility/deprecated_definitions.h \
- FreeRTOS_ARM/src/utility/portmacro.h \
- FreeRTOS_ARM/src/utility/mpu_wrappers.h FreeRTOS_ARM/src/utility/task.h \
- FreeRTOS_ARM/src/utility/list.h FreeRTOS_ARM/src/utility/queue.h \
- FreeRTOS_ARM/src/utility/semphr.h FreeRTOS_ARM/src/utility/queue.h \
- FreeRTOS_ARM/src/utility/portmacro.h \
- /home/daniel/workspace/IntelliPilot/libraries/IC_AttitudeControl/IC_AttitudeControl.h \
  /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/FreeRTOS_ARM.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/FreeRTOS.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/FreeRTOSConfig.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/projdefs.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/portable.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/deprecated_definitions.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/portmacro.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/mpu_wrappers.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/task.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/list.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/queue.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/semphr.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/queue.h \
+ /home/daniel/workspace/IntelliPilot/FreeRTOS_ARM/src/utility/portmacro.h \
+ /home/daniel/workspace/IntelliPilot/libraries/IC_AttitudeControl/IC_AttitudeControl.h \
  /home/daniel/workspace/IntelliPilot/libraries/IC_PID/IC_PID.h \
  /home/daniel/workspace/IntelliPilot/IntelliCopter/vars/vars_attitude.h \
  /home/daniel/workspace/IntelliPilot/IntelliCopter/vars/vars_motors.h \
@@ -198,7 +202,6 @@
  /home/daniel/workspace/IntelliPilot/libraries/IC_InertialSensor/I2Cdev.h \
  /home/daniel/workspace/IntelliPilot/libraries/IC_InertialSensor/helper_3dmath.h \
  /home/daniel/workspace/IntelliPilot/libraries/IC_InertialSensor/MPU6050.h \
- /home/daniel/workspace/IntelliPilot/libraries/IC_InertialSensor/I2Cdev.h \
  /home/daniel/workspace/IntelliPilot/libraries/IC_LED/IC_LED.h \
  /home/daniel/workspace/IntelliPilot/libraries/IC_Math/IC_Math.h \
  /home/daniel/workspace/IntelliPilot/libraries/IC_Motors/IC_Motors.h \

@@ -67,6 +67,7 @@ int main( void )
 #include <System.h>
 
 void setup() {
+
   copter.config();
   copter.start();
 }

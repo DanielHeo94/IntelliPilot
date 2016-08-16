@@ -15,20 +15,20 @@
 	#include <WProgram.h>
 #endif
 
-#define DEFAULT_LED_INDICATOR_PIN	43
+#define DEFAULT_LED_INDICATOR_PIN 43
 
 class IC_LED {
 public:
-	int pin;
+								int pin;
 
-	IC_LED();
+								IC_LED();
 
-	void begin(int val = DEFAULT_LED_INDICATOR_PIN);
+								void begin(int val = DEFAULT_LED_INDICATOR_PIN);
 
-	void idleIndicator();
-	void manualControlIndicator();
-	void guidedControlIndicator();
-	void autoControlIndicator();
+								void idleIndicator();
+								void manualControlIndicator();
+								void guidedControlIndicator();
+								void autoControlIndicator();
 
 private:
 };

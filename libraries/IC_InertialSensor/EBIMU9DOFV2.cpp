@@ -10,26 +10,26 @@
 
 #include "EBIMU9DOFV2.h"
 
-#define SOL							0x2A
-#define EOL_CR					0x0D
-#define EOL_LF					0x0A
+#define SOL       0x2A
+#define EOL_CR     0x0D
+#define EOL_LF     0x0A
 
-#define RBUF_SIZE							64
-#define SIZE_OF_EULER_ANGLES	3
-#define SIZE_OF_QUATERNION		4
-#define SIZE_OF_GYRO					3
+#define RBUF_SIZE       64
+#define SIZE_OF_EULER_ANGLES 3
+#define SIZE_OF_QUATERNION  4
+#define SIZE_OF_GYRO     3
 
 /*
-ASCII OUTPUT DATA FORMAT
-| SOL | 	DATA 1	  | sp |	DATA 2	  | sp | ... | sp |		DATA n	 |  EOL  |
-|  *  |  ascii data1  | ,  | ascii data 2 | ,  | ... | ,  | ascii data n | CR LF |
+   ASCII OUTPUT DATA FORMAT
+ | SOL |  DATA 1	  | sp |	DATA 2	  | sp | ... | sp |		DATA n	 |  EOL  |
+ |  *  |  ascii data1  | ,  | ascii data 2 | ,  | ... | ,  | ascii data n | CR LF |
 
-Parameter				|	 Value	  | Unit
-________________________|_____________|______
-			|	roll	| -180 ~ +180 |
-Output Range|	pitch	| -90 ~ +90	  |  deg
-			|	yaw		| -180 ~ +180 |
-*/
+   Parameter				|	 Value	  | Unit
+   ________________________|_____________|______
+ |	roll	| -180 ~ +180 |
+   Output Range|	pitch	| -90 ~ +90	  |  deg
+ |	yaw		| -180 ~ +180 |
+ */
 
 int i = 0;
 
@@ -46,316 +46,317 @@ double gar[3], gar2[3] = { 0, 0 };
 
 void seperator(char *SBuf, double *data, int size)
 {
-	seg = strtok(SBuf, ",");
+								seg = strtok(SBuf, ",");
 
-	for (int i = 0; i < size; i++){
-		data[i] = atof(seg);
-		seg = strtok(NULL, ",");
-	}
+								for (int i = 0; i < size; i++) {
+																data[i] = atof(seg);
+																seg = strtok(NULL, ",");
+								}
 }
 
 void gyroCalc(double *data, double *data2)
 {
-	t = millis();
-	samplingTimeLast = samplingTime;
-	samplingTime = (double)t - (double)tLast;
-	tLast = t;
+								t = millis();
+								samplingTimeLast = samplingTime;
+								samplingTime = (double)t - (double)tLast;
+								tLast = t;
 
-	if (samplingTime < 0) samplingTime = samplingTimeLast;
+								if (samplingTime < 0) samplingTime = samplingTimeLast;
 
-	for (int n = 0; n < SIZE_OF_GYRO; n++){
-		data2[n] = (data[n] - dataLast[n]) / (samplingTime / 1000);
-	}
+								for (int n = 0; n < SIZE_OF_GYRO; n++) {
+																data2[n] = (data[n] - dataLast[n]) / (samplingTime / 1000);
+								}
 
-	dataLast[0] = data[0];
-	dataLast[1] = data[1];
-	dataLast[2] = data[2];
+								dataLast[0] = data[0];
+								dataLast[1] = data[1];
+								dataLast[2] = data[2];
 }
 
-EBIMU9DOFV2::EBIMU9DOFV2() {}
+EBIMU9DOFV2::EBIMU9DOFV2() {
+}
 
 void EBIMU9DOFV2::begin(int baudrate)
 {
 #if AHRS_SERIAL_PIN == 1
-	Serial1.begin(baudrate);
+								Serial1.begin(baudrate);
 
 #elif AHRS_SERIAL_PIN == 2
-	Serial2.begin(baudrate);
+								Serial2.begin(baudrate);
 
 #elif AHRS_SERIAL_PIN == 3
-	Serial3.begin(baudrate);
+								Serial3.begin(baudrate);
 
 #elif AHRS_SERIAL_PIN == 0
-	Serial.begin(baudrate);
+								Serial.begin(baudrate);
 #endif
 }
 
 bool EBIMU9DOFV2::getEulerAngles(double *data)
 {
 #if AHRS_SERIAL_PIN == 1
-	if (Serial1.available()){
-		buf[i] = Serial1.read();
-		i++;
+								if (Serial1.available()) {
+																buf[i] = Serial1.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 2
-	if (Serial2.available()){
-		buf[i] = Serial2.read();
-		i++;
+								if (Serial2.available()) {
+																buf[i] = Serial2.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 3
-	if (Serial3.available()){
-		buf[i] = Serial3.read();
-		i++;
+								if (Serial3.available()) {
+																buf[i] = Serial3.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 0
-	if (Serial.available()) {
-		buf[i] = Serial.read();
-		i++;
+								if (Serial.available()) {
+																buf[i] = Serial.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL) {
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 #endif
 }
 
 bool EBIMU9DOFV2::getQuaternion(double *data)
 {
 #if AHRS_SERIAL_PIN == 1
-	if (Serial1.available()){
-		buf[i] = Serial1.read();
-		i++;
+								if (Serial1.available()) {
+																buf[i] = Serial1.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_QUATERNION);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_QUATERNION);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 2
-	if (Serial2.available()){
-		buf[i] = Serial2.read();
-		i++;
+								if (Serial2.available()) {
+																buf[i] = Serial2.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_QUATERNION);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_QUATERNION);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 3
-	if (Serial3.available()){
-		buf[i] = Serial3.read();
-		i++;
+								if (Serial3.available()) {
+																buf[i] = Serial3.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_QUATERNION);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_QUATERNION);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 0
-	if (Serial.available()) {
-		buf[i] = Serial.read();
-		i++;
+								if (Serial.available()) {
+																buf[i] = Serial.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL) {
-			seperator(buf, data, SIZE_OF_QUATERNION);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_QUATERNION);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 #endif
 }
 
 bool EBIMU9DOFV2::getGyro(double *data)
 {
 #if AHRS_SERIAL_PIN == 1
-	if (Serial1.available()){
-		buf[i] = Serial1.read();
-		i++;
+								if (Serial1.available()) {
+																buf[i] = Serial1.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_GYRO);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_GYRO);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 2
-	if (Serial2.available()){
-		buf[i] = Serial2.read();
-		i++;
+								if (Serial2.available()) {
+																buf[i] = Serial2.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_GYRO);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_GYRO);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 3
-	if (Serial3.available()){
-		buf[i] = Serial3.read();
-		i++;
+								if (Serial3.available()) {
+																buf[i] = Serial3.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_GYRO);
-			i = 0;
-			return true;
-		}
-    }
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_GYRO);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 0
-	if (Serial.available()) {
-		buf[i] = Serial.read();
-		i++;
+								if (Serial.available()) {
+																buf[i] = Serial.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL) {
-			seperator(buf, data, SIZE_OF_GYRO);
-			i = 0;
-			return true;
-		}
-	}
-	return false;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_GYRO);
+																								i = 0;
+																								return true;
+																}
+								}
+								return false;
 #endif
 }
 
 bool EBIMU9DOFV2::getEulerAnglesGyro(double *data, double *data2)
 {
 #if AHRS_SERIAL_PIN == 1
-	if (Serial1.available()){
-		buf[i] = Serial1.read();
-		i++;
+								if (Serial1.available()) {
+																buf[i] = Serial1.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
 
-			gyroCalc(data, data2);
-			return true;
-		}
-	}
-	return false;
+																								gyroCalc(data, data2);
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 2
-	if (Serial2.available()){
-		buf[i] = Serial2.read();
-		i++;
+								if (Serial2.available()) {
+																buf[i] = Serial2.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
 
-			gyroCalc(data, data2);
-			return true;
-		}
-	}
-	return false;
+																								gyroCalc(data, data2);
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 3
-	if (Serial3.available()){
-		buf[i] = Serial3.read();
-		i++;
+								if (Serial3.available()) {
+																buf[i] = Serial3.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL){
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
 
-			gyroCalc(data, data2);
-			return true;
-		}
-	}
-	return false;
+																								gyroCalc(data, data2);
+																								return true;
+																}
+								}
+								return false;
 
 #elif AHRS_SERIAL_PIN == 0
-	if (Serial.available()) {
-		buf[i] = Serial.read();
-		i++;
+								if (Serial.available()) {
+																buf[i] = Serial.read();
+																i++;
 
-		if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
+																if (buf[i - 1] == EOL_LF) buf[i - 1] = ',';
 
-		if (buf[i - 1] == SOL) {
-			seperator(buf, data, SIZE_OF_EULER_ANGLES);
-			i = 0;
+																if (buf[i - 1] == SOL) {
+																								seperator(buf, data, SIZE_OF_EULER_ANGLES);
+																								i = 0;
 
-			gyroCalc(data, data2);
-			return true;
-		}
-	}
-	return false;
+																								gyroCalc(data, data2);
+																								return true;
+																}
+								}
+								return false;
 #endif
 }
 
 bool EBIMU9DOFV2::stabilize() {
-	Serial.print("\t\tstabilizing AHRS...");
+								Serial.print("\t\tstabilizing AHRS...");
 
-	for (int i = 0; i < 100; i++) { while (!EBIMU9DOFV2::getEulerAngles(gar)) {} }
+								for (int i = 0; i < 100; i++) { while (!EBIMU9DOFV2::getEulerAngles(gar)) {} }
 }

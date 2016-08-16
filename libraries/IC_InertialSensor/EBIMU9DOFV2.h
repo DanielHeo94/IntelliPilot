@@ -15,20 +15,20 @@
 #include <WProgram.h>
 #endif
 
-#define AHRS_SERIAL_PIN	1
+#define AHRS_SERIAL_PIN 1
 
-class EBIMU9DOFV2{
+class EBIMU9DOFV2 {
 public:
-	EBIMU9DOFV2();
+								EBIMU9DOFV2();
 
-	void begin(int baudrate);
+								void begin(int baudrate);
 
-	bool stabilize();
+								bool stabilize();
 
-	bool getEulerAngles(double *data); //default setting
-	bool getQuaternion(double *data);
-	bool getGyro(double *data);
-	bool getEulerAnglesGyro(double *data, double *data2);
+								bool getEulerAngles(double *data); //default setting
+								bool getQuaternion(double *data);
+								bool getGyro(double *data);
+								bool getEulerAnglesGyro(double *data, double *data2);
 
 private:
 };

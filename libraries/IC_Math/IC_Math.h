@@ -17,15 +17,15 @@
 
 class IC_Math {
 public:
-	IC_Math();
+								IC_Math();
 
-	void limit(float *val, float min, float max);
-	void limitInt(int *val, int min, int max);
+								void limit(float *val, float min, float max);
+								void limitInt(int *val, int min, int max);
 
-	float degreetoradian(float val);
-	float radiantodegree(float val);
+								float degreetoradian(float val);
+								float radiantodegree(float val);
 
-	float floor(float val);
+								float floor(float val);
 };
 
 #endif

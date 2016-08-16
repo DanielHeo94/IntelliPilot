@@ -71,72 +71,94 @@ MPU6050 mpu6050;
 
 class System {
 public:
-    System();
+        System();
 
-    void config();
-    void start();
+        void config();
+        void start();
 
-    void task_create();
-    void scheduler_start();
+        void task_create();
+        void scheduler_start();
 
-    void commands_processing(int event);
+        void commands_processing(int event);
 
-    class Setup {
-    public:
-      Setup();
+        class Setup {
+public:
+                Setup();
 
-      void commands();
-      void attitude();
-      void altitude();
-      void position();
-      void bearing();
-    };
+                void commands();
+                void attitude();
+                void altitude();
+                void position();
+                void bearing();
+        };
 
-    class Publish {
-    public:
-      Publish();
+        class Publish {
+public:
+                Publish();
 
-      static void commands(void *arg);
-      static void attitude(void *arg);
-      static void altitude(void *arg);
-      static void position(void *arg);
-      static void bearing(void *arg);
-    };
+                static void commands(void *arg);
+                static void attitude(void *arg);
+                static void altitude(void *arg);
+                static void position(void *arg);
+                static void bearing(void *arg);
+        };
 
-    class Subscribe {
-    public:
-      Subscribe();
+        class Subscribe {
+public:
+                Subscribe();
 
-      Altitude* altitude() {  return &__altitude;  }
-      Attitude* attitude() {  return &__attitude;  }
-      Barometer* barometer() {  return &__barometer;  }
-      Battery* battery() {  return &__battery;  }
-      Bearing* bearing() {  return &__bearing;  }
-      Commands* commands() {  return &__commands; }
-      GPS_info* gps_info() {  return &__gps_info; }
-      Servo_output* servo_output() {  return &__servo_output;  }
-      PID_error* pid_error() {  return &__pid_error;  }
-      Position* position() {  return &__position;  }
-      Status* status() {  return &__status;  }
+                Altitude* altitude() {
+                        return &__altitude;
+                }
+                Attitude* attitude() {
+                        return &__attitude;
+                }
+                Barometer* barometer() {
+                        return &__barometer;
+                }
+                Battery* battery() {
+                        return &__battery;
+                }
+                Bearing* bearing() {
+                        return &__bearing;
+                }
+                Commands* commands() {
+                        return &__commands;
+                }
+                GPS_info* gps_info() {
+                        return &__gps_info;
+                }
+                Servo_output* servo_output() {
+                        return &__servo_output;
+                }
+                PID_error* pid_error() {
+                        return &__pid_error;
+                }
+                Position* position() {
+                        return &__position;
+                }
+                Status* status() {
+                        return &__status;
+                }
 
-    };
+        };
 
-    class Communicate {
-    public:
-      Communicate();
+        class Communicate {
+public:
+                Communicate();
 
-      static void gcs_mavlink(void *arg);
-      static void led_indicator(void *arg);
-      static void battery_indicator(void *arg);
-    };
+                static void gcs_mavlink(void *arg);
+                static void led_indicator(void *arg);
+                static void battery_indicator(void *arg);
+        };
 
-    class Control {
-    public:
-      Control();
+        class Control {
+public:
+                Control();
 
-      static void control_pre_flight(void *arg);
-      static void control_manual(void *arg);
-    };
+                static void control_pre_flight(void *arg);
+                static void control_manual(void *arg);
+        };
 
 private:
 };

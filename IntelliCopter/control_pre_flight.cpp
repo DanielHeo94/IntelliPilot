@@ -10,12 +10,12 @@
 
 void System::Control::control_pre_flight(void *arg) {
 
-  TickType_t xLastWakeTime = xTaskGetTickCount();
-	const TickType_t xWakePeriod = 1000 / portTICK_PERIOD_MS;
+        TickType_t xLastWakeTime = xTaskGetTickCount();
+        const TickType_t xWakePeriod = 1000 / portTICK_PERIOD_MS;
 
-	for (;;) {
-		motors.stop();
+        for (;; ) {
+                motors.stop();
 
-		vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
-	}
+                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
+        }
 }

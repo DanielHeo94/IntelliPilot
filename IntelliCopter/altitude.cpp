@@ -9,20 +9,20 @@
 
 void System::Setup::altitude() {
 
-  lidarlitev2.begin();
-  if (!bmp085.begin()) while (1) {}
+        lidarlitev2.begin();
+        if (!bmp085.begin()) while (1) {}
 }
 
 void System::Publish::altitude(void *arg) {
 
-  for(;;) {
+        for(;; ) {
 
-    __altitude.lidar = lidarlitev2.getVerDistance();
-    __altitude.barometer = bmp085.readAltitude();
-    __altitude.gps = _gps.altitude.meters();
+                __altitude.lidar = lidarlitev2.getVerDistance();
+                __altitude.barometer = bmp085.readAltitude();
+                __altitude.gps = _gps.altitude.meters();
 
-    __barometer.temparature = bmp085.readTemperature();
-    __barometer.pressure = bmp085.readPressure();
-    __barometer.sealevelpressure = bmp085.readSealevelPressure();
-  }
+                __barometer.temparature = bmp085.readTemperature();
+                __barometer.pressure = bmp085.readPressure();
+                __barometer.sealevelpressure = bmp085.readSealevelPressure();
+        }
 }

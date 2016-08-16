@@ -10,56 +10,57 @@
 
 #include <FreeRTOS_ARM.h>
 
-IC_LED::IC_LED() { }
+IC_LED::IC_LED() {
+}
 
 void IC_LED::begin(int val) {
 
-	pin = val;
+								pin = val;
 
-	pinMode(pin, OUTPUT);
-	digitalWrite(pin, HIGH);
+								pinMode(pin, OUTPUT);
+								digitalWrite(pin, HIGH);
 }
 
 void IC_LED::idleIndicator() {
 
-	digitalWrite(pin, HIGH);
-	vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
 }
 
 void IC_LED::manualControlIndicator() {
 
-	digitalWrite(pin, HIGH);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
 }
 
 void IC_LED::guidedControlIndicator() {
 
-	digitalWrite(pin, HIGH);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, HIGH);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, HIGH);
-	vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
 }
 
 void IC_LED::autoControlIndicator() {
 
-	digitalWrite(pin, HIGH);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, HIGH);
-	vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
-	digitalWrite(pin, LOW);
-	vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, HIGH);
+								vTaskDelay((1000L * configTICK_RATE_HZ) / 1000L);
+								digitalWrite(pin, LOW);
+								vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
 }

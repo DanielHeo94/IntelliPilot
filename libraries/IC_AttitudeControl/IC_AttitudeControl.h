@@ -23,18 +23,18 @@
 
 class IC_AttitudeControl {
 public:
-  IC_AttitudeControl(double*, double*, double*, double*, PID_error*, Attitude*, Servo_output*);
+								IC_AttitudeControl(double*, double*, double*, double*, PID_error*, Attitude*, Servo_output*);
 
-  void Compute();
+								void Compute();
 
 private:
 
-  double* _target_yaw;
-  double* _target_pitch;
-  double* _target_roll;
-  double* _throttle_in;
+								double* _target_yaw;
+								double* _target_pitch;
+								double* _target_roll;
+								double* _throttle_in;
 
-  PID_error* _error;
-  Attitude* _sample;
-  Servo_output* _output;
+								PID_error* _error;
+								Attitude* _sample;
+								Servo_output* _output;
 };

@@ -2,8 +2,9 @@
 
 void setup() {
 
-  copter.config();
-  copter.start();
+        copter.config();
+        copter.start();
 }
 
-void loop() { /* Not used */ };
+void loop() { /* Not used */
+};

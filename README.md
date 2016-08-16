@@ -3,10 +3,21 @@
 # IntelliPilot
 Arduino Due(Cortex-M3) based quadcopter open source project.
 
-## Installation
->### to build
+### Installation
+>>#### to build
 `~/IntelliPilot$ make build`
-### to flash
+#### to flash
 `~/IntelliPilot$ make flash`
-### to screen *via serial port*
+#### to screen *via serial port*
 `~/IntelliPilot$ make screen`
+
+### Contiributors
+>>[Github statistics](https://github.com/DanielHeo94/IntelliPilot/graphs/contributors)
+
+## Maintainers
+>> - [Daniel Heo](https://github.com/DanielHeo94)
+>>   - ***Vehicle***: Copter
+>>   - ***Field***: Flgiht Control, Communication, and codings.
+>> - [Minchan Kim](https://github.com/Minchan-Kim)
+>>   - ***Vehicle***: Copter
+>>   - ***Field***: Communication, GCS.

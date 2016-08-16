@@ -30,3 +30,6 @@
 
 # Dependency files
 *.d
+
+*.ip.cpp
+*.ip.cpp.map

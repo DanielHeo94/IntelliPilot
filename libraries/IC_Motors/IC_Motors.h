@@ -10,15 +10,12 @@
 #define _IC_MOTORS_H_
 
 #include <Servo.h>
-#include <IC_Math/IC_Math.h>
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include <Arduino.h>
 #else
 	#include <WProgram.h>
 #endif
-
-IC_Math _math;
 
 // Motors pin configuration
 #define QUAD_MOTOR_A 9

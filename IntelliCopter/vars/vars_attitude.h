@@ -28,6 +28,6 @@ typedef struct _attitude {
   Datatype gyro;
 } Attitude;
 
-Attitude __attitude;
+extern Attitude __attitude;
 
 #endif

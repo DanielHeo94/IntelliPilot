@@ -22,25 +22,26 @@ AR:=$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-ar
 #all these values are hard coded and should maybe be configured somehow else,
 #like olikraus does in his makefile.
 DEFINES:=-Dprintf=iprintf -DF_CPU=84000000L -DARDUINO=152 -D__SAM3X8E__ -DUSB_PID=0x003e -DUSB_VID=0x2341 -DUSBCON
+ARCHITECTURE:=-DARDUINO_ARCH_SAM
 
 INCLUDES:=-I$(ADIR)/$(LIBSAM) -I$(ADIR)/$(CMSIS)/CMSIS/Include/ -I$(ADIR)/$(CMSIS)/Device/ATMEL/ -I$(ADIR)/$(SAM)/cores/arduino -I$(ADIR)/$(SAM)/variants/arduino_due_x -I$(ADIR)/$(SAM)/cores/arduino
-INCLUDES += -I$(ADIR)/$(SAM)/libraries/HID/src -I$(ADIR)/$(SAM)/libraries/SPI/src -I$(ADIR)/$(SAM)/libraries/Wire/src -I$(ADIR)/$(SAM)/libraries/Servo/src
+INCLUDES += -I$(ADIR)/$(SAM)/libraries/HID/src -I$(ADIR)/$(SAM)/libraries/SPI/src -I$(ADIR)/$(SAM)/libraries/Wire/src -I$(ADIR)/$(SAM)/libraries/Servo/src -I$(ADIR)/$(SAM)/libraries/Servo/src/sam
 
 #also include the current dir for convenience
 INCLUDES += -I.
 INCLUDES += -I$(shell pwd)/IntelliCopter -I$(shell pwd)/libraries -I$(shell pwd)/FreeRTOS_ARM/src -I$(shell pwd)/FreeRTOS_ARM/src/utility
 
 #compilation flags common to both c and c++
-COMMON_FLAGS:=-g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3  -mthumb
+COMMON_FLAGS:=-g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3  -mthumb $(ARCHITECTURE)
 
 CFLAGS:=$(COMMON_FLAGS)
 CXXFLAGS:=$(COMMON_FLAGS) -fno-rtti -fno-exceptions
 
 #let the results be named after the project
-PROJNAME:=$(shell basename $(shell pwd)/IntelliCopter/*.ino .ino)
+PROJNAME:=$(shell basename $(shell pwd)/IntelliCopter/*.ip .ip)
 
 #we will make a new mainfile from the ino file.
-NEWMAINFILE:=$(TMPDIR)/$(PROJNAME).ino.cpp
+NEWMAINFILE:=$(TMPDIR)/$(PROJNAME).ip.cpp
 
 #our own sourcefiles is the (converted) ino file and any local cpp files
 MYSRCFILES:=$(NEWMAINFILE) $(shell ls *.cpp 2>/dev/null)
@@ -50,7 +51,7 @@ MYOBJFILES:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCFILES))))
 MYOBJFILESXX:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCXXFILES))))
 
 #These source files are the ones forming core.a
-CORESRCXX:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.cpp ${ADIR}/${SAM}/cores/arduino/USB/*.cpp  ${ADIR}/${SAM}/variants/arduino_due_x/variant.cpp ${ADIR}/${SAM}/libraries/HID/src/*.cpp ${ADIR}/${SAM}/libraries/SPI/src/*.cpp ${ADIR}/${SAM}/libraries/Wire/src/*.cpp)
+CORESRCXX:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.cpp ${ADIR}/${SAM}/cores/arduino/USB/*.cpp  ${ADIR}/${SAM}/variants/arduino_due_x/variant.cpp ${ADIR}/${SAM}/libraries/HID/src/*.cpp ${ADIR}/${SAM}/libraries/SPI/src/*.cpp ${ADIR}/${SAM}/libraries/Wire/src/*.cpp ${ADIR}/${SAM}/libraries/Servo/src/sam/*.cpp)
 CORESRC:=$(shell ls ${ADIR}/${SAM}/cores/arduino/*.c)
 
 
@@ -96,10 +97,10 @@ $(TMPDIR):
 $(TMPDIR)/core:
 	mkdir -p $(TMPDIR)/core
 
-#creates the cpp file from the .ino file
-$(NEWMAINFILE): $(shell pwd)/IntelliCopter/$(PROJNAME).ino
+#creates the cpp file from the .ip file
+$(NEWMAINFILE): $(shell pwd)/IntelliCopter/$(PROJNAME).ip
 	cat $(ADIR)/hardware/sam/1.6.9/cores/arduino/main.cpp > $(NEWMAINFILE)
-	cat $(shell pwd)/IntelliCopter/$(PROJNAME).ino >> $(NEWMAINFILE)
+	echo '#include <System.h> \n void setup() { copter.config(); copter.start(); } \n void loop() { /* Not used */ };' >> $(NEWMAINFILE)
 	echo 'extern "C" void __cxa_pure_virtual() {while (true);}' >> $(NEWMAINFILE)
 
 #include the dependencies for our own files
@@ -121,6 +122,7 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/iar_calls_sam3.c.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/wiring_digital.c.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/Print.cpp.o
+	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/PluggableUSB.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/USARTClass.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/WString.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/USBCore.cpp.o
@@ -128,7 +130,9 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/HID.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/SPI.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/Wire.cpp.o
+	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/Servo.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/wiring_pulse.cpp.o
+	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/watchdog.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/UARTClass.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/main.cpp.o
 	$(AR) rcs $(TMPDIR)/core.a $(TMPDIR)/core/Stream.cpp.o
@@ -140,7 +144,7 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 
 #link our own object files with core to form the elf file
 $(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES)
-	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map $< -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
+	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES) $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
 
 #copy from the hex to our bin file (why?)
 $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf

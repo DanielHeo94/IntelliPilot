@@ -21,6 +21,6 @@ typedef struct _bearing {
   double declination_angle;
 } Bearing;
 
-Bearing __bearing;
+extern Bearing __bearing;
 
 #endif

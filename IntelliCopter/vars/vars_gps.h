@@ -31,6 +31,6 @@ typedef struct _gps_info {
   unsigned short sentences, failed;
 } GPS_info;
 
-GPS_info __gps_info;
+extern GPS_info __gps_info;
 
 #endif

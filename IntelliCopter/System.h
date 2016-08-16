@@ -5,6 +5,9 @@
 //  Created by Daniel Heo on 2016. 7. 12.
 //  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
+
+#pragma once
+
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
 
@@ -56,18 +59,18 @@
 #include "config.h"
 #include "params.h"
 
-IC_GPS gps_setup;
-gps _gps;
-IC_LED led;
-IC_Math math;
-IC_Motors motors;
-IC_Radio radio;
+extern IC_GPS gps_setup;
+extern gps _gps;
+extern IC_LED led;
+extern IC_Math math;
+extern IC_Motors motors;
+extern IC_Radio radio;
 
-BMP085 bmp085;
-EBIMU9DOFV2 ebimu9dofv2;
-HMC5883L hmc5883l;
-LIDARLiteV2 lidarlitev2;
-MPU6050 mpu6050;
+extern BMP085 bmp085;
+extern EBIMU9DOFV2 ebimu9dofv2;
+extern HMC5883L hmc5883l;
+extern LIDARLiteV2 lidarlitev2;
+extern MPU6050 mpu6050;
 
 class System {
 public:
@@ -163,11 +166,11 @@ public:
 private:
 };
 
-System copter;
-System::Setup _setup;
-System::Publish publish;
-System::Subscribe subscribe;
-System::Communicate communicate;
-System::Control control;
+extern System copter;
+extern System::Setup _setup;
+extern System::Publish publish;
+extern System::Subscribe subscribe;
+extern System::Communicate communicate;
+extern System::Control control;
 
 #endif

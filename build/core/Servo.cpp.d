@@ -1,20 +1,16 @@
-/home/daniel/workspace/IntelliPilot/build/IC_Motors.cpp.o: \
- /home/daniel/workspace/IntelliPilot/libraries/IC_Motors/IC_Motors.cpp \
- /home/daniel/workspace/IntelliPilot/libraries/IC_Motors/IC_Motors.h \
- /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/libraries/Servo/src/Servo.h \
- /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/inttypes.h \
- /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/sys/features.h \
+/home/daniel/workspace/IntelliPilot/build/core/Servo.cpp.o: \
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/libraries/Servo/src/sam/Servo.cpp \
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/Arduino.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/lib/gcc/arm-none-eabi/4.8.3/include/stdint.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/stdint.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/machine/_default_types.h \
- /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/lib/gcc/arm-none-eabi/4.8.3/include/stddef.h \
- /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/libraries/Servo/src/sam/ServoTimers.h \
- /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/Arduino.h \
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/sys/features.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/stdlib.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/machine/ieeefp.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/_ansi.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/newlib.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/sys/config.h \
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/lib/gcc/arm-none-eabi/4.8.3/include/stddef.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/sys/reent.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/_ansi.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/sys/_types.h \
@@ -27,6 +23,7 @@
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/sys/string.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/math.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/avr/pgmspace.h \
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/inttypes.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/avr/interrupt.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/binary.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/itoa.h \
@@ -169,4 +166,5 @@
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/USB/USBAPI.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/RingBuffer.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/Stream.h \
- /home/daniel/workspace/IntelliPilot/libraries/IC_Math/IC_Math.h
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/libraries/Servo/src/Servo.h \
+ /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/libraries/Servo/src/sam/ServoTimers.h

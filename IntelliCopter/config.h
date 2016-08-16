@@ -1,13 +1,13 @@
 //
-//  c0fig.h
+//  config.h
 //  IntelliCopter
 //
-//  Created by Daniel Heo 0 2016. 7. 12.
-//  Copyright © 2016 http://dr0ix.kr. All rights reserved.
+//  Created by Daniel Heo on 2016. 7. 12.
+//  Copyright © 2016 http://droix.kr. All rights reserved.
 //
 
-#ifndef _C0FIG_H_
-#define _C0FIG_H_
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
 
 #define TASK_GET_ATTITUDE           1
 #define TASK_GET_ALTITUDE           0

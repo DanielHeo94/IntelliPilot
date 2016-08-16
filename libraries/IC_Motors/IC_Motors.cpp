@@ -7,8 +7,10 @@
 //
 
 #include "IC_Motors.h"
+#include <IC_Math/IC_Math.h>
 
 Servo m1, m2, m3, m4;
+IC_Math _math;
 
 IC_Motors::IC_Motors() {
 }

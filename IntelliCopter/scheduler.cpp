@@ -123,3 +123,7 @@ void System::scheduler_start() {
         Serial.println("Insufficient RAM");
         while(1) ;
 }
+
+TaskHandle_t task_flight_control_pre_flight;
+TaskHandle_t task_flight_control_manual;
+TaskHandle_t task_flight_control_pos_hold;

@@ -14,6 +14,6 @@ typedef struct _servo_output {
   int a, b, c, d;
 } Servo_output;
 
-Servo_output __servo_output;
+extern Servo_output __servo_output;
 
 #endif

@@ -17,22 +17,22 @@ static uint8_t SYSTEM_STATE =	MAV_STATE_STANDBY; ///< System ready for flight
 										  // Initialize the required buffers
 static uint8_t BATTERY_ID = 1;
 
-mavlink_message_t _heartbeat_msg;
-mavlink_message_t _attitude_msg;
-mavlink_message_t _gps_pos_msg;
-mavlink_message_t _gps_stat_msg;
-mavlink_message_t _bat_stat_msg;
+extern mavlink_message_t _heartbeat_msg;
+extern mavlink_message_t _attitude_msg;
+extern mavlink_message_t _gps_pos_msg;
+extern mavlink_message_t _gps_stat_msg;
+extern mavlink_message_t _bat_stat_msg;
 
-uint8_t _heartbeat_buf[MAVLINK_MAX_PACKET_LEN];
-uint8_t _attitude_buf[MAVLINK_MAX_PACKET_LEN];
-uint8_t _gps_pos_buf[MAVLINK_MAX_PACKET_LEN];
-uint8_t _gps_stat_buf[MAVLINK_MAX_PACKET_LEN];
-uint8_t _bat_stat_buf[MAVLINK_MAX_PACKET_LEN];
+extern uint8_t _heartbeat_buf[MAVLINK_MAX_PACKET_LEN];
+extern uint8_t _attitude_buf[MAVLINK_MAX_PACKET_LEN];
+extern uint8_t _gps_pos_buf[MAVLINK_MAX_PACKET_LEN];
+extern uint8_t _gps_stat_buf[MAVLINK_MAX_PACKET_LEN];
+extern uint8_t _bat_stat_buf[MAVLINK_MAX_PACKET_LEN];
 
-uint16_t _heartbeat_len;
-uint16_t _attitude_len;
-uint16_t _gps_pos_len;
-uint16_t _gps_stat_len;
-uint16_t _bat_stat_len;
+extern uint16_t _heartbeat_len;
+extern uint16_t _attitude_len;
+extern uint16_t _gps_pos_len;
+extern uint16_t _gps_stat_len;
+extern uint16_t _bat_stat_len;
 
 #endif

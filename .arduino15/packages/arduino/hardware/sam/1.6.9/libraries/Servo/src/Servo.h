@@ -58,8 +58,6 @@
  * _Nbr_16timers indicates how many 16 bit timers are available.
  */
 
- #define ARDUINO_ARCH_SAM // Board Architecture
-
 // Architecture specific include
 #if defined(ARDUINO_ARCH_AVR)
 #include "avr/ServoTimers.h"

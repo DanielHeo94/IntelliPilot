@@ -30,6 +30,8 @@
    ===============================================
  */
 
+#pragma once
+
 #ifndef _MPU6050_9AXIS_MOTIONAPPS41_H_
 #define _MPU6050_9AXIS_MOTIONAPPS41_H_
 

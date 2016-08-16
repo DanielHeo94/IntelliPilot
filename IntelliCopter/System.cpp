@@ -69,3 +69,12 @@ void System::config() {
 void System::start() {
         copter.scheduler_start();
 }
+
+System copter;
+System::Setup _setup;
+System::Publish publish;
+System::Subscribe subscribe;
+System::Communicate communicate;
+System::Control control;
+
+IC_Motors motors;

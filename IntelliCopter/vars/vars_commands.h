@@ -15,6 +15,6 @@ typedef struct _commands {
   double manual[5];
 } Commands;
 
-Commands __commands;
+extern Commands __commands;
 
 #endif

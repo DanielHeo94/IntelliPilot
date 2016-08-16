@@ -17,6 +17,6 @@ public:
   const char *cog;
 } Position;
 
-Position __position;
+extern Position __position;
 
 #endif

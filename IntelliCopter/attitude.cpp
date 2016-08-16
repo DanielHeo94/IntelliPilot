@@ -142,3 +142,7 @@ void System::Publish::attitude(void *arg) {
                 }
         }
 }
+
+MPU6050 mpu6050;
+IC_Math math;
+Attitude __attitude;

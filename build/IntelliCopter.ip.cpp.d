@@ -1,5 +1,5 @@
-/home/daniel/workspace/IntelliPilot/build/IntelliCopter.ino.cpp.o: \
- /home/daniel/workspace/IntelliPilot/build/IntelliCopter.ino.cpp \
+/home/daniel/workspace/IntelliPilot/build/IntelliCopter.ip.cpp.o: \
+ /home/daniel/workspace/IntelliPilot/build/IntelliCopter.ip.cpp \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/hardware/sam/1.6.9/cores/arduino/Arduino.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/lib/gcc/arm-none-eabi/4.8.3/include/stdint.h \
  /home/daniel/workspace/IntelliPilot/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/arm-none-eabi/include/stdint.h \

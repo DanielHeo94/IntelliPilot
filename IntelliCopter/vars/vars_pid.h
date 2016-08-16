@@ -23,6 +23,6 @@ typedef struct _pid_error {
   A roll;
 } PID_error;
 
-PID_error __pid_error;
+extern PID_error __pid_error;
 
 #endif

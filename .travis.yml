@@ -1,2 +1,2 @@
-language: C, C++
+language: C
 script: make build

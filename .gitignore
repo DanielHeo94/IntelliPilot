@@ -34,3 +34,7 @@
 # .ip build files
 *.ip.cpp
 *.ip.cpp.map
+
+# binary files
+*.bin
+*.elf

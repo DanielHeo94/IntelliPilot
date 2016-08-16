@@ -21,7 +21,7 @@ void System::task_create() {
 
     #if (TASK_GET_ATTITUDE == 1)
         Serial.print("\t\tTASK_GET_ATTITUDE");
-        s1 = xTaskCreate(publish.attitude, NULL, configMINIMAL_STACK_SIZE + 300, NULL, 1, NULL);
+        s1 = xTaskCreate(publish.attitude, NULL, configMINIMAL_STACK_SIZE + 2048, NULL, 1, NULL);
         Serial.println("\t\tSuccess.");
     #endif
 
@@ -117,7 +117,7 @@ void System::scheduler_start() {
         // Start scheduler
         Serial.println("Start scheduler.");
 
-        vTaskSuspend(task_flight_control_manual);
+        //vTaskSuspend(task_flight_control_manual);
         vTaskStartScheduler();
 
         Serial.println("Insufficient RAM");

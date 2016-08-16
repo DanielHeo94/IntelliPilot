@@ -6,6 +6,9 @@
 //  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
 #include "System.h"
+#include <IC_InertialSensor/MPU6050_6Axis_MotionApps20.h>
+
+MPU6050 mpu6050;
 
 #define INTERRUPT_PIN 11
 
@@ -67,7 +70,7 @@ void System::Setup::attitude() {
 
 void System::Publish::attitude(void *arg) {
         for(;; ) {
-                if (!dmpReady) return;
+                //if (!dmpReady) return;
 
                 while (!mpuInterrupt && fifoCount < packetSize) {}
 
@@ -139,10 +142,11 @@ void System::Publish::attitude(void *arg) {
                         Serial.print("\t");
                         Serial.println(__attitude.ypr.dmp.degrees[2]);
           #endif
+
+
                 }
         }
 }
 
-MPU6050 mpu6050;
 IC_Math math;
 Attitude __attitude;

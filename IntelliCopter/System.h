@@ -31,7 +31,6 @@
 #include <IC_InertialSensor/EBIMU9DOFV2.h>
 #include <IC_InertialSensor/HMC5883L.h>
 #include <IC_InertialSensor/LIDARLiteV2.h>
-#include <IC_InertialSensor/MPU6050_6Axis_MotionApps20.h>
 
 #include <IC_LED/IC_LED.h>
 #include <IC_Math/IC_Math.h>
@@ -70,7 +69,6 @@ extern BMP085 bmp085;
 extern EBIMU9DOFV2 ebimu9dofv2;
 extern HMC5883L hmc5883l;
 extern LIDARLiteV2 lidarlitev2;
-extern MPU6050 mpu6050;
 
 class System {
 public:

@@ -17,7 +17,7 @@ Arduino Due(Cortex-M3) based quadcopter open source project.
 ### License
 >> [Full Text](https://github.com/DanielHeo94/IntelliPilot/blob/master/LICENSE)
 
-## Maintainers
+### Maintainers
 >> - [Daniel Heo](https://github.com/DanielHeo94)
 >>   - ***Vehicle***: Copter
 >>   - ***Field***: Flgiht Control, Communication, and codings.

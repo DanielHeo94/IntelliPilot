@@ -6,6 +6,7 @@
 //  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
 #include "System.h"
+#include <IC_InertialSensor/I2Cdev.h>
 #include <IC_InertialSensor/MPU6050_6Axis_MotionApps20.h>
 
 MPU6050 mpu6050;
@@ -55,7 +56,7 @@ void System::Setup::attitude() {
                 mpu6050.setDMPEnabled(true);
 
                 Serial.println(F("Enabling interrupt detection..."));
-                attachInterrupt(INTERRUPT_PIN, dmpDataReady, RISING);
+                attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
                 mpuIntStatus = mpu6050.dmpGetFIFOPacketSize();
         } else {
                 // ERROR!
@@ -69,8 +70,9 @@ void System::Setup::attitude() {
 }
 
 void System::Publish::attitude(void *arg) {
+
         for(;; ) {
-                //if (!dmpReady) return;
+                if (!dmpReady) return;
 
                 while (!mpuInterrupt && fifoCount < packetSize) {}
 

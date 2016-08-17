@@ -18,7 +18,7 @@ void System::Publish::commands(void *arg) {
 
                 __status.temporary = radio.getCommands(__commands.raw);
 
-  #if (DEBUG_RADIO_COMMAND_ON == 1)
+  #if (DEBUG_RADIO_COMMAND == 1)
                 Serial.print(__commands.raw[0]);
                 Serial.print("\t");
                 Serial.print(__commands.raw[1]);

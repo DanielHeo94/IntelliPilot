@@ -13,7 +13,7 @@
 #define TASK_GET_ALTITUDE           0
 #define TASK_GET_BEARING            0
 #define TASK_GET_POSITI0            0
-#define TASK_GET_COMMANDS           1
+#define TASK_GET_COMMANDS           0
 #define TASK_COMM_GCS               0
 #define TASK_FC_IDLE                0
 #define TASK_FC_MANUAL_C0TROL       0

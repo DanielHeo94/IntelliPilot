@@ -11,9 +11,9 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: peterjinsoo@gmail.com
     build_command_prepend: "make clean"
-    build_command:   "make build -j2"
+    build_command:   "make build"
     branch_pattern: coverity_scan
 
 language: C
 
-script: make build -j2
+script: make build

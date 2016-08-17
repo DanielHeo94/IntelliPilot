@@ -26,3 +26,9 @@ void System::Publish::altitude(void *arg) {
                 __barometer.sealevelpressure = bmp085.readSealevelPressure();
         }
 }
+
+LIDARLiteV2 lidarlitev2;
+BMP085 bmp085;
+gps _gps;
+Altitude __altitude;
+Barometer __barometer;

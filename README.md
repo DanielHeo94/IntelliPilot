@@ -1,6 +1,8 @@
 # IntelliPilot Project
 [![Gitter](https://badges.gitter.im/intellipilot-gitter/Lobby.svg)](https://gitter.im/intellipilot-gitter/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+[![Build Semaphore CI](https://semaphoreci.com/api/v1/DanielHeo/intellipilot/branches/master/badge.svg)](https://semaphoreci.com/DanielHeo/intellipilot)
+
 [![Build Travis CI](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=master)](https://travis-ci.org/DanielHeo94/IntelliPilot)
 
 [![Coverity Scan](https://scan.coverity.com/projects/9895/badge.svg?flat=1)](https://scan.coverity.com/projects/danielheo94-intellipilot)

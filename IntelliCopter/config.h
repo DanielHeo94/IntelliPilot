@@ -10,15 +10,15 @@
 #define _CONFIG_H_
 
 #define TASK_GET_ATTITUDE           1
-#define TASK_GET_ALTITUDE           0
-#define TASK_GET_BEARING            0
-#define TASK_GET_POSITI0            0
-#define TASK_GET_COMMANDS           0
-#define TASK_COMM_GCS               0
-#define TASK_FC_IDLE                0
-#define TASK_FC_MANUAL_C0TROL       0
-#define TASK_LED_INDICATOR          0
-#define TASK_BATTERY_CHECK          0
+#define TASK_GET_ALTITUDE           1
+#define TASK_GET_BEARING            1
+#define TASK_GET_POSITI0N           1
+#define TASK_GET_COMMANDS           1
+#define TASK_COMM_GCS               1
+#define TASK_FC_IDLE                1
+#define TASK_FC_MANUAL_C0TROL       1
+#define TASK_LED_INDICATOR          1
+#define TASK_BATTERY_CHECK          1
 
 #define DEBUG_RADIO_COMMAND         0
 #define DEBUG_READABLE_QUATERNION   0

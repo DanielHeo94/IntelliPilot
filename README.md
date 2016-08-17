@@ -3,9 +3,11 @@
 
 [![Build Semaphore CI](https://semaphoreci.com/api/v1/DanielHeo/intellipilot/branches/master/badge.svg)](https://semaphoreci.com/DanielHeo/intellipilot)
 
-[![Build Travis CI](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=master)](https://travis-ci.org/DanielHeo94/IntelliPilot)
-
-[![Coverity Scan](https://scan.coverity.com/projects/9895/badge.svg?flat=1)](https://scan.coverity.com/projects/danielheo94-intellipilot)
+| branch | build | coverity-scan |
+| :----- | :---: | ------------: |
+| master | [![Build Status](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=master)](https://travis-ci.org/DanielHeo94/IntelliPilot)      |               |
+| dev    | [![Build Status](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=dev)](https://travis-ci.org/DanielHeo94/IntelliPilot)      |               |
+| coverity_scan| [![Build Status](https://travis-ci.org/DanielHeo94/IntelliPilot.svg?branch=coverity_scan)](https://travis-ci.org/DanielHeo94/IntelliPilot) | [![Coverity Scan](https://scan.coverity.com/projects/9895/badge.svg?flat=1)](https://scan.coverity.com/projects/danielheo94-intellipilot)             |
 
 ### Installation
 >>#### to build

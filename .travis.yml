@@ -1,3 +1,7 @@
-language: C
+language: c
 
 script: make build
+
+branches:
+  only:
+    - master

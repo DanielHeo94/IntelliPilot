@@ -1,24 +1,5 @@
 language: c
 
-<<<<<<< HEAD
-=======
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "fgFVy1qH9+BvtiEC3LENhdQdCW6LQIYPVJim2q4NwbAbcCd5e0NtuFvxdRzcBEXyB7NgSHcAqKpobJD4lB8PyBdw0SGBGVr6qgcDX03q+pyD+52VuVfxGaZgO+HXxyYtacHzrRfsFPnkPwZqI99fFBJydPjzaxlSGX4IPiGRmrPV0IBYDYN1jqCQ1wswarYgdpVL6CwMIFM2ESRyeC18yBCD4dKxMLhP91LQnDQ+yOfuPi6KKVGxk4n70AA6NzVCwJuywKe7u2SlSmh5u7SKVl3YJvJLvKiElTyV1v3Yk/LDOqIJb1kdUDQ6Iplj9A5BRreMKA4lNmYxECTK7azR+NLtUddsi0GTcEJ7ssvIksaiyyEpmGwB9UzgUz0q8ZlJXnOBLcVZKvPUXnq+MGI09Pm7wOpQkIX2++EnQAgwnE6FW1zm39d1tnI1xj/i4QAz7tsPLjXV8QqT0rauXKNUUc4dbPQKJfK9FnE4QTj8/6YfBGvwsh/D4a+BDA4LitnQCMy7ES8XrNTVDT3ekuhpZyTYU2uUa/mcO9u1HbbkAe9HJA+DFkaPB8HcmDgg8iLI2RxqUOZb9Rt1coaB+nZqFafpNVX51h8LLwx3R9fx3RJdN205P15nFYLQRZD286Yy2HPM9ARC05qD+MMlKIN9c+KdPFQNFd2JkgFjLQLwBbA="
-
-addons:
-  coverity_scan:
-    project:
-      name: "DanielHeo94/IntelliPilot"
-      description: "Build submitted via Travis CI"
-    notification_email: peterjinsoo@gmail.com
-    build_command_prepend: "make clean"
-    build_command:   "make build"
-    branch_pattern: coverity_scan
-
->>>>>>> 6559cde553fb587c3377b2a34dd53869c35c58c5
 script: make build
 
 branches:

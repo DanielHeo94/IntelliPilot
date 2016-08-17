@@ -66,7 +66,7 @@ default:
 
 #This rule is good to just make sure stuff compiles, without having to wait
 #for bossac.
-build: $(TMPDIR)/$(PROJNAME).elf
+build: $(TMPDIR)/$(PROJNAME).bin
 
 #This is a make rule template to create object files from the source files.
 # arg 1=src file

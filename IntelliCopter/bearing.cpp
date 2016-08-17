@@ -45,3 +45,6 @@ void System::Publish::bearing(void *arg) {
                 __bearing.heading.degrees = math.radiantodegree(__bearing.heading.radians);
         }
 }
+
+HMC5883L hmc5883l;
+Bearing __bearing;

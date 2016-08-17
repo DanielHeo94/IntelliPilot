@@ -33,3 +33,5 @@ void System::Communicate::battery_indicator(void *arg) {
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }
+
+Battery __battery;

@@ -34,3 +34,5 @@ void System::Communicate::led_indicator(void *arg) {
                 }
         }
 }
+
+IC_LED led;

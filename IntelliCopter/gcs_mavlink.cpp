@@ -42,3 +42,6 @@ void System::Communicate::gcs_mavlink(void *arg) {
                 vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
         }
 }
+
+Position __position;
+GPS_info __gps_info;

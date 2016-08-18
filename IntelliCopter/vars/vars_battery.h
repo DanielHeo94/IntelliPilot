@@ -24,6 +24,6 @@ typedef struct _battery {
   Unit remain;
 } Battery;
 
-extern Battery __battery;
+static Battery __battery;
 
 #endif

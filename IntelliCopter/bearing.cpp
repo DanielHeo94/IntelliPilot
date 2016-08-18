@@ -47,4 +47,3 @@ void System::Publish::bearing(void *arg) {
 }
 
 HMC5883L hmc5883l;
-Bearing __bearing;

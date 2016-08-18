@@ -16,6 +16,6 @@ typedef struct _altitude {
   double gps;       // meters
 } Altitude;
 
-extern Altitude __altitude;
+static Altitude __altitude;
 
 #endif

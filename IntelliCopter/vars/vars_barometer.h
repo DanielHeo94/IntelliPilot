@@ -16,6 +16,6 @@ typedef struct _barometer {
   float sealevelpressure;
 } Barometer;
 
-extern Barometer __barometer;
+static Barometer __barometer;
 
 #endif

@@ -23,12 +23,12 @@ void System::Communicate::battery_indicator(void *arg) {
                 __battery.remain.minutes = __battery.voltages / (batteryVoltageLast - __battery.voltages); //(batteryVoltageLast - batteryVoltage);
                 batteryVoltageLast = __battery.voltages;
 
-    #if (DEBUG_BATTERY == 1)
+                #if (DEBUG_BATTERY == 1)
                 Serial.print("bat vol per:\t");
                 Serial.print(__battery.voltages);
                 Serial.print("\t");
                 Serial.println(__battery.remain.percents);
-    #endif
+                #endif
 
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }

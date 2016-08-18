@@ -11,7 +11,7 @@
 void System::Control::control_manual(void *arg) {
 
         TickType_t xLastWakeTime = xTaskGetTickCount();
-        const TickType_t xWakePeriod = 10 / portTICK_PERIOD_MS;
+        const TickType_t xWakePeriod = FREQUENCY_TASK_FC_MANUAL_CONTROL;
 
         IC_AttitudeControl attitude_control(&(subscribe.commands()->manual[0]), &(subscribe.commands()->manual[1]), &(subscribe.commands()->manual[2]), &(subscribe.commands()->manual[3]), subscribe.pid_error(), subscribe.attitude(), subscribe.servo_output());
 
@@ -21,5 +21,6 @@ void System::Control::control_manual(void *arg) {
 
                 motors.rotate(subscribe.servo_output()->a, subscribe.servo_output()->b, subscribe.servo_output()->c, subscribe.servo_output()->d);
 
-                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);        }
+                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
+        }
 }

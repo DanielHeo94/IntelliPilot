@@ -11,10 +11,12 @@
 void System::Control::control_pre_flight(void *arg) {
 
         TickType_t xLastWakeTime = xTaskGetTickCount();
-        const TickType_t xWakePeriod = 1000 / portTICK_PERIOD_MS;
+        const TickType_t xWakePeriod = FREQUENCY_TASK_FC_IDLE;
 
         for (;; ) {
                 motors.stop();
+
+                Serial.println("Hi");
 
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }

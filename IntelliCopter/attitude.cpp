@@ -157,4 +157,3 @@ void System::Publish::attitude(void *arg) {
 }
 
 IC_Math math;
-Attitude __attitude;

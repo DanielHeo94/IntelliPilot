@@ -15,6 +15,6 @@ typedef struct _status {
   int flight_mode;
 } Status;
 
-extern Status __status;
+static Status __status;
 
 #endif

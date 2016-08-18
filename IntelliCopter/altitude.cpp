@@ -30,5 +30,3 @@ void System::Publish::altitude(void *arg) {
 LIDARLiteV2 lidarlitev2;
 BMP085 bmp085;
 gps _gps;
-Altitude __altitude;
-Barometer __barometer;

@@ -77,5 +77,3 @@ void System::commands_processing(int event) {
 }
 
 IC_Radio radio;
-Commands __commands;
-Status __status;

@@ -10,6 +10,9 @@
 
 void System::Communicate::gcs_mavlink(void *arg) {
 
+        TickType_t xLastWakeTime = xTaskGetTickCount();
+        const TickType_t xWakePeriod = FREQUENCY_TASK_COMM_GCS;
+
         for(;; ) {
                 mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &_heartbeat_msg, TYPE, AUTOPILOT_TYPE, (subscribe.status())->flight_mode, CUSTOM_MODE, SYSTEM_STATE);
                 mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &_attitude_msg, 0, (subscribe.attitude())->ypr.dmp.radians[2], (subscribe.attitude())->ypr.dmp.radians[1], (subscribe.attitude())->ypr.dmp.radians[0], (subscribe.attitude())->gyro.dmp.degrees[0], (subscribe.attitude())->gyro.dmp.degrees[1], (subscribe.attitude())->gyro.dmp.degrees[2]);
@@ -23,25 +26,22 @@ void System::Communicate::gcs_mavlink(void *arg) {
                 //_gps_stat_len = mavlink_msg_to_send_buffer(_gps_stat_buf, &_gps_stat_msg);
                 //_bat_stat_len = mavlink_msg_to_send_buffer(_bat_stat_buf, &_bat_stat_msg);
 
-    #if (COMMUNICATE_GCS_WIRE == 1)
+                #if (COMMUNICATE_GCS_WIRE == 1)
                 Serial.write(_heartbeat_buf, _heartbeat_len);
                 Serial.write(_attitude_buf, _attitude_len);
                 Serial.write(_gps_pos_buf, _gps_pos_len);
                 //Serial.write(_gps_stat_buf, _gps_stat_len);
                 //Serial.write(_bat_stat_buf, _bat_stat_len);
-    #endif
+                #endif
 
-    #if (COMMUNICATE_GCS_WIRELESS == 1)
+                #if (COMMUNICATE_GCS_WIRELESS == 1)
                 Serial3.write(_heartbeat_buf, _heartbeat_len);
                 Serial3.write(_attitude_buf, _attitude_len);
                 Serial3.write(_gps_pos_buf, _gps_pos_len);
                 //Serial3.write(_gps_stat_buf, _gps_stat_len);
                 //Serial3.write(_bat_stat_buf, _bat_stat_len);
-    #endif
+                #endif
 
-                vTaskDelay((100L * configTICK_RATE_HZ) / 1000L);
+                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);;
         }
 }
-
-Position __position;
-GPS_info __gps_info;

@@ -2,8 +2,8 @@
 #where to find the IDE
 ADIR:=$(shell pwd)/.arduino15/packages/arduino
 #which serial port to use (add a file with SUBSYSTEMS=="usb", ATTRS{product}=="Arduino Due Prog. Port", ATTRS{idProduct}=="003d", ATTRS{idVendor}=="2341", SYMLINK+="arduino_due" in /etc/udev/rules.d/ to get this working)
-PORT:=/dev/ttyACM0
-PORTNAME:=ttyACM0
+PORTNAME:=$(shell ls /dev | grep ttyACM)
+PORT:=/dev/$(PORTNAME)
 #if we want to verify the bossac upload, define this to -v
 VERIFY:= -v
 
@@ -167,4 +167,4 @@ flash: $(TMPDIR)/$(PROJNAME).bin
 
 #to view the serial port with screen.
 screen:
-	screen $(PORT) 115200
+	@screen $(PORT) 115200

@@ -24,6 +24,7 @@ System::Control::Control() {
 void System::config() {
 
         Serial.begin(115200);
+        Serial3.begin(57600);
         Serial.flush();
 
         Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
@@ -39,25 +40,25 @@ void System::config() {
 
         Serial.println("System configuration start.");
 
-    #if (TASK_GET_ATTITUDE == 1)
+        #if (TASK_GET_ATTITUDE == 1)
         _setup.attitude();
-    #endif
+        #endif
 
-    #if (TASK_GET_BEARING == 1)
+        #if (TASK_GET_BEARING == 1)
         _setup.bearing();
-    #endif
+        #endif
 
-    #if (TASK_GET_ALTITUDE == 1)
+        #if (TASK_GET_ALTITUDE == 1)
         _setup.altitude();
-    #endif
+        #endif
 
-    #if (TASK_GET_POSITION == 1)
+        #if (TASK_GET_POSITION == 1)
         _setup.position();
-    #endif
+        #endif
 
-    #if (TASK_GET_COMMANDS == 1)
+        #if (TASK_GET_COMMANDS == 1)
         _setup.commands();
-    #endif
+        #endif
 
         motors.start();
 

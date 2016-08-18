@@ -32,5 +32,8 @@
 *.bin
 *.elf
 
+# Travis configuration file
+.travis.yml
+
 # build files
 build/

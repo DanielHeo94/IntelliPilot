@@ -11,7 +11,7 @@
 
 MPU6050 mpu6050;
 
-#define INTERRUPT_PIN 11
+#define MPU6050_INTERRUPT_PIN 11
 
 bool dmpReady = false;
 uint8_t mpuIntStatus;
@@ -33,12 +33,13 @@ void dmpDataReady() {
 }
 
 void System::Setup::attitude() {
+
         Wire1.begin();
         Wire1.setClock(400000);
 
         Serial.println(F("Initializing MPU6050..."));
         mpu6050.initialize();
-        pinMode(INTERRUPT_PIN, INPUT);
+        pinMode(MPU6050_INTERRUPT_PIN, INPUT);
 
         Serial.println(F("Testing device connections..."));
         Serial.println(mpu6050.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
@@ -52,12 +53,17 @@ void System::Setup::attitude() {
         mpu6050.setZAccelOffset(1788);
 
         if (devStatus == 0) {
-                Serial.println(F("Enabling DMP..."));
+                Serial.println(F("\t\tEnabling DMP..."));
                 mpu6050.setDMPEnabled(true);
 
-                Serial.println(F("Enabling interrupt detection..."));
-                attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
-                mpuIntStatus = mpu6050.dmpGetFIFOPacketSize();
+                Serial.println(F("\t\tEnabling interrupt detection..."));
+                attachInterrupt(MPU6050_INTERRUPT_PIN, dmpDataReady, RISING);
+                mpuIntStatus = mpu6050.getIntStatus();
+
+                Serial.println(F("\t\tDMP ready! Waiting for first interrupt..."));
+                dmpReady = true;
+
+                packetSize = mpu6050.dmpGetFIFOPacketSize();
         } else {
                 // ERROR!
                 // 1 = initial memory load failed

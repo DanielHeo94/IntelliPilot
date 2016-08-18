@@ -21,7 +21,7 @@ void System::task_create() {
 
     #if (TASK_GET_ATTITUDE == 1)
         Serial.print("\t\tTASK_GET_ATTITUDE");
-        s1 = xTaskCreate(publish.attitude, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+        s1 = xTaskCreate(publish.attitude, NULL, configMINIMAL_STACK_SIZE + 2048, NULL, 1, NULL);
         Serial.println("\t\tSuccess.");
     #endif
 
@@ -76,8 +76,9 @@ void System::task_create() {
     #endif
 
         if (
+                false
         #if (TASK_GET_ATTITUDE == 1)
-                s1 != pdPASS
+                || s1 != pdPASS
         #endif
         #if (TASK_GET_ALTITUDE == 1)
                 || s2 != pdPASS
@@ -123,7 +124,3 @@ void System::scheduler_start() {
         Serial.println("Insufficient RAM");
         while(1) ;
 }
-
-TaskHandle_t task_flight_control_pre_flight;
-TaskHandle_t task_flight_control_manual;
-TaskHandle_t task_flight_control_pos_hold;

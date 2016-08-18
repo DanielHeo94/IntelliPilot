@@ -14,11 +14,14 @@ void System::Setup::commands() {
 
 void System::Publish::commands(void *arg) {
 
+        TickType_t xLastWakeTime = xTaskGetTickCount();
+        const TickType_t xWakePeriod = FREQUENCY_TASK_GET_COMMANDS;
+
         for(;; ) {
 
                 __status.temporary = radio.getCommands(__commands.raw);
 
-  #if (DEBUG_RADIO_COMMAND == 1)
+                #if (DEBUG_RADIO_COMMANDS == 1)
                 Serial.print(__commands.raw[0]);
                 Serial.print("\t");
                 Serial.print(__commands.raw[1]);
@@ -26,10 +29,12 @@ void System::Publish::commands(void *arg) {
                 Serial.print(__commands.raw[2]);
                 Serial.print("\t");
                 Serial.println(__commands.raw[3]);
-  #endif
+                #endif
 
                 if ((__status.temporary - __status.temporary_last) != 0) copter.commands_processing(__status.temporary);
                 __status.temporary_last = __status.temporary;
+
+                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }
 

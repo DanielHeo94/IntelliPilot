@@ -9,13 +9,12 @@
 | develop    | [![Build Status](https://travis-ci.org/IntelliPilot/IntelliPilot.svg?branch=dev)](https://travis-ci.org/IntelliPilot/IntelliPilot)      |               |
 | coverity_scan| [![Build Status](https://travis-ci.org/IntelliPilot/IntelliPilot.svg?branch=coverity_scan)](https://travis-ci.org/IntelliPilot/IntelliPilot) | [![Coverity Scan](https://scan.coverity.com/projects/9895/badge.svg?flat=1)](https://scan.coverity.com/projects/danielheo94-intellipilot)             |
 
-### Installation
->>#### to build
-`~/IntelliPilot$ make build`
-#### to flash
-`~/IntelliPilot$ make flash`
-#### to screen *via serial port*
-`~/IntelliPilot$ make screen`
+### Wikis
+>> [Home](https://github.com/IntelliPilot/IntelliPilot/wiki)
+
+>> [Download](https://github.com/IntelliPilot/IntelliPilot/wiki/Download)
+
+>> [Build & Flash](https://github.com/IntelliPilot/IntelliPilot/wiki/Build-&-Flash)
 
 ### Contiributors
 >>[Github statistics](https://github.com/IntelliPilot/IntelliPilot/graphs/contributors)

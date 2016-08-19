@@ -29,3 +29,7 @@
 >> - [Minchan Kim](https://github.com/Minchan-Kim)
 >>   - ***Vehicle***: Copter
 >>   - ***Field***: Communication, GCS.
+
+### Supported Boards
+>> - Arduino Due
+>> - Arduino Mega (_still developing_)

@@ -58,15 +58,10 @@ public:
 								IC_Radio();
 
 								void begin();
-								uint8_t getCommands(double *data);
-
+								void getCommands(double *data);
 private:
-
-								void sCounter();
-
 								static void acquireLock();
 								static void releaseLock();
-
 };
 
 #endif

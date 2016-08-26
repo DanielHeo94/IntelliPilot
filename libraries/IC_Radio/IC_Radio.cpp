@@ -28,10 +28,6 @@ unsigned long radioLastChange3 = micros();
 unsigned long radioLastChange4 = micros();
 unsigned long radioLastChange5 = micros();
 
-int preflightModeArmCnt, preflightModeDisarmCnt;
-
-boolean armedMode[4] = { false, };  // Pre-Flgiht Mode, Manual Mode, Guided Mode, Auto Mode.
-
 IC_Radio::IC_Radio() {
 }
 
@@ -71,7 +67,7 @@ void IC_Radio::begin() {
 }
 
 // NOTICE!! this function MUST be in loop.
-uint8_t IC_Radio::getCommands(double *data) {
+void IC_Radio::getCommands(double *data) {
 
 								IC_Radio::acquireLock();
 
@@ -93,70 +89,15 @@ uint8_t IC_Radio::getCommands(double *data) {
 								ch4Last = ch4;
 								ch5Last = ch5;
 
-								data[0] = ch3;
+								data[0] = ch1;
 								data[1] = ch2;
-								data[2] = ch1;
+								data[2] = ch3;
 								data[3] = ch4;
 								data[4] = ch5;
-
-								IC_Radio::sCounter();
 
 								IC_Radio::releaseLock();
 								vTaskDelay((5L * configTICK_RATE_HZ) / 1000L);
 								IC_Radio::acquireLock();
-
-								if (preflightModeArmCnt == PREFLIGHT_MODE_ARM_COUNT_MAX
-												&& !armedMode[0]) {
-																armedMode[0] = true;
-																armedMode[1] = false;
-																armedMode[2] = false;
-																armedMode[3] = false;
-																return STATE_PREFLIGHT_ARMED;
-								}
-								else if (preflightModeDisarmCnt == PREFLIGHT_MODE_ARM_COUNT_MAX
-																	&& armedMode[0]) {
-																armedMode[0] = false;
-																armedMode[1] = false;
-																armedMode[2] = false;
-																armedMode[3] = false;
-																return STATE_PREFLIGHT_DISARMED;
-								}
-
-								if (ch5 == RC_CH5_LOW
-												&& !armedMode[1]
-												&& armedMode[0]) {
-																armedMode[0] = true;
-																armedMode[1] = true;
-																armedMode[2] = false;
-																armedMode[3] = false;
-																return STATE_MANUAL_ARMED;
-								}
-								else if (ch5 == RC_CH5_MID
-																	&& !armedMode[2]
-																	&& armedMode[0]) {
-																armedMode[0] = true;
-																armedMode[1] = false;
-																armedMode[2] = true;
-																armedMode[3] = false;
-																return STATE_HOLD_ARMED;
-								}
-								else if (ch5 == RC_CH5_HIGH
-																	&& !armedMode[3]
-																	&& armedMode[0]) {
-																armedMode[0] = true;
-																armedMode[1] = false;
-																armedMode[2] = false;
-																armedMode[3] = true;
-																return STATE_AUTO_ARMED;
-								}
-
-								return 0;
-}
-
-void IC_Radio::sCounter() {
-								if ((int)ch1 <= (RC_CH1_HIGH + 20) && (int)ch4 >= (RC_CH4_LOW - 20) && !armedMode[0]) preflightModeArmCnt++;
-								else if ((int)ch1 >= (RC_CH1_LOW - 20) && (int)ch4 >= (RC_CH4_LOW - 20) && armedMode[0]) preflightModeDisarmCnt++;
-								else { preflightModeArmCnt = 0; preflightModeDisarmCnt = 0; }
 }
 
 void IC_Radio::acquireLock() {

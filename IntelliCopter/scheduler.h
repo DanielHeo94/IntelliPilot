@@ -13,8 +13,7 @@
 
 #include <FreeRTOS_ARM.h>
 
-static TaskHandle_t task_flight_control_pre_flight;
-static TaskHandle_t task_flight_control_manual;
-static TaskHandle_t task_flight_control_pos_hold;
+static TaskHandle_t controlPreFlightHandler;
+static TaskHandle_t controlManualHandler;
 
 #endif

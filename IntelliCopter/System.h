@@ -77,20 +77,21 @@ public:
         void config();
         void start();
 
-        void task_create();
-        void scheduler_start();
-
-        void commands_processing(int event);
+        void createTasks();
+        void startScheduler();
 
         class Setup {
 public:
                 Setup();
+
+                void gcs_mavlink();
 
                 void commands();
                 void attitude();
                 void altitude();
                 void position();
                 void bearing();
+                void status();
         };
 
         class Publish {
@@ -101,45 +102,47 @@ public:
                 static void attitude(void *arg);
                 static void altitude(void *arg);
                 static void position(void *arg);
-                static void bearing(void *arg);
+                static void bearing(void* arg);
+                static void battery(void* arg);
+                static void status(void* arg);
         };
 
         class Subscribe {
 public:
                 Subscribe();
 
-                Altitude* altitude() {
-                        return &__altitude;
+                Altitude_t* altitude() {
+                        return &altitudeBox;
                 }
-                Attitude* attitude() {
-                        return &__attitude;
+                Attitude_t* attitude() {
+                        return &attitudeBox;
                 }
-                Barometer* barometer() {
-                        return &__barometer;
+                Barometer_t* barometer() {
+                        return &barometerBox;
                 }
-                Battery* battery() {
-                        return &__battery;
+                Battery_t* battery() {
+                        return &batteryBox;
                 }
-                Bearing* bearing() {
-                        return &__bearing;
+                Bearing_t* bearing() {
+                        return &bearingBox;
                 }
-                Commands* commands() {
-                        return &__commands;
+                Commands_t* commands() {
+                        return &commandsBox;
                 }
-                GPS_info* gps_info() {
-                        return &__gps_info;
+                GpsInfo_t* gpsInfo() {
+                        return &gpsInfoBox;
                 }
-                Servo_output* servo_output() {
-                        return &__servo_output;
+                ServoOutput_t* servoOutput() {
+                        return &servoOutputBox;
                 }
-                PID_error* pid_error() {
-                        return &__pid_error;
+                PidError_t* pidError() {
+                        return &pidErrorBox;
                 }
-                Position* position() {
-                        return &__position;
+                Position_t* position() {
+                        return &positionBox;
                 }
-                Status* status() {
-                        return &__status;
+                Status_t* status() {
+                        return &statusBox;
                 }
 
         };
@@ -148,17 +151,16 @@ public:
 public:
                 Communicate();
 
-                static void gcs_mavlink(void *arg);
-                static void led_indicator(void *arg);
-                static void battery_indicator(void *arg);
+                static void transferMsgToGcs(void *arg);
+                static void showLedIndication(void *arg);
         };
 
         class Control {
 public:
                 Control();
 
-                static void control_pre_flight(void *arg);
-                static void control_manual(void *arg);
+                static void controlPreFlight(void *arg);
+                static void controlManual(void *arg);
         };
 
 private:

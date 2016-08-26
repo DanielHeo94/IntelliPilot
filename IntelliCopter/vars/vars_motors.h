@@ -9,11 +9,10 @@
 #ifndef _VARS_MOTORS_H_
 #define _VARS_MOTORS_H_
 
-typedef struct _servo_output {
+typedef struct ServoOutput_t {
+        int a, b, c, d;
+} ServoOutput_t;
 
-  int a, b, c, d;
-} Servo_output;
-
-static Servo_output __servo_output;
+static ServoOutput_t servoOutputBox;
 
 #endif

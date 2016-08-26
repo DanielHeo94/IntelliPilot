@@ -9,12 +9,11 @@
 #ifndef _VARS_STATUS_H_
 #define _VARS_STATUS_H_
 
-typedef struct _status {
+typedef struct Status_t {
+        bool flightReady;
+        int flightMode;
+} Status_t;
 
-  int temporary, temporary_last;
-  int flight_mode;
-} Status;
-
-static Status __status;
+static Status_t statusBox;
 
 #endif

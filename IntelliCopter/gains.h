@@ -1,7 +1,13 @@
-// gains.h
+//
+//  gain.h
+//  IntelliCopter
+//
+//  Created by Daniel Heo on 2016. 7. 12.
+//  Copyright © 2016 http://dronix.kr. All rights reserved.
+//
 
-#ifndef _GAINS_h
-#define _GAINS_h
+#ifndef _GAINS_H_
+#define _GAINS_H_
 
 // Gains
 #define PITCH_OUTER_P_GAIN  4.750

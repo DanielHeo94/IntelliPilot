@@ -9,25 +9,22 @@
 #ifndef _VARS_ATTITUDE_H_
 #define _VARS_ATTITUDE_H_
 
-typedef struct c {
+struct sRadDeg3 {
+        float radians[3];
+        float degrees[3];
+};
 
-  float radians[3];
-  float degrees[3];
-} C;
+struct sRawDmp {
+        struct sRadDeg3 raw;
+        struct sRadDeg3 dmp;
+};
 
-typedef struct datatype {
+typedef struct Attitude_t {
+        struct sRawDmp ypr;
+        struct sRawDmp euler;
+        struct sRawDmp gyro;
+} Attitude_t;
 
-  C raw;
-  C dmp;
-} Datatype;
-
-typedef struct _attitude {
-
-  Datatype ypr;
-  Datatype euler;
-  Datatype gyro;
-} Attitude;
-
-static Attitude __attitude;
+static Attitude_t attitudeBox;
 
 #endif

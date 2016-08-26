@@ -23,8 +23,7 @@ System::Control::Control() {
 
 void System::config() {
 
-        Serial.begin(115200);
-        Serial3.begin(57600);
+        Serial.begin(DEBUG_SERIAL_BAUDRATE);
         Serial.flush();
 
         Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
@@ -38,7 +37,11 @@ void System::config() {
         Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
         Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
 
-        Serial.println("System configuration start.");
+        Serial.println("System configuration starts.");
+
+        #if (TASK_COMM_GCS == 1)
+        _setup.gcs_mavlink();
+        #endif
 
         #if (TASK_GET_ATTITUDE == 1)
         _setup.attitude();
@@ -60,15 +63,19 @@ void System::config() {
         _setup.commands();
         #endif
 
+        #if (TASK_GET_STATUS == 1)
+        _setup.status();
+        #endif
+
         motors.start();
 
         Serial.println("System configuration complete.");
 
-        copter.task_create();
+        copter.createTasks();
 }
 
 void System::start() {
-        copter.scheduler_start();
+        copter.startScheduler();
 }
 
 System copter;

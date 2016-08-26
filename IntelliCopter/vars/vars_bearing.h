@@ -9,18 +9,16 @@
 #ifndef _VARS_BEARING_H_
 #define _VARS_BEARING_H_
 
-typedef struct type {
+struct sRadDeg {
+        double radians;
+        double degrees;
+};
 
-  double radians;
-  double degrees;
-} Type;
+typedef struct Bearing_t {
+        struct sRadDeg heading;
+        double declinationAngle;
+} Bearing_t;
 
-typedef struct _bearing {
-
-  Type heading;
-  double declination_angle;
-} Bearing;
-
-static Bearing __bearing;
+static Bearing_t bearingBox;
 
 #endif

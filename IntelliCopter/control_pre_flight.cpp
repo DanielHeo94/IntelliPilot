@@ -8,7 +8,7 @@
 
 #include "System.h"
 
-void System::Control::control_pre_flight(void *arg) {
+void System::Control::controlPreFlight(void *arg) {
 
         TickType_t xLastWakeTime = xTaskGetTickCount();
         const TickType_t xWakePeriod = FREQUENCY_TASK_FC_IDLE;

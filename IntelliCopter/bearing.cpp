@@ -5,6 +5,7 @@
 //  Created by Daniel Heo on 2016. 7. 12.
 //  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
+
 #include "System.h"
 
 void System::Setup::bearing() {
@@ -27,22 +28,22 @@ void System::Publish::bearing(void *arg) {
         for (;; ) {
                 Vector norm = hmc5883l.readNormalize();
 
-                __bearing.heading.radians = atan2(norm.YAxis, norm.XAxis);
+                bearingBox.heading.radians = atan2(norm.YAxis, norm.XAxis);
 
-                __bearing.declination_angle = (4.0 + (26.0 / 60.0)) / (180 / M_PI);
-                __bearing.heading.radians += __bearing.declination_angle;
+                bearingBox.declinationAngle = (4.0 + (26.0 / 60.0)) / (180 / M_PI);
+                bearingBox.heading.radians += bearingBox.declinationAngle;
 
-                if (__bearing.heading.radians < 0)
+                if (bearingBox.heading.radians < 0)
                 {
-                        __bearing.heading.radians += 2 * PI;
+                        bearingBox.heading.radians += 2 * PI;
                 }
 
-                if (__bearing.heading.radians > 2 * PI)
+                if (bearingBox.heading.radians > 2 * PI)
                 {
-                        __bearing.heading.radians -= 2 * PI;
+                        bearingBox.heading.radians -= 2 * PI;
                 }
 
-                __bearing.heading.degrees = math.radiantodegree(__bearing.heading.radians);
+                bearingBox.heading.degrees = math.radiantodegree(bearingBox.heading.radians);
         }
 }
 

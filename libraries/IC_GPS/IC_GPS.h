@@ -19,10 +19,12 @@ public:
 								IC_GPS();
 
 								void begin(int baudrate = 115200);
-								void configure(uint8_t mode = PED,
-																							uint8_t datarate = 4,
-																							int portrate = 115200,
-																							bool gll = true, bool gsa = true, bool gsv = true, bool rmc = true, bool vtg = true);
+								void configure(uint8_t mode = PED, uint8_t datarate = 4, int portrate = 115200,
+																							bool gll = true,
+																							bool gsa = true,
+																							bool gsv = true,
+																							bool rmc = true,
+																							bool vtg = true);
 
 private:
 

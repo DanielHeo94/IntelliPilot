@@ -8,18 +8,27 @@
 
 #include "System.h"
 
-void System::Control::control_manual(void *arg) {
+void System::Control::controlManual(void *arg) {
 
         TickType_t xLastWakeTime = xTaskGetTickCount();
         const TickType_t xWakePeriod = FREQUENCY_TASK_FC_MANUAL_CONTROL;
 
-        IC_AttitudeControl attitude_control(&(subscribe.commands()->manual[0]), &(subscribe.commands()->manual[1]), &(subscribe.commands()->manual[2]), &(subscribe.commands()->manual[3]), subscribe.pid_error(), subscribe.attitude(), subscribe.servo_output());
+        IC_AttitudeControl attitude_control(&(subscribe.commands()->controlManual[0]),
+                                            &(subscribe.commands()->controlManual[1]),
+                                            &(subscribe.commands()->controlManual[2]),
+                                            &(subscribe.commands()->controlManual[3]),
+                                            subscribe.pidError(),
+                                            subscribe.attitude(),
+                                            subscribe.servoOutput());
 
         for(;; ) {
 
                 attitude_control.Compute();
 
-                motors.rotate(subscribe.servo_output()->a, subscribe.servo_output()->b, subscribe.servo_output()->c, subscribe.servo_output()->d);
+                motors.rotate(subscribe.servoOutput()->a,
+                              subscribe.servoOutput()->b,
+                              subscribe.servoOutput()->c,
+                              subscribe.servoOutput()->d);
 
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }

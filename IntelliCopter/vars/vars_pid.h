@@ -9,20 +9,17 @@
 #ifndef _VARS_PID_H_
 #define _VARS_PID_H_
 
+struct sAngSpd {
+        double angle;
+        double speed;
+};
 
-typedef struct a {
+typedef struct PidError_t {
+        struct sAngSpd yaw;
+        struct sAngSpd pitch;
+        struct sAngSpd roll;
+} PidError_t;
 
-  double angle;
-  double speed;
-} A;
-
-typedef struct _pid_error {
-
-  A yaw;
-  A pitch;
-  A roll;
-} PID_error;
-
-static PID_error __pid_error;
+static PidError_t pidErrorBox;
 
 #endif

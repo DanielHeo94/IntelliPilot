@@ -8,7 +8,13 @@
 
 #include "IC_AttitudeControl.h"
 
-IC_AttitudeControl::IC_AttitudeControl(double* target_yaw, double* target_pitch, double* target_roll, double* throttle_in,PID_error* error, Attitude* sample, Servo_output* output) {
+IC_AttitudeControl::IC_AttitudeControl(double* target_yaw,
+                                       double* target_pitch,
+                                       double* target_roll,
+                                       double* throttle_in,
+                                       PidError_t* error,
+                                       Attitude_t* sample,
+                                       ServoOutput_t* output) {
 
         _target_yaw = target_yaw;
         _target_pitch = target_pitch;

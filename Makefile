@@ -73,7 +73,7 @@ build: $(TMPDIR)/$(PROJNAME).bin
 define OBJ_template
 $(2): $(1)
 	$(eval STEPCNT=$(shell echo $$(($(STEPCNT)+1))))
-	@echo -n "\r[File $(STEPCNT) of 69] Create object files from the source files =>"
+	@echo -n "\r[File $(STEPCNT) of 70] Create object files from the source files =>"
 	@$(C$(3)) -MD -c $(C$(3)FLAGS) $(DEFINES) $(INCLUDES) $(1) -o $(2)
 endef
 #now invoke the template both for c++ sources:

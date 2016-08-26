@@ -5,6 +5,7 @@
 //  Created by Daniel Heo on 2016. 7. 12.
 //  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
+
 #include "System.h"
 
 void System::Setup::position() {
@@ -39,23 +40,23 @@ void System::Publish::position(void *arg) {
                                 _gps.encode(Serial2.read());
                 } while (millis() - start < 100);
 
-                __position.latitude = _gps.location.lat();
-                __position.longitude = _gps.location.lng();
-                __position.cog = _cog.value();
+                positionBox.latitude = _gps.location.lat();
+                positionBox.longitude = _gps.location.lng();
+                positionBox.cog = _cog.value();
 
-                __gps_info.mode = _mode.value();
-                __gps_info.fixtype = _fixtype.value();
-                __gps_info.pdop = _pdop.value();
-                __gps_info.hdop = _gps.hdop.value();
-                __gps_info.vdop = _vdop.value();
-                __gps_info.numbers_of_gpgsv_messages = _nummessages.value();
-                __gps_info.index_number_of_gpgsv_message = _messagenum.value();
-                __gps_info.numbers_of_sats_inview = _numsatsinview.value();
-                __gps_info.prn = _prn.value();
-                __gps_info.snr = _snr.value();
-                __gps_info.elevation = _elevation.value();
-                __gps_info.azimuth = _azimuth.value();
-                __gps_info.timestamp = _timestamp.value();
-                __gps_info.number_of_satellites = _gps.satellites.value();
+                gpsInfoBox.mode = _mode.value();
+                gpsInfoBox.fixtype = _fixtype.value();
+                gpsInfoBox.pdop = _pdop.value();
+                gpsInfoBox.hdop = _gps.hdop.value();
+                gpsInfoBox.vdop = _vdop.value();
+                gpsInfoBox.numbers_of_gpgsv_messages = _nummessages.value();
+                gpsInfoBox.index_number_of_gpgsv_message = _messagenum.value();
+                gpsInfoBox.numbers_of_sats_inview = _numsatsinview.value();
+                gpsInfoBox.prn = _prn.value();
+                gpsInfoBox.snr = _snr.value();
+                gpsInfoBox.elevation = _elevation.value();
+                gpsInfoBox.azimuth = _azimuth.value();
+                gpsInfoBox.timestamp = _timestamp.value();
+                gpsInfoBox.number_of_satellites = _gps.satellites.value();
         }
 }

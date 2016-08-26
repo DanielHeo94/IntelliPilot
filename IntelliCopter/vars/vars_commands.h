@@ -9,12 +9,11 @@
 #ifndef _VARS_COMMANDS_H_
 #define _VARS_COMMANDS_H_
 
-typedef struct _commands {
+typedef struct Commands_t {
+        double pulseWidth[5];
+        double controlManual[5];
+} Commands_t;
 
-  double raw[5];
-  double manual[5];
-} Commands;
-
-static Commands __commands;
+static Commands_t commandsBox;
 
 #endif

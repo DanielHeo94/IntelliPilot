@@ -8,7 +8,7 @@
 
 #include "System.h"
 
-void System::Communicate::battery_indicator(void *arg) {
+void System::Publish::battery(void *arg) {
 
         TickType_t xLastWakeTime = xTaskGetTickCount();
         const TickType_t xWakePeriod = 60000 / portTICK_PERIOD_MS;
@@ -18,16 +18,16 @@ void System::Communicate::battery_indicator(void *arg) {
         for (;; ) {
 
                 int _analogread = analogRead(A0);
-                __battery.voltages = _analogread * (3.3 / 1023.0);
-                __battery.remain.percents = (__battery.voltages / MAX_BATTERY_VOLTAGE) * 100;
-                __battery.remain.minutes = __battery.voltages / (batteryVoltageLast - __battery.voltages); //(batteryVoltageLast - batteryVoltage);
-                batteryVoltageLast = __battery.voltages;
+                batteryBox.voltages = _analogread * (3.3 / 1023.0);
+                batteryBox.remain.percents = (batteryBox.voltages / MAX_BATTERY_VOLTAGE) * 100;
+                batteryBox.remain.minutes = batteryBox.voltages / (batteryVoltageLast - batteryBox.voltages); //(batteryVoltageLast - batteryVoltage);
+                batteryVoltageLast = batteryBox.voltages;
 
                 #if (DEBUG_BATTERY == 1)
                 Serial.print("bat vol per:\t");
-                Serial.print(__battery.voltages);
+                Serial.print(batteryBox.voltages);
                 Serial.print("\t");
-                Serial.println(__battery.remain.percents);
+                Serial.println(batteryBox.remain.percents);
                 #endif
 
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);

@@ -12,18 +12,16 @@
 const double MAX_BATTERY_VOLTAGE = 3.1;
 const double MIN_BATTERY_VOLTAGE = 2.7;
 
-typedef struct unit {
+struct sPerMin {
+        int percents;
+        int minutes;
+};
 
-  int percents;
-  int minutes;
-} Unit;
+typedef struct Battery_t {
+        double voltages;
+        struct sPerMin remain;
+} Battery_t;
 
-typedef struct _battery {
-
-  double voltages;
-  Unit remain;
-} Battery;
-
-static Battery __battery;
+static Battery_t batteryBox;
 
 #endif

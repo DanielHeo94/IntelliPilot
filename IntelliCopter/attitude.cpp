@@ -5,6 +5,7 @@
 //  Created by Daniel Heo on 2016. 7. 12.
 //  Copyright © 2016 http://dronix.kr. All rights reserved.
 //
+
 #include "System.h"
 #include <IC_InertialSensor/I2Cdev.h>
 #include <IC_InertialSensor/MPU6050_6Axis_MotionApps20.h>
@@ -106,21 +107,21 @@ void System::Publish::attitude(void *arg) {
 
                         mpu6050.dmpGetQuaternion(&q, fifoBuffer);
                         mpu6050.dmpGetGravity(&gravity, &q);
-                        mpu6050.dmpGetYawPitchRoll(__attitude.ypr.dmp.radians, &q, &gravity);
-                        mpu6050.dmpGetEuler(__attitude.euler.dmp.radians, &q);
+                        mpu6050.dmpGetYawPitchRoll(attitudeBox.ypr.dmp.radians, &q, &gravity);
+                        mpu6050.dmpGetEuler(attitudeBox.euler.dmp.radians, &q);
                         mpu6050.dmpGetGyro(gyro, fifoBuffer);
 
-                        __attitude.ypr.dmp.degrees[0] = math.radiantodegree(__attitude.ypr.dmp.radians[0]);
-                        __attitude.ypr.dmp.degrees[1] = math.radiantodegree(__attitude.ypr.dmp.radians[1]);
-                        __attitude.ypr.dmp.degrees[2] = math.radiantodegree(__attitude.ypr.dmp.radians[2]);
+                        attitudeBox.ypr.dmp.degrees[0] = math.radiantodegree(attitudeBox.ypr.dmp.radians[0]);
+                        attitudeBox.ypr.dmp.degrees[1] = math.radiantodegree(attitudeBox.ypr.dmp.radians[1]);
+                        attitudeBox.ypr.dmp.degrees[2] = math.radiantodegree(attitudeBox.ypr.dmp.radians[2]);
 
-                        __attitude.euler.dmp.degrees[0] = math.radiantodegree(__attitude.euler.dmp.radians[0]);
-                        __attitude.euler.dmp.degrees[1] = math.radiantodegree(__attitude.euler.dmp.radians[1]);
-                        __attitude.euler.dmp.degrees[2] = math.radiantodegree(__attitude.euler.dmp.radians[2]);
+                        attitudeBox.euler.dmp.degrees[0] = math.radiantodegree(attitudeBox.euler.dmp.radians[0]);
+                        attitudeBox.euler.dmp.degrees[1] = math.radiantodegree(attitudeBox.euler.dmp.radians[1]);
+                        attitudeBox.euler.dmp.degrees[2] = math.radiantodegree(attitudeBox.euler.dmp.radians[2]);
 
-                        __attitude.gyro.dmp.degrees[0] = (float) gyro[0];
-                        __attitude.gyro.dmp.degrees[1] = (float) gyro[1];
-                        __attitude.gyro.dmp.degrees[2] = (float) gyro[2];
+                        attitudeBox.gyro.dmp.degrees[0] = (float) gyro[0];
+                        attitudeBox.gyro.dmp.degrees[1] = (float) gyro[1];
+                        attitudeBox.gyro.dmp.degrees[2] = (float) gyro[2];
 
           #if (DEBUG_READABLE_QUATERNION == 1)
                         Serial.print("quat\t");
@@ -135,20 +136,20 @@ void System::Publish::attitude(void *arg) {
 
           #if (DEBUG_READABLE_EULER == 1)
                         Serial.print("euler\t");
-                        Serial.print(__attitude.euler.dmp.degrees[0]);
+                        Serial.print(attitudeBox.euler.dmp.degrees[0]);
                         Serial.print("\t");
-                        Serial.print(__attitude.euler.dmp.degrees[1]);
+                        Serial.print(attitudeBox.euler.dmp.degrees[1]);
                         Serial.print("\t");
-                        Serial.println(__attitude.euler.dmp.degrees[2]);
+                        Serial.println(attitudeBox.euler.dmp.degrees[2]);
           #endif
 
           #if (DEBUG_READABLE_YAWPITCHROLL == 1)
                         Serial.print("ypr\t");
-                        Serial.print(__attitude.ypr.dmp.degrees[0]);
+                        Serial.print(attitudeBox.ypr.dmp.degrees[0]);
                         Serial.print("\t");
-                        Serial.print(__attitude.ypr.dmp.degrees[1]);
+                        Serial.print(attitudeBox.ypr.dmp.degrees[1]);
                         Serial.print("\t");
-                        Serial.println(__attitude.ypr.dmp.degrees[2]);
+                        Serial.println(attitudeBox.ypr.dmp.degrees[2]);
           #endif
 
 

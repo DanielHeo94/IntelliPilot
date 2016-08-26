@@ -8,10 +8,10 @@
 
 #include "System.h"
 
-void System::Communicate::led_indicator(void *arg) {
+void System::Communicate::showLedIndication(void *arg) {
 
         for (;; ) {
-                switch (subscribe.status()->flight_mode)
+                switch (subscribe.status()->flightMode)
                 {
                 case MAV_MODE_PREFLIGHT:
                         led.idleIndicator();

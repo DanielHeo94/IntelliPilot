@@ -9,28 +9,27 @@
 #ifndef _VARS_GPS_H_
 #define _VARS_GPS_H_
 
-typedef struct _gps_info {
+typedef struct GpsInfo_t {
+        const char *timestamp;
+        const char *mode;
+        const char *pdop;
+        const char *vdop;
+        const char *fixtype;
+        const char *numbers_of_gpgsv_messages;
+        const char *index_number_of_gpgsv_message;
+        const char *numbers_of_sats_inview;
+        const char *prn;
+        const char *snr;
+        const char *elevation;
+        const char *azimuth;
 
-  const char *timestamp;
-  const char *mode;
-  const char *pdop;
-  const char *vdop;
-  const char *fixtype;
-  const char *numbers_of_gpgsv_messages;
-  const char *index_number_of_gpgsv_message;
-  const char *numbers_of_sats_inview;
-  const char *prn;
-  const char *snr;
-  const char *elevation;
-  const char *azimuth;
+        int number_of_satellites;
+        int32_t hdop;
 
-  int number_of_satellites;
-  int32_t hdop;
+        unsigned long age, date, chars;
+        unsigned short sentences, failed;
+} GpsInfo_t;
 
-  unsigned long age, date, chars;
-  unsigned short sentences, failed;
-} GPS_info;
-
-static GPS_info __gps_info;
+static GpsInfo_t gpsInfoBox;
 
 #endif

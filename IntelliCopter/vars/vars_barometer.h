@@ -9,11 +9,11 @@
 #ifndef _VARS_BAROMETER_H_
 #define _VARS_BAROMETER_H_
 
-typedef struct Barometer_t {
+struct Barometer_t {
         float temparature;
         float pressure;
         float sealevelpressure;
-} Barometer_t;
+};
 
 static Barometer_t barometerBox;
 

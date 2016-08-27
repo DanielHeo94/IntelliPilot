@@ -9,6 +9,8 @@
 #ifndef _VARS_ATTITUDE_H_
 #define _VARS_ATTITUDE_H_
 
+#include <IC_InertialSensor/helper_3dmath.h>
+
 struct sRadDeg3 {
         float radians[3];
         float degrees[3];
@@ -19,11 +21,17 @@ struct sRawDmp {
         struct sRadDeg3 dmp;
 };
 
-typedef struct Attitude_t {
+struct Attitude_t {
         struct sRawDmp ypr;
         struct sRawDmp euler;
         struct sRawDmp gyro;
-} Attitude_t;
+
+        Quaternion quaternion;
+        VectorInt16 aa;
+        VectorInt16 aaReal;
+        VectorInt16 aaWorld;
+        VectorFloat gravity;
+};
 
 static Attitude_t attitudeBox;
 

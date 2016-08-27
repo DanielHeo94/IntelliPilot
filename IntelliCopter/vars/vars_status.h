@@ -9,10 +9,10 @@
 #ifndef _VARS_STATUS_H_
 #define _VARS_STATUS_H_
 
-typedef struct Status_t {
+struct Status_t {
         bool flightReady;
         int flightMode;
-} Status_t;
+};
 
 static Status_t statusBox;
 

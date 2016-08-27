@@ -17,10 +17,10 @@ struct sPerMin {
         int minutes;
 };
 
-typedef struct Battery_t {
+struct Battery_t {
         double voltages;
         struct sPerMin remain;
-} Battery_t;
+};
 
 static Battery_t batteryBox;
 

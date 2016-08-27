@@ -151,8 +151,22 @@ public:
 public:
                 Communicate();
 
-                static void transferMsgToGcs(void *arg);
-                static void showLedIndication(void *arg);
+                static void transferMsgToGcs(void* arg);
+                static void receiveMsgFromGcs(void* arg);
+
+                static void showLedIndication(void* arg);
+
+                class Waypoints {
+                  static void read();
+                  static void writeWaypointCount();
+                  static void writeWaypoint();
+                  static void writeWaypointRequest();
+                  static void writeWaypointAck();
+                }
+
+                class Parameters {
+
+                }
         };
 
         class Control {

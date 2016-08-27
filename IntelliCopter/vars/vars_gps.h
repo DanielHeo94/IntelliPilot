@@ -9,7 +9,7 @@
 #ifndef _VARS_GPS_H_
 #define _VARS_GPS_H_
 
-typedef struct GpsInfo_t {
+struct GpsInfo_t {
         const char *timestamp;
         const char *mode;
         const char *pdop;
@@ -28,7 +28,7 @@ typedef struct GpsInfo_t {
 
         unsigned long age, date, chars;
         unsigned short sentences, failed;
-} GpsInfo_t;
+};
 
 static GpsInfo_t gpsInfoBox;
 

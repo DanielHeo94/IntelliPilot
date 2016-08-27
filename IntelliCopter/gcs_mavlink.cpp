@@ -25,9 +25,9 @@ void System::Communicate::transferMsgToGcs(void *arg) {
                                           (subscribe.attitude())->ypr.dmp.radians[2],
                                           (subscribe.attitude())->ypr.dmp.radians[1],
                                           (subscribe.attitude())->ypr.dmp.radians[0],
-                                          (subscribe.attitude())->gyro.dmp.degrees[0],
-                                          (subscribe.attitude())->gyro.dmp.degrees[1],
-                                          (subscribe.attitude())->gyro.dmp.degrees[2]);
+                                          (subscribe.attitude())->gyro.dmp.radians[0],
+                                          (subscribe.attitude())->gyro.dmp.radians[1],
+                                          (subscribe.attitude())->gyro.dmp.radians[2]);
                 mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &_gps_pos_msg, 0, 2,
                                              (subscribe.position())->latitude * pow(10, 7),
                                              (subscribe.position())->longitude * pow(10, 7),
@@ -62,5 +62,11 @@ void System::Communicate::transferMsgToGcs(void *arg) {
                 #endif
 
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);;
+        }
+}
+
+void System::Communicate::receiveMsgFromGcs(void* arg) {
+        for(;; ) {
+                communicate.Waypoints.read();
         }
 }

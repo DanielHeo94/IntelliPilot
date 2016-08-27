@@ -9,13 +9,13 @@
 #ifndef _VARS_POSITION_H_
 #define _VARS_POSITION_H_
 
-typedef struct Position_t {
+struct Position_t {
         double latitude;
         double longitude;
         double speed;
         const char *cog;
 
-} Position_t;
+};
 
 static Position_t positionBox;
 

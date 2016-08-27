@@ -14,10 +14,10 @@ struct sRadDeg {
         double degrees;
 };
 
-typedef struct Bearing_t {
+struct Bearing_t {
         struct sRadDeg heading;
         double declinationAngle;
-} Bearing_t;
+};
 
 static Bearing_t bearingBox;
 

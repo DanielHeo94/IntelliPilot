@@ -21,11 +21,6 @@ uint16_t packetSize;
 uint16_t fifoCount;
 uint8_t fifoBuffer[64];
 
-Quaternion q;
-VectorInt16 aa;
-VectorInt16 aaReal;
-VectorInt16 aaWorld;
-VectorFloat gravity;
 int16_t gyro[3];
 
 volatile bool mpuInterrupt = false;
@@ -77,7 +72,6 @@ void System::Setup::attitude() {
 }
 
 void System::Publish::attitude(void *arg) {
-
         for(;; ) {
                 if (!dmpReady) return;
 
@@ -105,10 +99,10 @@ void System::Publish::attitude(void *arg) {
                         // (this lets us immediately read more without waiting for an interrupt)
                         fifoCount -= packetSize;
 
-                        mpu6050.dmpGetQuaternion(&q, fifoBuffer);
-                        mpu6050.dmpGetGravity(&gravity, &q);
-                        mpu6050.dmpGetYawPitchRoll(attitudeBox.ypr.dmp.radians, &q, &gravity);
-                        mpu6050.dmpGetEuler(attitudeBox.euler.dmp.radians, &q);
+                        mpu6050.dmpGetQuaternion(&attitudeBox.quaternion, fifoBuffer);
+                        mpu6050.dmpGetGravity(&attitudeBox.gravity, &attitudeBox.quaternion);
+                        mpu6050.dmpGetYawPitchRoll(attitudeBox.ypr.dmp.radians, &attitudeBox.quaternion, &attitudeBox.gravity);
+                        mpu6050.dmpGetEuler(attitudeBox.euler.dmp.radians, &attitudeBox.quaternion);
                         mpu6050.dmpGetGyro(gyro, fifoBuffer);
 
                         attitudeBox.ypr.dmp.degrees[0] = math.radiantodegree(attitudeBox.ypr.dmp.radians[0]);
@@ -119,40 +113,38 @@ void System::Publish::attitude(void *arg) {
                         attitudeBox.euler.dmp.degrees[1] = math.radiantodegree(attitudeBox.euler.dmp.radians[1]);
                         attitudeBox.euler.dmp.degrees[2] = math.radiantodegree(attitudeBox.euler.dmp.radians[2]);
 
-                        attitudeBox.gyro.dmp.degrees[0] = (float) gyro[0];
-                        attitudeBox.gyro.dmp.degrees[1] = (float) gyro[1];
-                        attitudeBox.gyro.dmp.degrees[2] = (float) gyro[2];
+                        attitudeBox.gyro.dmp.radians[0] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[0] = (float) gyro[0]);
+                        attitudeBox.gyro.dmp.radians[1] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[1] = (float) gyro[1]);
+                        attitudeBox.gyro.dmp.radians[2] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[2] = (float) gyro[2]);
 
-          #if (DEBUG_READABLE_QUATERNION == 1)
+                        #if (DEBUG_READABLE_QUATERNION == 1)
                         Serial.print("quat\t");
-                        Serial.print(q.w);
+                        Serial.print(subscribe.attitude()->quaternion.w);
                         Serial.print("\t");
-                        Serial.print(q.x);
+                        Serial.print(subscribe.attitude()->quaternion.x);
                         Serial.print("\t");
-                        Serial.print(q.y);
+                        Serial.print(subscribe.attitude()->quaternion.y);
                         Serial.print("\t");
-                        Serial.println(q.z);
-          #endif
+                        Serial.println(subscribe.attitude()->quaternion.z);
+                        #endif
 
-          #if (DEBUG_READABLE_EULER == 1)
+                        #if (DEBUG_READABLE_EULER == 1)
                         Serial.print("euler\t");
-                        Serial.print(attitudeBox.euler.dmp.degrees[0]);
+                        Serial.print(subscribe.attitude()->euler.dmp.degrees[0]);
                         Serial.print("\t");
-                        Serial.print(attitudeBox.euler.dmp.degrees[1]);
+                        Serial.print(subscribe.attitude()->euler.dmp.degrees[1]);
                         Serial.print("\t");
-                        Serial.println(attitudeBox.euler.dmp.degrees[2]);
-          #endif
+                        Serial.println(subscribe.attitude()->euler.dmp.degrees[2]);
+                        #endif
 
-          #if (DEBUG_READABLE_YAWPITCHROLL == 1)
+                        #if (DEBUG_READABLE_YAWPITCHROLL == 1)
                         Serial.print("ypr\t");
-                        Serial.print(attitudeBox.ypr.dmp.degrees[0]);
+                        Serial.print(subscribe.attitude()->ypr.dmp.degrees[0]);
                         Serial.print("\t");
-                        Serial.print(attitudeBox.ypr.dmp.degrees[1]);
+                        Serial.print(subscribe.attitude()->ypr.dmp.degrees[1]);
                         Serial.print("\t");
-                        Serial.println(attitudeBox.ypr.dmp.degrees[2]);
-          #endif
-
-
+                        Serial.println(subscribe.attitude()->ypr.dmp.degrees[2]);
+                        #endif
                 }
         }
 }

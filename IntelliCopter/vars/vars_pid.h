@@ -14,11 +14,11 @@ struct sAngSpd {
         double speed;
 };
 
-typedef struct PidError_t {
+struct PidError_t {
         struct sAngSpd yaw;
         struct sAngSpd pitch;
         struct sAngSpd roll;
-} PidError_t;
+};
 
 static PidError_t pidErrorBox;
 

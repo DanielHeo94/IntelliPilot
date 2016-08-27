@@ -9,11 +9,11 @@
 #ifndef _VARS_ALTITUDE_H_
 #define _VARS_ALTITUDE_H_
 
-typedef struct Altitude_t {
+struct Altitude_t {
         double lidar; // centimeters
         double barometer; // meters
         double gps; // meters
-} Altitude_t;
+};
 
 static Altitude_t altitudeBox;
 

@@ -157,16 +157,21 @@ public:
                 static void showLedIndication(void* arg);
 
                 class Waypoints {
-                  static void read();
-                  static void writeWaypointCount();
-                  static void writeWaypoint();
-                  static void writeWaypointRequest();
-                  static void writeWaypointAck();
-                }
+public:
+                        Waypoints();
+
+                        static void read();
+                        static void writeWaypointCount();
+                        static void writeWaypoint();
+                        static void writeWaypointRequest();
+                        static void writeWaypointAck();
+                };
 
                 class Parameters {
+public:
+                        Parameters();
 
-                }
+                };
         };
 
         class Control {
@@ -186,5 +191,8 @@ extern System::Publish publish;
 extern System::Subscribe subscribe;
 extern System::Communicate communicate;
 extern System::Control control;
+
+extern System::Communicate::Waypoints waypoints;
+extern System::Communicate::Parameters parameters;
 
 #endif

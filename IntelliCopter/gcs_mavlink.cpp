@@ -67,6 +67,6 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 
 void System::Communicate::receiveMsgFromGcs(void* arg) {
         for(;; ) {
-                communicate.Waypoints.read();
+                waypoints.read();
         }
 }

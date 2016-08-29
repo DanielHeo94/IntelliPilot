@@ -21,6 +21,11 @@ System::Communicate::Communicate() {
 System::Control::Control() {
 }
 
+System::Communicate::Waypoints::Waypoints() {
+}
+System::Communicate::Parameters::Parameters() {
+}
+
 void System::config() {
 
         Serial.begin(DEBUG_SERIAL_BAUDRATE);
@@ -84,5 +89,8 @@ System::Publish publish;
 System::Subscribe subscribe;
 System::Communicate communicate;
 System::Control control;
+
+System::Communicate::Waypoints waypoints;
+System::Communicate::Parameters parameters;
 
 IC_Motors motors;

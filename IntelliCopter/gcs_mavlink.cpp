@@ -8,6 +8,7 @@
 //
 
 #include "System.h"
+#include "vars/vars_waypoints.h"
 
 void System::Setup::gcs_mavlink() {
 
@@ -68,6 +69,7 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 
 void System::Communicate::receiveMsgFromGcs(void* arg) {
 
+        Process P;
         mavlink_message_t msg;
         mavlink_status_t msg_status;
 
@@ -79,19 +81,34 @@ void System::Communicate::receiveMsgFromGcs(void* arg) {
                                 switch (msg.msgid)
                                 {
                                 case MAVLINK_MSG_ID_COMMAND_INT:
-                                        // TODO : Add mode switching capablilties
+                                        P.processCommandInt(msg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_COUNT:
-                                        waypoints.read();
+                                        P.processMissionCount(msg);
+                                        break;
+
+                                case MAVLINK_MSG_ID_MISSION_ITEM_INT:
+                                        P.processMissionItemInt(msg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-                                        waypoints.writeWaypoint();
+                                        P.processMissionRequestList(msg);
+                                        break;
+
+                                case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
+                                        P.processMissionRequestInt(msg);
+                                        break;
+
+                                case MAVLINK_MSG_ID_MISSION_ACK:
+                                        P.processMissionAck(msg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-                                        // TODO : Clear all mission items
+                                        P.processMissionClearAll(msg);
+                                        break;
+
+                                default:
                                         break;
                                 }
                         }

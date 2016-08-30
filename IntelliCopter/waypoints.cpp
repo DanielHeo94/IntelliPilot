@@ -11,8 +11,6 @@
 #include "list.h"
 
 void System::Communicate::Waypoints::read() {
-
-
 }
 
 void System::Communicate::Waypoints::writeWaypoint() {

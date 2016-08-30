@@ -68,33 +68,33 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 
 void System::Communicate::receiveMsgFromGcs(void* arg) {
 
-	mavlink_message_t msg;
-	mavlink_status_t msg_status;
+        mavlink_message_t msg;
+        mavlink_status_t msg_status;
 
-        for(;; ) {  
-			while (Serial3.available())
-			{
-				if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &msg, &msg_status))
-				{
-					switch (msg.msgid)
-					{
-					case MAVLINK_MSG_ID_COMMAND_INT:
-						// TODO : Add mode switching capablilties
-						break;
+        for(;; ) {
+                while (Serial3.available())
+                {
+                        if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &msg, &msg_status))
+                        {
+                                switch (msg.msgid)
+                                {
+                                case MAVLINK_MSG_ID_COMMAND_INT:
+                                        // TODO : Add mode switching capablilties
+                                        break;
 
-					case MAVLINK_MSG_ID_MISSION_COUNT:
-						waypoints.read();
-						break;
+                                case MAVLINK_MSG_ID_MISSION_COUNT:
+                                        waypoints.read();
+                                        break;
 
-					case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-						waypoints.writeWaypoint();
-						break;
+                                case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+                                        waypoints.writeWaypoint();
+                                        break;
 
-					case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-						// TODO : Clear all mission items
-						break;
-					}
-				}
-			}
+                                case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+                                        // TODO : Clear all mission items
+                                        break;
+                                }
+                        }
+                }
         }
 }

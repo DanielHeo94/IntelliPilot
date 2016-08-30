@@ -1,3 +1,10 @@
+//
+//  list.h
+//  IntelliCopter
+//
+//  Created by Minchan Kim on 2016. 8. 30.
+//
+
 #ifndef __LIST_H__
 #define __LIST_H__
 

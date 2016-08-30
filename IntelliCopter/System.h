@@ -187,10 +187,6 @@ public:
                         Parameters();
 
                 };
-
-private:
-                mavlink_message_t receivedMsg;
-                mavlink_status_t receivedStatus;
         };
 
         class Control {

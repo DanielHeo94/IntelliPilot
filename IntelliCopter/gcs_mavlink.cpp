@@ -68,6 +68,10 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 }
 
 void System::Communicate::receiveMsgFromGcs(void* arg) {
+
+        mavlink_message_t receivedMsg;
+        mavlink_status_t receivedStatus;
+
         for(;; ) {
                 while (Serial3.available()) {
                         if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &receivedMsg, &receivedStatus)) {

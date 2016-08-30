@@ -23,6 +23,9 @@ System::Control::Control() {
 
 System::Communicate::Waypoints::Waypoints() {
 }
+System::Communicate::Waypoints::~Waypoints() {
+
+}
 System::Communicate::Parameters::Parameters() {
 }
 

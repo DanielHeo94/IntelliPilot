@@ -72,8 +72,6 @@ void System::Communicate::receiveMsgFromGcs(void* arg) {
 	mavlink_status_t msg_status;
 
         for(;; ) {  
-			if (Serial3.peek() == -1) continue;
-
 			while (Serial3.available())
 			{
 				if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &msg, &msg_status))

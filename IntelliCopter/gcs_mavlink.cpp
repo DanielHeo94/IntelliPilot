@@ -68,44 +68,36 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 }
 
 void System::Communicate::receiveMsgFromGcs(void* arg) {
-
-        Process P;
-        mavlink_message_t msg;
-        mavlink_status_t msg_status;
-
         for(;; ) {
-                while (Serial3.available())
-                {
-                        if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &msg, &msg_status))
-                        {
-                                switch (msg.msgid)
-                                {
+                while (Serial3.available()) {
+                        if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &receivedMsg, &receivedStatus)) {
+                                switch (receivedMsg.msgid) {
                                 case MAVLINK_MSG_ID_COMMAND_INT:
-                                        P.processCommandInt(msg);
+                                        waypoints.processCommandInt(receivedMsg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_COUNT:
-                                        P.processMissionCount(msg);
+                                        waypoints.processMissionCount(receivedMsg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_ITEM_INT:
-                                        P.processMissionItemInt(msg);
+                                        waypoints.processMissionItemInt(receivedMsg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-                                        P.processMissionRequestList(msg);
+                                        waypoints.processMissionRequestList(receivedMsg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
-                                        P.processMissionRequestInt(msg);
+                                        waypoints.processMissionRequestInt(receivedMsg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_ACK:
-                                        P.processMissionAck(msg);
+                                        waypoints.processMissionAck(receivedMsg);
                                         break;
 
                                 case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-                                        P.processMissionClearAll(msg);
+                                        waypoints.processMissionClearAll(receivedMsg);
                                         break;
 
                                 default:

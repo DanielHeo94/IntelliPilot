@@ -24,6 +24,8 @@
 #include <IC_AttitudeControl/IC_AttitudeControl.h>
 #include <IC_AttitudeControl/IC_PositionControl.h>
 
+#include <IC_DataStructure/List.h>
+
 #include <IC_GPS/IC_GPS.h>
 #include <IC_GPS/parser.h>
 
@@ -156,15 +158,32 @@ public:
 
                 static void showLedIndication(void* arg);
 
+private:
+                mavlink_message_t receivedMsg;
+                mavlink_status_t receivedStatus;
+
                 class Waypoints {
 public:
                         Waypoints();
 
-                        static void read();
-                        static void writeWaypointCount();
-                        static void writeWaypoint();
-                        static void writeWaypointRequest();
-                        static void writeWaypointAck();
+                        void processCommandInt(const mavlink_message_t &msg);
+                        // Write MAV Waypoint list
+                        void processMissionCount(const mavlink_message_t &msg);
+                        void processMissionItemInt(const mavlink_message_t &msg);
+                        // Read MAV Waypoint list
+                        void processMissionRequestList(const mavlink_message_t &msg);
+                        void processMissionRequestInt(const mavlink_message_t &msg);
+                        void processMissionAck(const mavlink_message_t &msg);
+                        // Clear MAV Waypoint list
+                        void processMissionClearAll(const mavlink_message_t &msg);
+
+                        ~Waypoints();
+private:
+                        int state; // HACK: Need to clarify what this does mean.
+                        int count; // HACK: Need to clarify what this does mean.
+
+                        uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+                        void sendMessage(const mavlink_message_t &msg);
                 };
 
                 class Parameters {

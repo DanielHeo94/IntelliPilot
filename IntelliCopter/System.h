@@ -158,10 +158,6 @@ public:
 
                 static void showLedIndication(void* arg);
 
-private:
-                mavlink_message_t receivedMsg;
-                mavlink_status_t receivedStatus;
-
                 class Waypoints {
 public:
                         Waypoints();
@@ -191,6 +187,10 @@ public:
                         Parameters();
 
                 };
+
+private:
+                mavlink_message_t receivedMsg;
+                mavlink_status_t receivedStatus;
         };
 
         class Control {

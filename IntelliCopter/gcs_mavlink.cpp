@@ -8,11 +8,11 @@
 //
 
 #include "System.h"
-#include "vars/vars_waypoints.h"
 
 void System::Setup::gcs_mavlink() {
 
-        Serial3.begin(COMMUNICATE_GCS_WIRELESS_BAUDRATE);
+		Serial3.setTimeout(1000);
+		Serial3.begin(COMMUNICATE_GCS_WIRELESS_BAUDRATE);
         Serial3.flush();
 }
 
@@ -63,7 +63,7 @@ void System::Communicate::transferMsgToGcs(void *arg) {
                 //Serial3.write(_bat_stat_buf, _bat_stat_len);
                 #endif
 
-                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);;
+                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }
 
@@ -73,41 +73,40 @@ void System::Communicate::receiveMsgFromGcs(void* arg) {
         mavlink_status_t receivedStatus;
 
         for(;; ) {
-                while (Serial3.available()) {
-                        if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &receivedMsg, &receivedStatus)) {
-                                switch (receivedMsg.msgid) {
-                                case MAVLINK_MSG_ID_COMMAND_INT:
-                                        waypoints.processCommandInt(receivedMsg);
-                                        break;
+			if (waypoints.waitMessage(receivedMsg, receivedStatus))
+			{
+				switch (receivedMsg.msgid) {
+				case MAVLINK_MSG_ID_COMMAND_INT:
+					waypoints.processCommandInt(receivedMsg);
+					break;
 
-                                case MAVLINK_MSG_ID_MISSION_COUNT:
-                                        waypoints.processMissionCount(receivedMsg);
-                                        break;
+				case MAVLINK_MSG_ID_MISSION_COUNT:
+					waypoints.processMissionCount(receivedMsg);
+					break;
 
-                                case MAVLINK_MSG_ID_MISSION_ITEM_INT:
-                                        waypoints.processMissionItemInt(receivedMsg);
-                                        break;
+				case MAVLINK_MSG_ID_MISSION_ITEM_INT:
+					waypoints.processMissionItemInt(receivedMsg);
+					break;
 
-                                case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-                                        waypoints.processMissionRequestList(receivedMsg);
-                                        break;
+				case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+					waypoints.processMissionRequestList(receivedMsg);
+					break;
 
-                                case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
-                                        waypoints.processMissionRequestInt(receivedMsg);
-                                        break;
+				case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
+					waypoints.processMissionRequestInt(receivedMsg);
+					break;
 
-                                case MAVLINK_MSG_ID_MISSION_ACK:
-                                        waypoints.processMissionAck(receivedMsg);
-                                        break;
+				case MAVLINK_MSG_ID_MISSION_ACK:
+					waypoints.processMissionAck(receivedMsg);
+					break;
 
-                                case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-                                        waypoints.processMissionClearAll(receivedMsg);
-                                        break;
+				case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+					waypoints.processMissionClearAll(receivedMsg);
+					break;
 
-                                default:
-                                        break;
-                                }
-                        }
-                }
+				default:
+					break;
+				}
+			}
         }
 }

@@ -163,6 +163,7 @@ public:
                         Waypoints();
                         ~Waypoints();
 
+						uint8_t waitMessage(mavlink_message_t &msg, mavlink_status_t &status);
                         void processCommandInt(const mavlink_message_t &msg);
                         // Write MAV Waypoint list
                         void processMissionCount(const mavlink_message_t &msg);
@@ -174,11 +175,10 @@ public:
                         // Clear MAV Waypoint list
                         void processMissionClearAll(const mavlink_message_t &msg);
 private:
-                        int state; // HACK: Need to clarify what this does mean.
-                        int count; // HACK: Need to clarify what this does mean.
-
-                        uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-                        void sendMessage(const mavlink_message_t &msg);
+						bool timeout; // Use timeout if true
+						uint16_t count; // Number of mission items
+						mavlink_message_t msg; // Message to send
+                        void sendMessage(void);
                 };
 
                 class Parameters {

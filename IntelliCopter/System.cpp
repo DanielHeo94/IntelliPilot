@@ -22,6 +22,8 @@ System::Control::Control() {
 }
 
 System::Communicate::Waypoints::Waypoints() {
+	timeout = false;
+	count = 0;
 }
 System::Communicate::Waypoints::~Waypoints() {
 

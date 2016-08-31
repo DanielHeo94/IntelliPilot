@@ -123,6 +123,7 @@ void System::Communicate::Waypoints::processMissionRequestInt(const mavlink_mess
 		if (mission_request_int.seq != static_cast<uint16_t>(seq))
 		{
 			if (waypointsList.getElement(mission_item_int)) throw 1;
+			seq = static_cast<int>(mission_request_int.seq);
 		}
 		mavlink_msg_mission_item_int_encode(0, 0, &(this->msg), &mission_item_int);
 		timeout = true;

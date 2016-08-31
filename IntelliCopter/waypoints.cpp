@@ -101,19 +101,45 @@ void System::Communicate::Waypoints::processMissionItemInt(const mavlink_message
 void System::Communicate::Waypoints::processMissionRequestList(const mavlink_message_t &msg) {
 	
 	mavlink_mission_request_list_t mission_request_list;
+	mavlink_mission_count_t mission_count;
+
 	mavlink_msg_mission_request_list_decode(&msg, &mission_request_list);
+	mission_count.count = waypointsList.getSize();
+	waypointsList.begin();
+	mavlink_msg_mission_count_encode(0, 0, &(this->msg), &mission_count);
+	timeout = true;
+	sendMessage();
 }
 
 void System::Communicate::Waypoints::processMissionRequestInt(const mavlink_message_t &msg) {
 
 	mavlink_mission_request_int_t mission_request_int;
-	mavlink_msg_misssion_request_int_decode(&msg, &mission_request_int);
+	static mavlink_mission_item_int_t mission_item_int;
+	static int seq = -1;
+
+	try
+	{
+		mavlink_msg_misssion_request_int_decode(&msg, &mission_request_int);
+		if (mission_request_int.seq != static_cast<uint16_t>(seq))
+		{
+			if (waypointsList.getElement(mission_item_int)) throw 1;
+		}
+		mavlink_msg_mission_item_int_encode(0, 0, &(this->msg), &mission_item_int);
+		timeout = true;
+		sendMessage();
+	}
+	catch (int expn)
+	{
+		// TODO : Error handling
+	}
 }
 
 void System::Communicate::Waypoints::processMissionAck(const mavlink_message_t &msg) {
 
 	mavlink_mission_ack_t mission_ack;
+
 	mavlink_msg_mission_ack_decode(&msg, &mission_ack);
+	timeout = false;
 }
 
 void System::Communicate::Waypoints::processMissionClearAll(const mavlink_message_t &msg) {

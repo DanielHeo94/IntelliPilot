@@ -161,6 +161,7 @@ public:
                 class Waypoints {
 public:
                         Waypoints();
+                        ~Waypoints();
 
                         void processCommandInt(const mavlink_message_t &msg);
                         // Write MAV Waypoint list
@@ -172,8 +173,6 @@ public:
                         void processMissionAck(const mavlink_message_t &msg);
                         // Clear MAV Waypoint list
                         void processMissionClearAll(const mavlink_message_t &msg);
-
-                        ~Waypoints();
 private:
                         int state; // HACK: Need to clarify what this does mean.
                         int count; // HACK: Need to clarify what this does mean.

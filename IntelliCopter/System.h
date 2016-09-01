@@ -54,6 +54,7 @@
 #include "vars/vars_motors.h"
 #include "vars/vars_pid.h"
 #include "vars/vars_status.h"
+#include "vars/vars_waypoints.h"
 
 #include "scheduler.h"
 
@@ -163,7 +164,7 @@ public:
                         Waypoints();
                         ~Waypoints();
 
-						uint8_t waitMessage(mavlink_message_t &msg, mavlink_status_t &status);
+                        uint8_t waitMessage(mavlink_message_t &msg, mavlink_status_t &status);
                         void processCommandInt(const mavlink_message_t &msg);
                         // Write MAV Waypoint list
                         void processMissionCount(const mavlink_message_t &msg);
@@ -175,9 +176,9 @@ public:
                         // Clear MAV Waypoint list
                         void processMissionClearAll(const mavlink_message_t &msg);
 private:
-						bool timeout; // Use timeout if true
-						uint16_t count; // Number of mission items
-						mavlink_message_t msg; // Message to send
+                        bool timeout; // Use timeout if true
+                        uint16_t count; // Number of mission items
+                        mavlink_message_t msg; // Message to send
                         void sendMessage(void);
                 };
 

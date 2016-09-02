@@ -21,71 +21,61 @@ System::Communicate::Communicate() {
 System::Control::Control() {
 }
 
-System::Communicate::Waypoints::Waypoints() {
-	timeout = false;
-	count = 0;
-}
-System::Communicate::Waypoints::~Waypoints() {
-
-}
-System::Communicate::Parameters::Parameters() {
-}
-
 void System::config() {
 
-        Serial.begin(DEBUG_SERIAL_BAUDRATE);
-        Serial.flush();
+								Serial.begin(DEBUG_SERIAL_BAUDRATE);
+								Serial.flush();
 
-        Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
-        Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
-        Serial.println("._. .___        __         .__  .__  .____________.__.__          __    ._.     ");
-        Serial.println("| | |   | _____/  |_  ____ |  | |  | |__\______   \__|  |   _____/  |_  | |     ");
-        Serial.println("|_| |   |/    \   __\/ __ \|  | |  | |  ||     ___/  |  |  /  _ \   __\ |_|     ");
-        Serial.println("|-| |   |   |  \  | \  ___/|  |_|  |_|  ||    |   |  |  |_(  <_> )  |   |-|     ");
-        Serial.println("| | |___|___|  /__|  \___  >____/____/__||____|   |__|____/\____/|__|   | |     ");
-        Serial.println("|_|          \/          \/                                             |_|     ");
-        Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
-        Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
+								Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
+								Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
+								Serial.println("._. .___        __         .__  .__  .____________.__.__          __    ._.     ");
+								Serial.println("| | |   | _____/  |_  ____ |  | |  | |__\______   \__|  |   _____/  |_  | |     ");
+								Serial.println("|_| |   |/    \   __\/ __ \|  | |  | |  ||     ___/  |  |  /  _ \   __\ |_|     ");
+								Serial.println("|-| |   |   |  \  | \  ___/|  |_|  |_|  ||    |   |  |  |_(  <_> )  |   |-|     ");
+								Serial.println("| | |___|___|  /__|  \___  >____/____/__||____|   |__|____/\____/|__|   | |     ");
+								Serial.println("|_|          \/          \/                                             |_|     ");
+								Serial.println(" ______   ______   ______   ______   ______   ______   ______   ______   ______ ");
+								Serial.println("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ ");
 
-        Serial.println("System configuration starts.");
+								Serial.println("System configuration starts.");
 
-        #if (TASK_COMM_GCS == 1)
-        _setup.gcs_mavlink();
-        #endif
+								#if (TASK_COMM_GCS == 1)
+								_setup.gcs_mavlink();
+								#endif
 
-        #if (TASK_GET_ATTITUDE == 1)
-        _setup.attitude();
-        #endif
+								#if (TASK_GET_ATTITUDE == 1)
+								_setup.attitude();
+								#endif
 
-        #if (TASK_GET_BEARING == 1)
-        _setup.bearing();
-        #endif
+								#if (TASK_GET_BEARING == 1)
+								_setup.bearing();
+								#endif
 
-        #if (TASK_GET_ALTITUDE == 1)
-        _setup.altitude();
-        #endif
+								#if (TASK_GET_ALTITUDE == 1)
+								_setup.altitude();
+								#endif
 
-        #if (TASK_GET_POSITION == 1)
-        _setup.position();
-        #endif
+								#if (TASK_GET_POSITION == 1)
+								_setup.position();
+								#endif
 
-        #if (TASK_GET_COMMANDS == 1)
-        _setup.commands();
-        #endif
+								#if (TASK_GET_COMMANDS == 1)
+								_setup.commands();
+								#endif
 
-        #if (TASK_GET_STATUS == 1)
-        _setup.status();
-        #endif
+								#if (TASK_GET_STATUS == 1)
+								_setup.status();
+								#endif
 
-        motors.start();
+								motors.start();
 
-        Serial.println("System configuration complete.");
+								Serial.println("System configuration complete.");
 
-        copter.createTasks();
+								copter.createTasks();
 }
 
 void System::start() {
-        copter.startScheduler();
+								copter.startScheduler();
 }
 
 System copter;
@@ -94,8 +84,5 @@ System::Publish publish;
 System::Subscribe subscribe;
 System::Communicate communicate;
 System::Control control;
-
-System::Communicate::Waypoints waypoints;
-System::Communicate::Parameters parameters;
 
 IC_Motors motors;

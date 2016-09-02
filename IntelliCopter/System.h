@@ -158,35 +158,25 @@ public:
                 static void receiveMsgFromGcs(void* arg);
 
                 static void showLedIndication(void* arg);
-
-                class Waypoints {
-public:
-                        Waypoints();
-                        ~Waypoints();
-
-                        uint8_t waitMessage(mavlink_message_t &msg, mavlink_status_t &status);
-                        void processCommandInt(const mavlink_message_t &msg);
-                        // Write MAV Waypoint list
-                        void processMissionCount(const mavlink_message_t &msg);
-                        void processMissionItemInt(const mavlink_message_t &msg);
-                        // Read MAV Waypoint list
-                        void processMissionRequestList(const mavlink_message_t &msg);
-                        void processMissionRequestInt(const mavlink_message_t &msg);
-                        void processMissionAck(const mavlink_message_t &msg);
-                        // Clear MAV Waypoint list
-                        void processMissionClearAll(const mavlink_message_t &msg);
 private:
-                        bool timeout; // Use timeout if true
-                        uint16_t count; // Number of mission items
-                        mavlink_message_t msg; // Message to send
-                        void sendMessage(void);
-                };
+                static bool isTimeoutEnabled;
 
-                class Parameters {
-public:
-                        Parameters();
+                mavlink_mission_count_t missionCount;
 
-                };
+                static mavlink_message_t receivedMsg;
+                static mavlink_status_t receivedStatus;
+                static mavlink_message_t sendingMsg;
+
+                uint8_t getParams();
+                static void sendMessage();
+
+                void processCommandInt();
+                void processMissionCount();
+                void processMissionItem();
+                void processMissionRequestList();
+                void processMissionRequest();
+                void processMissionAck();
+                void processMissionClearAll();
         };
 
         class Control {
@@ -206,8 +196,5 @@ extern System::Publish publish;
 extern System::Subscribe subscribe;
 extern System::Communicate communicate;
 extern System::Control control;
-
-extern System::Communicate::Waypoints waypoints;
-extern System::Communicate::Parameters parameters;
 
 #endif

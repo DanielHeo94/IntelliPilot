@@ -39,7 +39,7 @@
 #define FREQUENCY_TASK_GET_BEARING            1
 #define FREQUENCY_TASK_GET_POSITION           0
 #define FREQUENCY_TASK_GET_COMMANDS           100
-#define FREQUENCY_TASK_COMM_GCS               200
+#define FREQUENCY_TASK_COMM_GCS               10
 #define FREQUENCY_TASK_FC_IDLE                200
 #define FREQUENCY_TASK_FC_MANUAL_CONTROL      100
 #define FREQUENCY_TASK_LED_INDICATOR          0

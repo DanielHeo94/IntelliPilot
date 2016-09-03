@@ -10,10 +10,13 @@
 #include "System.h"
 
 bool System::Communicate::isTimeoutEnabled;
+mavlink_mission_count_t System::Communicate::missionCount;
 
 mavlink_message_t System::Communicate::receivedMsg;
 mavlink_status_t System::Communicate::receivedStatus;
-mavlink_message_t System::Communicate::sendingMsg;
+
+mavlink_message_t System::Communicate::commonMsg;
+mavlink_message_t System::Communicate::protocolMsg;
 
 void System::Setup::gcs_mavlink() {
 								Serial3.setTimeout(1000);
@@ -27,8 +30,8 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 								const TickType_t xWakePeriod = FREQUENCY_TASK_COMM_GCS;
 
 								for(;; ) {
-																mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &sendingMsg, TYPE, AUTOPILOT_TYPE, (subscribe.status())->flightMode, CUSTOM_MODE, SYSTEM_STATE);
-																sendMessage();
+																mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &commonMsg, TYPE, AUTOPILOT_TYPE, (subscribe.status())->flightMode, CUSTOM_MODE, SYSTEM_STATE);
+																sendMessage(commonMsg);
 
 																//mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &sendingMsg, 0, (subscribe.attitude())->ypr.dmp.radians[2], (subscribe.attitude())->ypr.dmp.radians[1], (subscribe.attitude())->ypr.dmp.radians[0], (subscribe.attitude())->gyro.dmp.radians[0], (subscribe.attitude())->gyro.dmp.radians[1], (subscribe.attitude())->gyro.dmp.radians[2]);
 																//sendMessage();
@@ -41,48 +44,49 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 
 																//mavlink_msg_battery_status_pack(SYSTEM_ID, COM_ID, &sendingMsg, BATTERY_ID, 0, 0, INT16_MAX, 0, -1, -1, -1, batteryPercent);
 																//sendMessage();
+																
+																receiveMsgFromGcs();
 
 																vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
 								}
 }
 
-void System::Communicate::receiveMsgFromGcs(void *arg) {
-								for(;; ) {
-																if (communicate.getParams()) {
-																								switch (receivedMsg.msgid) {
-																								case MAVLINK_MSG_ID_COMMAND_INT:
-																																communicate.processCommandInt();
-																																break;
+void System::Communicate::receiveMsgFromGcs() {
+								if (communicate.getParams()) {
+																switch (receivedMsg.msgid) {
+																case MAVLINK_MSG_ID_COMMAND_INT:
+																								communicate.processCommandInt();
+																								break;
 
-																								case MAVLINK_MSG_ID_MISSION_COUNT:
-																																communicate.processMissionCount();
-																																break;
+																case MAVLINK_MSG_ID_MISSION_COUNT:
+																								communicate.processMissionCount();
+																								break;
 
-																								case MAVLINK_MSG_ID_MISSION_ITEM:
-																																communicate.processMissionItem();
-																																break;
+																case MAVLINK_MSG_ID_MISSION_ITEM:
+																								communicate.processMissionItem();
+																								break;
 
-																								case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-																																communicate.processMissionRequestList();
-																																break;
+																case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+																								communicate.processMissionRequestList();
+																								break;
 
-																								case MAVLINK_MSG_ID_MISSION_REQUEST:
-																																communicate.processMissionRequest();
-																																break;
+																case MAVLINK_MSG_ID_MISSION_REQUEST:
+																								communicate.processMissionRequest();
+																								break;
 
-																								case MAVLINK_MSG_ID_MISSION_ACK:
-																																communicate.processMissionAck();
-																																break;
+																case MAVLINK_MSG_ID_MISSION_ACK:
+																								communicate.processMissionAck();
+																								break;
 
-																								case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-																																communicate.processMissionClearAll();
-																																break;
+																case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+																								communicate.processMissionClearAll();
+																								break;
 
-																								default:
-																																break;
-																								}
+																default:
+																								break;
 																}
 								}
+
 }
 
 uint8_t System::Communicate::getParams() {
@@ -90,7 +94,7 @@ uint8_t System::Communicate::getParams() {
 																char buf;
 
 																if (Serial3.readBytes(&buf, 1) == 0) {
-																								sendMessage();
+																								sendMessage(protocolMsg);
 																} else {
 																								return (mavlink_parse_char(MAVLINK_COMM_0, buf, &receivedMsg, &receivedStatus));
 																}
@@ -102,10 +106,10 @@ uint8_t System::Communicate::getParams() {
 								return 0;
 }
 
-void System::Communicate::sendMessage() {
+void System::Communicate::sendMessage(mavlink_message_t &msg) {
 
 								uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-								uint16_t len = mavlink_msg_to_send_buffer(buf, &sendingMsg);
+								uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
 
 								#if (COMMUNICATE_GCS_WIRE == 1)
 								Serial.write(buf, len);

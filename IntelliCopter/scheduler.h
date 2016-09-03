@@ -16,6 +16,4 @@
 static TaskHandle_t controlPreFlightHandler;
 static TaskHandle_t controlManualHandler;
 
-static TaskHandle_t transferMsgToGcsHandler;
-
 #endif

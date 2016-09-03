@@ -56,8 +56,7 @@ void System::createTasks() {
 
     #if (TASK_COMM_GCS == 1)
         Serial.print("\t\tcommGcsThread...");
-        portBASE_TYPE pComTransferMsgToGcs = xTaskCreate(communicate.transferMsgToGcs, NULL, configMINIMAL_STACK_SIZE + 512, NULL, 1, &transferMsgToGcsHandler);
-        portBASE_TYPE pComReceiveMsgFromGcs = xTaskCreate(communicate.receiveMsgFromGcs, NULL, configMINIMAL_STACK_SIZE + 512, NULL, 1, NULL);
+        portBASE_TYPE pComTransferMsgToGcs = xTaskCreate(communicate.transferMsgToGcs, NULL, configMINIMAL_STACK_SIZE + 512, NULL, 1, NULL);
         Serial.println("\t\t\tSuccess.");
     #endif
 

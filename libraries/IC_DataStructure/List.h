@@ -88,7 +88,6 @@ bool list<T>::getElement(T &element) {
         element = current->element;
 
         if (direction) current = current->next;
-
         else current = current->prev;
 
         return true;

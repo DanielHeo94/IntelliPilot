@@ -31,49 +31,59 @@ void System::Communicate::processCommandInt() {
 								commandAck.command = commandInt.command;
 								commandAck.result = MAV_RESULT_ACCEPTED;
 
-								mavlink_msg_command_ack_encode(SYSTEM_ID, COM_ID, &sendingMsg, &commandAck);
+								mavlink_msg_command_ack_encode(SYSTEM_ID, COM_ID, &protocolMsg, &commandAck);
 								isTimeoutEnabled = false;
 
-								sendMessage();
+								sendMessage(protocolMsg);
 }
 
 void System::Communicate::processMissionCount() {
 
 								mavlink_mission_request_t missionRequest;
+								waypointsList.clear();
+								waypointsList.begin();
 
 								mavlink_msg_mission_count_decode(&receivedMsg, &missionCount);
 								missionRequest.seq = 0;
 								missionRequest.target_system = 255;
 
-								mavlink_msg_mission_request_encode(SYSTEM_ID, COM_ID, &sendingMsg, &missionRequest);
+								mavlink_msg_mission_request_encode(SYSTEM_ID, COM_ID, &protocolMsg, &missionRequest);
 								isTimeoutEnabled = true;
 
-								sendMessage();
+								sendMessage(protocolMsg);
 }
 
 void System::Communicate::processMissionItem() {
 
 								mavlink_mission_item_t missionItem;
+								static int seqTemp = -1;
 
 								mavlink_msg_mission_item_decode(&receivedMsg, &missionItem);
+								if((int)missionItem.seq - seqTemp > 0) {
+																waypointsList.pushBack(missionItem);
+																Serial.println(missionItem.seq);
+								}
+								seqTemp = (int)missionItem.seq;
+
 								waypointsList.pushBack(missionItem);
 
 								// All waypoints item received
 								if (missionItem.seq == missionCount.count) {
 																mavlink_mission_ack_t missionAck;
+																missionAck.target_system = 255;
 																missionAck.type = MAV_MISSION_ACCEPTED;
-																mavlink_msg_mission_ack_encode(COM_ID, SYSTEM_ID, &sendingMsg, &missionAck);
+																mavlink_msg_mission_ack_encode(SYSTEM_ID, COM_ID, &protocolMsg, &missionAck);
 																isTimeoutEnabled = false;
 								} else {
 																mavlink_mission_request_t missionRequest;
 																missionRequest.seq = missionItem.seq + 1;
 																missionRequest.target_system = 255;
 
-																mavlink_msg_mission_request_encode(SYSTEM_ID, COM_ID, &sendingMsg, &missionRequest);
+																mavlink_msg_mission_request_encode(SYSTEM_ID, COM_ID, &protocolMsg, &missionRequest);
 																isTimeoutEnabled = true;
 								}
 
-								sendMessage();
+								sendMessage(protocolMsg);
 }
 
 void System::Communicate::processMissionRequestList() {
@@ -83,12 +93,13 @@ void System::Communicate::processMissionRequestList() {
 
 								mavlink_msg_mission_request_list_decode(&receivedMsg, &missionRequestList);
 								sendingMissionCount.count = waypointsList.getSize();
+								sendingMissionCount.target_system = 255;
 								waypointsList.begin();
 
-								mavlink_msg_mission_count_encode(SYSTEM_ID, COM_ID, &sendingMsg, &sendingMissionCount);
+								mavlink_msg_mission_count_encode(SYSTEM_ID, COM_ID, &protocolMsg, &sendingMissionCount);
 								isTimeoutEnabled = true;
 
-								sendMessage();
+								sendMessage(protocolMsg);
 }
 
 void System::Communicate::processMissionRequest() {
@@ -96,19 +107,22 @@ void System::Communicate::processMissionRequest() {
 								mavlink_mission_request_t missionRequest;
 								mavlink_mission_item_t missionItem;
 
-								static int seq = -1;
+								static int seqTemp = -1;
 
 								try {
 																mavlink_msg_mission_request_decode(&receivedMsg, &missionRequest);
-																if (missionRequest.seq != static_cast<uint16_t>(seq)) {
-																								if (waypointsList.getElement(missionItem)) throw 1;
-																								seq = static_cast<int>(missionRequest.seq);
+																if ((int)missionRequest.seq - seqTemp > 0) {
+																								if (waypointsList.getElement(missionItem)) {
+																																missionItem.target_system = 255;
+																																throw 1;
+																								}
+																								seqTemp = (int)missionRequest.seq;
 																}
 
-																mavlink_msg_mission_item_encode(SYSTEM_ID, COM_ID, &sendingMsg, &missionItem);
+																mavlink_msg_mission_item_encode(SYSTEM_ID, COM_ID, &protocolMsg, &missionItem);
 																isTimeoutEnabled = true;
 
-																sendMessage();
+																sendMessage(protocolMsg);
 								} catch (int expn) {
 																// TODO : Error handling
 								}
@@ -131,8 +145,8 @@ void System::Communicate::processMissionClearAll() {
 								waypointsList.clear();
 								missionAck.type = MAV_MISSION_ACCEPTED;
 
-								mavlink_msg_mission_ack_encode(SYSTEM_ID, COM_ID, &sendingMsg, &missionAck);
+								mavlink_msg_mission_ack_encode(SYSTEM_ID, COM_ID, &protocolMsg, &missionAck);
 								isTimeoutEnabled = false;
 
-								sendMessage();
+								sendMessage(protocolMsg);
 }

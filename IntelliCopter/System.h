@@ -155,20 +155,22 @@ public:
                 Communicate();
 
                 static void transferMsgToGcs(void* arg);
-                static void receiveMsgFromGcs(void* arg);
+                static void receiveMsgFromGcs();
 
                 static void showLedIndication(void* arg);
 private:
                 static bool isTimeoutEnabled;
 
-                mavlink_mission_count_t missionCount;
+                static mavlink_mission_count_t missionCount;
 
                 static mavlink_message_t receivedMsg;
                 static mavlink_status_t receivedStatus;
-                static mavlink_message_t sendingMsg;
+
+                static mavlink_message_t commonMsg;
+                static mavlink_message_t protocolMsg;
 
                 uint8_t getParams();
-                static void sendMessage();
+                static void sendMessage(mavlink_message_t &msg);
 
                 void processCommandInt();
                 void processMissionCount();

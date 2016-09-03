@@ -9,6 +9,9 @@
 #ifndef _VARS_VARIABLES_H_
 #define _VARS_VARIABLES_H_
 
+#include <IC_DataStructure/List.h>
+#include <GCS_MAVLink/mavlink/common/mavlink.h>
 
+static list<mavlink_mission_item_t> waypointsList;
 
 #endif

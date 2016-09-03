@@ -33,7 +33,7 @@ INCLUDES += -I$(shell pwd)/IntelliCopter -I$(shell pwd)/libraries -I$(shell pwd)
 COMMON_FLAGS:=-g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3  -mthumb $(ARCHITECTURE)
 
 CFLAGS:=$(COMMON_FLAGS)
-CXXFLAGS:=$(COMMON_FLAGS) -fno-rtti -fno-exceptions
+CXXFLAGS:=$(COMMON_FLAGS) -fno-rtti -fexceptions
 
 #let the results be named after the project
 PROJNAME:=$(shell basename $(shell pwd)/IntelliCopter/*.ip .ip)

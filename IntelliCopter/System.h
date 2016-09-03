@@ -54,6 +54,7 @@
 #include "vars/vars_motors.h"
 #include "vars/vars_pid.h"
 #include "vars/vars_status.h"
+#include "vars/vars_waypoints.h"
 
 #include "scheduler.h"
 
@@ -154,39 +155,30 @@ public:
                 Communicate();
 
                 static void transferMsgToGcs(void* arg);
-                static void receiveMsgFromGcs(void* arg);
+                static void receiveMsgFromGcs();
 
                 static void showLedIndication(void* arg);
-
-                class Waypoints {
-public:
-                        Waypoints();
-
-                        void processCommandInt(const mavlink_message_t &msg);
-                        // Write MAV Waypoint list
-                        void processMissionCount(const mavlink_message_t &msg);
-                        void processMissionItemInt(const mavlink_message_t &msg);
-                        // Read MAV Waypoint list
-                        void processMissionRequestList(const mavlink_message_t &msg);
-                        void processMissionRequestInt(const mavlink_message_t &msg);
-                        void processMissionAck(const mavlink_message_t &msg);
-                        // Clear MAV Waypoint list
-                        void processMissionClearAll(const mavlink_message_t &msg);
-
-                        ~Waypoints();
 private:
-                        int state; // HACK: Need to clarify what this does mean.
-                        int count; // HACK: Need to clarify what this does mean.
+                static bool isTimeoutEnabled;
 
-                        uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-                        void sendMessage(const mavlink_message_t &msg);
-                };
+                static mavlink_mission_count_t missionCount;
 
-                class Parameters {
-public:
-                        Parameters();
+                static mavlink_message_t receivedMsg;
+                static mavlink_status_t receivedStatus;
 
-                };
+                static mavlink_message_t commonMsg;
+                static mavlink_message_t protocolMsg;
+
+                uint8_t getParams();
+                static void sendMessage(mavlink_message_t &msg);
+
+                void processCommandInt();
+                void processMissionCount();
+                void processMissionItem();
+                void processMissionRequestList();
+                void processMissionRequest();
+                void processMissionAck();
+                void processMissionClearAll();
         };
 
         class Control {
@@ -206,8 +198,5 @@ extern System::Publish publish;
 extern System::Subscribe subscribe;
 extern System::Communicate communicate;
 extern System::Control control;
-
-extern System::Communicate::Waypoints waypoints;
-extern System::Communicate::Parameters parameters;
 
 #endif

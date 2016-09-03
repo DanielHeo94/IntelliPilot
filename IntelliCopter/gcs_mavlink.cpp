@@ -8,106 +8,114 @@
 //
 
 #include "System.h"
-#include "vars/vars_waypoints.h"
+
+bool System::Communicate::isTimeoutEnabled;
+mavlink_mission_count_t System::Communicate::missionCount;
+
+mavlink_message_t System::Communicate::receivedMsg;
+mavlink_status_t System::Communicate::receivedStatus;
+
+mavlink_message_t System::Communicate::commonMsg;
+mavlink_message_t System::Communicate::protocolMsg;
 
 void System::Setup::gcs_mavlink() {
-
-        Serial3.begin(COMMUNICATE_GCS_WIRELESS_BAUDRATE);
-        Serial3.flush();
+								Serial3.setTimeout(1000);
+								Serial3.begin(COMMUNICATE_GCS_WIRELESS_BAUDRATE);
+								Serial3.flush();
 }
 
 void System::Communicate::transferMsgToGcs(void *arg) {
 
-        TickType_t xLastWakeTime = xTaskGetTickCount();
-        const TickType_t xWakePeriod = FREQUENCY_TASK_COMM_GCS;
+								TickType_t xLastWakeTime = xTaskGetTickCount();
+								const TickType_t xWakePeriod = FREQUENCY_TASK_COMM_GCS;
 
-        for(;; ) {
-                mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &_heartbeat_msg, TYPE, AUTOPILOT_TYPE, (subscribe.status())->flightMode, CUSTOM_MODE, SYSTEM_STATE);
-                mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &_attitude_msg, 0,
-                                          (subscribe.attitude())->ypr.dmp.radians[2],
-                                          (subscribe.attitude())->ypr.dmp.radians[1],
-                                          (subscribe.attitude())->ypr.dmp.radians[0],
-                                          (subscribe.attitude())->gyro.dmp.radians[0],
-                                          (subscribe.attitude())->gyro.dmp.radians[1],
-                                          (subscribe.attitude())->gyro.dmp.radians[2]);
-                mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &_gps_pos_msg, 0, 2,
-                                             (subscribe.position())->latitude * pow(10, 7),
-                                             (subscribe.position())->longitude * pow(10, 7),
-                                             (subscribe.altitude())->gps * 1000,
-                                             (subscribe.gpsInfo())->hdop, UINT16_MAX,
-                                             (subscribe.position())->speed * 100,
-                                             (int)((subscribe.position())->cog) * 100,
-                                             (subscribe.gpsInfo())->number_of_satellites);
-                //mavlink_msg_gps_status_pack(SYSTEM_ID, COM_ID, &_gps_stat_msg, numsatsinview, prn, 1, elevation, (255 * azimuth) / 360, snr);
-                //mavlink_msg_battery_status_pack(SYSTEM_ID, COM_ID, &_bat_stat_msg, BATTERY_ID, 0, 0, INT16_MAX, 0, -1, -1, -1, batteryPercent);
+								for(;; ) {
+																mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &commonMsg, TYPE, AUTOPILOT_TYPE, (subscribe.status())->flightMode, CUSTOM_MODE, SYSTEM_STATE);
+																sendMessage(commonMsg);
 
-                _heartbeat_len = mavlink_msg_to_send_buffer(_heartbeat_buf, &_heartbeat_msg);
-                _attitude_len = mavlink_msg_to_send_buffer(_attitude_buf, &_attitude_msg);
-                _gps_pos_len = mavlink_msg_to_send_buffer(_gps_pos_buf, &_gps_pos_msg);
-                //_gps_stat_len = mavlink_msg_to_send_buffer(_gps_stat_buf, &_gps_stat_msg);
-                //_bat_stat_len = mavlink_msg_to_send_buffer(_bat_stat_buf, &_bat_stat_msg);
+																//mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &sendingMsg, 0, (subscribe.attitude())->ypr.dmp.radians[2], (subscribe.attitude())->ypr.dmp.radians[1], (subscribe.attitude())->ypr.dmp.radians[0], (subscribe.attitude())->gyro.dmp.radians[0], (subscribe.attitude())->gyro.dmp.radians[1], (subscribe.attitude())->gyro.dmp.radians[2]);
+																//sendMessage();
 
-                #if (COMMUNICATE_GCS_WIRE == 1)
-                Serial.write(_heartbeat_buf, _heartbeat_len);
-                Serial.write(_attitude_buf, _attitude_len);
-                Serial.write(_gps_pos_buf, _gps_pos_len);
-                //Serial.write(_gps_stat_buf, _gps_stat_len);
-                //Serial.write(_bat_stat_buf, _bat_stat_len);
-                #endif
+																//mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &sendingMsg, 0, 2, (subscribe.position())->latitude * pow(10, 7), (subscribe.position())->longitude * pow(10, 7), (subscribe.altitude())->gps * 1000, (subscribe.gpsInfo())->hdop, UINT16_MAX, (subscribe.position())->speed * 100, (int)((subscribe.position())->cog) * 100, (subscribe.gpsInfo())->number_of_satellites);
+																//sendMessage();
 
-                #if (COMMUNICATE_GCS_WIRELESS == 1)
-                Serial3.write(_heartbeat_buf, _heartbeat_len);
-                Serial3.write(_attitude_buf, _attitude_len);
-                Serial3.write(_gps_pos_buf, _gps_pos_len);
-                //Serial3.write(_gps_stat_buf, _gps_stat_len);
-                //Serial3.write(_bat_stat_buf, _bat_stat_len);
-                #endif
+																//mavlink_msg_gps_status_pack(SYSTEM_ID, COM_ID, &sendingMsg, numsatsinview, prn, 1, elevation, (255 * azimuth) / 360, snr);
+																//sendMessage();
 
-                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);;
-        }
+																//mavlink_msg_battery_status_pack(SYSTEM_ID, COM_ID, &sendingMsg, BATTERY_ID, 0, 0, INT16_MAX, 0, -1, -1, -1, batteryPercent);
+																//sendMessage();
+																
+																receiveMsgFromGcs();
+
+																vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
+								}
 }
 
-void System::Communicate::receiveMsgFromGcs(void* arg) {
+void System::Communicate::receiveMsgFromGcs() {
+								if (communicate.getParams()) {
+																switch (receivedMsg.msgid) {
+																case MAVLINK_MSG_ID_COMMAND_INT:
+																								communicate.processCommandInt();
+																								break;
 
-        mavlink_message_t receivedMsg;
-        mavlink_status_t receivedStatus;
+																case MAVLINK_MSG_ID_MISSION_COUNT:
+																								communicate.processMissionCount();
+																								break;
 
-        for(;; ) {
-                while (Serial3.available()) {
-                        if (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &receivedMsg, &receivedStatus)) {
-                                switch (receivedMsg.msgid) {
-                                case MAVLINK_MSG_ID_COMMAND_INT:
-                                        waypoints.processCommandInt(receivedMsg);
-                                        break;
+																case MAVLINK_MSG_ID_MISSION_ITEM:
+																								communicate.processMissionItem();
+																								break;
 
-                                case MAVLINK_MSG_ID_MISSION_COUNT:
-                                        waypoints.processMissionCount(receivedMsg);
-                                        break;
+																case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+																								communicate.processMissionRequestList();
+																								break;
 
-                                case MAVLINK_MSG_ID_MISSION_ITEM_INT:
-                                        waypoints.processMissionItemInt(receivedMsg);
-                                        break;
+																case MAVLINK_MSG_ID_MISSION_REQUEST:
+																								communicate.processMissionRequest();
+																								break;
 
-                                case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-                                        waypoints.processMissionRequestList(receivedMsg);
-                                        break;
+																case MAVLINK_MSG_ID_MISSION_ACK:
+																								communicate.processMissionAck();
+																								break;
 
-                                case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
-                                        waypoints.processMissionRequestInt(receivedMsg);
-                                        break;
+																case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+																								communicate.processMissionClearAll();
+																								break;
 
-                                case MAVLINK_MSG_ID_MISSION_ACK:
-                                        waypoints.processMissionAck(receivedMsg);
-                                        break;
+																default:
+																								break;
+																}
+								}
 
-                                case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-                                        waypoints.processMissionClearAll(receivedMsg);
-                                        break;
+}
 
-                                default:
-                                        break;
-                                }
-                        }
-                }
-        }
+uint8_t System::Communicate::getParams() {
+								if (isTimeoutEnabled) {
+																char buf;
+
+																if (Serial3.readBytes(&buf, 1) == 0) {
+																								sendMessage(protocolMsg);
+																} else {
+																								return (mavlink_parse_char(MAVLINK_COMM_0, buf, &receivedMsg, &receivedStatus));
+																}
+								} else {
+																if (Serial3.available()) {
+																								return (mavlink_parse_char(MAVLINK_COMM_0, (char)Serial3.read(), &receivedMsg, &receivedStatus));
+																}
+								}
+								return 0;
+}
+
+void System::Communicate::sendMessage(mavlink_message_t &msg) {
+
+								uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+								uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+
+								#if (COMMUNICATE_GCS_WIRE == 1)
+								Serial.write(buf, len);
+								#endif
+
+								#if (COMMUNICATE_GCS_WIRELESS == 1)
+								Serial3.write(buf, len);
+								#endif
 }

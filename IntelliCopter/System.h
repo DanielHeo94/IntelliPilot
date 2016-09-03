@@ -43,6 +43,8 @@
 #include <GCS_MAVLink/mavlink/common/mavlink.h>
 #include <GCS_MAVLink/mavlink/vars.h>
 
+#include <IC_Storage/DueFlashStorage.h>
+
 #include "vars/vars_altitude.h"
 #include "vars/vars_attitude.h"
 #include "vars/vars_barometer.h"

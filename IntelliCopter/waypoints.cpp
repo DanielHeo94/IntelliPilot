@@ -12,6 +12,10 @@
 
 int seq;
 
+void System::Communicate::load() {
+	
+}
+
 void System::Communicate::processCommandInt() {
 
 								mavlink_command_int_t commandInt;

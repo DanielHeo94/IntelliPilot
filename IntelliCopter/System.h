@@ -172,6 +172,8 @@ private:
                 uint8_t getParams();
                 static void sendMessage(mavlink_message_t &msg);
 
+                void load();
+
                 void processCommandInt();
                 void processMissionCount();
                 void processMissionItem();

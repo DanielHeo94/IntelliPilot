@@ -39,6 +39,8 @@ void System::config() {
 
 								Serial.println("System configuration starts.");
 
+								_setup.load();
+
 								#if (TASK_COMM_GCS == 1)
 								_setup.gcs_mavlink();
 								#endif
@@ -76,6 +78,15 @@ void System::config() {
 
 void System::start() {
 								copter.startScheduler();
+}
+
+void System::Setup::load() {
+								uint8_t first = storage.read(0);
+								if(first) {
+																storage.write(0, 0);
+								} else {
+																_setup.loadWaypoints();
+								}
 }
 
 System copter;

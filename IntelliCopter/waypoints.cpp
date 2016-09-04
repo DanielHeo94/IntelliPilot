@@ -12,6 +12,19 @@
 
 int seq;
 
+void System::Setup::loadWaypoints() {
+								byte* bMissionCount = storage.readAddress(4);
+								memcpy(&communicate.missionCount, bMissionCount, sizeof(mavlink_mission_count_t));
+
+								byte* bMissionItem = storage.readAddress(8);
+								mavlink_mission_item_t temp[communicate.missionCount.count];
+								memcpy(temp, bMissionItem, communicate.missionCount.count * sizeof(mavlink_mission_item_t));
+
+								waypointsList.clear();
+								waypointsList.begin();
+								for(int i = 0; i < communicate.missionCount.count; i++) waypointsList.pushBack(temp[i]);
+}
+
 void System::Communicate::processCommandInt() {
 
 								mavlink_command_int_t commandInt;
@@ -72,6 +85,18 @@ void System::Communicate::processMissionItem() {
 
 																mavlink_msg_mission_ack_encode(SYSTEM_ID, COM_ID, &protocolMsg, &missionAck);
 																isTimeoutEnabled = false;
+
+																byte bMissionCount[sizeof(mavlink_mission_count_t)];
+																memcpy(bMissionCount, &missionCount, sizeof(mavlink_mission_count_t));
+																storage.write(4, bMissionCount, sizeof(mavlink_mission_count_t));
+
+																mavlink_mission_item_t temp[missionCount.count];
+																waypointsList.begin();
+
+																for(int i = 0; i < missionCount.count; i++) waypointsList.getElement(temp[i]);
+																byte bMissionItem[missionCount.count * sizeof(mavlink_mission_item_t)];
+																memcpy(bMissionItem, temp, missionCount.count * sizeof(mavlink_mission_item_t));
+																storage.write(8, bMissionItem, missionCount.count * sizeof(mavlink_mission_item_t));
 								} else {
 																mavlink_mission_request_t missionRequest;
 																missionRequest.seq = missionItem.seq + 1;
@@ -134,3 +159,5 @@ void System::Communicate::processMissionClearAll() {
 
 								sendMessage(protocolMsg);
 }
+
+IC_Storage storage;

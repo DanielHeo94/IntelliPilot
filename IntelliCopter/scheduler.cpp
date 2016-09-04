@@ -113,7 +113,7 @@ void System::createTasks() {
 }
 
 void System::startScheduler() {
-
+  
         // Start scheduler
         Serial.println("Start scheduler.");
 

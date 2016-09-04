@@ -44,7 +44,7 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 
 																//mavlink_msg_battery_status_pack(SYSTEM_ID, COM_ID, &sendingMsg, BATTERY_ID, 0, 0, INT16_MAX, 0, -1, -1, -1, batteryPercent);
 																//sendMessage();
-																
+
 																receiveMsgFromGcs();
 
 																vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
@@ -86,7 +86,6 @@ void System::Communicate::receiveMsgFromGcs() {
 																								break;
 																}
 								}
-
 }
 
 uint8_t System::Communicate::getParams() {

@@ -7,12 +7,27 @@
 //
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include <Arduino.h>
+  #include <Arduino.h>
 #else
-	#include <WProgram.h>
+  #include <WProgram.h>
 #endif
 
 #include "IC_AttitudeControl.h"
+
+double* _target_yaw;
+double* _target_pitch;
+double* _target_roll;
+double* _throttle_in;
+
+PidError_t* _error;
+Attitude_t* _sample;
+ServoOutput_t* _output;
+
+IC_PID yaw_speed_control((double*)&((_sample->gyro).dmp.degrees[0]), &((_error->yaw).speed), _target_yaw, YAW_P_GAIN, YAW_I_GAIN, YAW_D_GAIN, DIRECT);
+IC_PID pitch_angle_control((double*)&((_sample->ypr).dmp.degrees[1]), &((_error->pitch).angle), _target_pitch, PITCH_OUTER_P_GAIN, PITCH_OUTER_I_GAIN, PITCH_OUTER_D_GAIN, REVERSE);
+IC_PID pitch_speed_control((double*)&((_sample->gyro).dmp.degrees[1]), &((_error->pitch).speed), &((_error->pitch).angle), PITCH_INNER_P_GAIN, PITCH_INNER_I_GAIN, PITCH_INNER_D_GAIN, REVERSE);
+IC_PID roll_angle_control((double*)&((_sample->ypr).dmp.degrees[2]), &((_error->roll).angle), _target_roll, ROLL_OUTER_P_GAIN, ROLL_OUTER_I_GAIN, ROLL_OUTER_D_GAIN, DIRECT);
+IC_PID roll_speed_control((double*)&((_sample->gyro).dmp.degrees[2]), &((_error->roll).speed), &((_error->roll).angle), ROLL_INNER_P_GAIN, ROLL_INNER_I_GAIN, ROLL_INNER_D_GAIN, DIRECT);
 
 IC_AttitudeControl::IC_AttitudeControl(double* target_yaw,
                                        double* target_pitch,
@@ -30,12 +45,6 @@ IC_AttitudeControl::IC_AttitudeControl(double* target_yaw,
         _error = error;
         _sample = sample;
         _output = output;
-
-        IC_PID yaw_speed_control((double*)&((_sample->gyro).dmp.degrees[0]), &((_error->yaw).speed), _target_yaw, YAW_P_GAIN, YAW_I_GAIN, YAW_D_GAIN, DIRECT);
-        IC_PID pitch_angle_control((double*)&((_sample->ypr).dmp.degrees[1]), &((_error->pitch).angle), _target_pitch, PITCH_OUTER_P_GAIN, PITCH_OUTER_I_GAIN, PITCH_OUTER_D_GAIN, REVERSE);
-        IC_PID pitch_speed_control((double*)&((_sample->gyro).dmp.degrees[1]), &((_error->pitch).speed), &((_error->pitch).angle), PITCH_INNER_P_GAIN, PITCH_INNER_I_GAIN, PITCH_INNER_D_GAIN, REVERSE);
-        IC_PID roll_angle_control((double*)&((_sample->ypr).dmp.degrees[2]), &((_error->roll).angle), _target_roll, ROLL_OUTER_P_GAIN, ROLL_OUTER_I_GAIN, ROLL_OUTER_D_GAIN, DIRECT);
-        IC_PID roll_speed_control((double*)&((_sample->gyro).dmp.degrees[2]), &((_error->roll).speed), &((_error->roll).angle), ROLL_INNER_P_GAIN, ROLL_INNER_I_GAIN, ROLL_INNER_D_GAIN, DIRECT);
 
         yaw_speed_control.SetMode(AUTOMATIC);
         pitch_angle_control.SetMode(AUTOMATIC);

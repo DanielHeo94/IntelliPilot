@@ -6,6 +6,7 @@ PORTNAME:=$(shell ls /dev | grep ttyACM)
 PORT:=/dev/$(PORTNAME)
 #if we want to verify the bossac upload, define this to -v
 VERIFY:= -v
+ERASE:= -e
 
 #then some general settings. They should not be necessary to modify.
 CXX:=$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-g++
@@ -44,7 +45,7 @@ NEWMAINFILE:=$(TMPDIR)/$(PROJNAME).ip.cpp
 #our own sourcefiles is the (converted) ino file and any local cpp files
 MYSRCFILES:=$(NEWMAINFILE) $(shell ls *.cpp 2>/dev/null)
 MYSRCFILES+=$(shell ls $(shell pwd)/FreeRTOS_ARM/src/*.c $(shell pwd)/FreeRTOS_ARM/src/utility/*.c)
-MYSRCXXFILES:=$(shell ls $(shell pwd)/IntelliCopter/*.cpp $(shell pwd)/libraries/IC_GPS/*.cpp $(shell pwd)/libraries/IC_InertialSensor/*.cpp $(shell pwd)/libraries/IC_LED/*.cpp $(shell pwd)/libraries/IC_Math/*.cpp $(shell pwd)/libraries/IC_Motors/*.cpp $(shell pwd)/libraries/IC_PID/*.cpp $(shell pwd)/libraries/IC_Radio/*.cpp $(shell pwd)/FreeRTOS_ARM/src/*.cpp)
+MYSRCXXFILES:=$(shell ls $(shell pwd)/IntelliCopter/*.cpp $(shell pwd)/libraries/IC_GPS/*.cpp $(shell pwd)/libraries/IC_InertialSensor/*.cpp $(shell pwd)/libraries/IC_LED/*.cpp $(shell pwd)/libraries/IC_Math/*.cpp $(shell pwd)/libraries/IC_Motors/*.cpp $(shell pwd)/libraries/IC_PID/*.cpp $(shell pwd)/libraries/IC_Radio/*.cpp $(shell pwd)/FreeRTOS_ARM/src/*.cpp $(shell pwd)/libraries/IC_Storage/*.cpp)
 MYOBJFILES:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCFILES))))
 MYOBJFILESXX:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCXXFILES))))
 
@@ -73,7 +74,7 @@ build: $(TMPDIR)/$(PROJNAME).bin
 define OBJ_template
 $(2): $(1)
 	$(eval STEPCNT=$(shell echo $$(($(STEPCNT)+1))))
-	@echo -n "\r[File $(STEPCNT) of 71] Create object files from the source files =>"
+	@echo -n "\r[File $(STEPCNT)] Create object files from the source files =>"
 	@$(C$(3)) -MD -c $(C$(3)FLAGS) $(DEFINES) $(INCLUDES) $(1) -o $(2)
 endef
 #now invoke the template both for c++ sources:
@@ -149,13 +150,13 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 
 #link our own object files with core to form the elf file
 $(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES)
-	@echo -n " Link object files with core to form the elf file..."
+	@echo -n " Link object files with core to form the elf"
 	@$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES) $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
 	@echo "\t✔"
 
 #copy from the hex to our bin file
 $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
-	@echo "Copy from the hex to bin file..."
+	@echo "Copy from the hex to binary..."
 	@$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-objcopy -O binary $< $@
 	@echo "Done. ( ͡° ͜ʖ ͡°)"
 
@@ -163,7 +164,7 @@ $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
 flash: $(TMPDIR)/$(PROJNAME).bin
 	@stty -F $(PORT) 1200
 	@$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -i
-	@$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false -e -w $(VERIFY) -b $(TMPDIR)/$(PROJNAME).bin -R
+	@$(ADIR)/tools/bossac/1.6.1-arduino/bossac --port=$(PORTNAME) -U false $(ERASE) -w $(VERIFY) -b $(TMPDIR)/$(PROJNAME).bin -R
 
 #to view the serial port with screen.
 screen:

@@ -43,6 +43,8 @@
 #include <GCS_MAVLink/mavlink/common/mavlink.h>
 #include <GCS_MAVLink/mavlink/vars.h>
 
+#include <IC_Storage/IC_Storage.h>
+
 #include "vars/vars_altitude.h"
 #include "vars/vars_attitude.h"
 #include "vars/vars_barometer.h"
@@ -73,6 +75,8 @@ extern EBIMU9DOFV2 ebimu9dofv2;
 extern HMC5883L hmc5883l;
 extern LIDARLiteV2 lidarlitev2;
 
+extern IC_Storage storage;
+
 class System {
 public:
         System();
@@ -87,7 +91,7 @@ public:
 public:
                 Setup();
 
-                void gcs_mavlink();
+                void load();
 
                 void commands();
                 void attitude();
@@ -95,6 +99,10 @@ public:
                 void position();
                 void bearing();
                 void status();
+
+                void gcs_mavlink();
+private:
+                void loadWaypoints();
         };
 
         class Publish {
@@ -158,10 +166,10 @@ public:
                 static void receiveMsgFromGcs();
 
                 static void showLedIndication(void* arg);
-private:
-                static bool isTimeoutEnabled;
 
                 static mavlink_mission_count_t missionCount;
+private:
+                static bool isTimeoutEnabled;
 
                 static mavlink_message_t receivedMsg;
                 static mavlink_status_t receivedStatus;

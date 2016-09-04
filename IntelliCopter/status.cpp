@@ -24,18 +24,17 @@ bool bArmingProcedureEnalbed, bDisarmingProcedureEnabled = false;
 unsigned long tArmingProcedureStart, tDisarmingProcedureStart;
 
 void System::Setup::status() {
+        statusBox.flightReady = false;
         statusBox.flightMode = MAV_MODE_PREFLIGHT;
 }
 
 void System::Publish::status(void *arg) {
+
+        TickType_t xLastWakeTime = xTaskGetTickCount();
+        const TickType_t xWakePeriod = 10;
+
         for(;; ) {
-                if (!statusBox.flightReady) {
-                        statusBox.flightMode = MAV_MODE_PREFLIGHT;
-
-                        vTaskSuspend(controlManualHandler);
-                        vTaskResume(controlPreFlightHandler);
-                }
-
+                static bool temp = false;
 
                 if (subscribe.commands()->pulseWidth[0] <= (RC_CH1_HIGH + 20) &&
                     subscribe.commands()->pulseWidth[3] >= (RC_CH4_LOW - 20) &&
@@ -47,6 +46,9 @@ void System::Publish::status(void *arg) {
                            !bDisarmingProcedureEnabled) {
                         bDisarmingProcedureEnabled = true;
                         tDisarmingProcedureStart = millis();
+                } else {
+                        bArmingProcedureEnalbed = false;
+                        bDisarmingProcedureEnabled = false;
                 }
 
                 if (!subscribe.status()->flightReady &&
@@ -56,7 +58,7 @@ void System::Publish::status(void *arg) {
                                 statusBox.flightReady = true;
                                 bArmingProcedureEnalbed = false;
                         } else {
-                                // TODO: Alert error message when user tries arming without locating CH5 on manual mode.
+                                // HACK: Alert error message when user tries arming without locating CH5 on manual mode.
                         }
                 } else if (subscribe.status()->flightMode == MAV_MODE_MANUAL_ARMED &&
                            bDisarmingProcedureEnabled &&
@@ -65,7 +67,7 @@ void System::Publish::status(void *arg) {
                         bDisarmingProcedureEnabled = false;
                 }
 
-                if (subscribe.status()->flightReady) {
+                if (temp == false && subscribe.status()->flightReady == true) {
                         if(subscribe.status()->flightMode != MAV_MODE_MANUAL_ARMED //&&
                            /*subscribe.commands()->pulseWidth[4] == RC_CH5_LOW*/) {
                                 statusBox.flightMode = MAV_MODE_MANUAL_ARMED;
@@ -76,6 +78,15 @@ void System::Publish::status(void *arg) {
                         } else if (subscribe.commands()->pulseWidth[4] == RC_CH5_HIGH) {
 
                         }
+                        temp = subscribe.status()->flightReady;
+                } else if (temp == true && subscribe.status()->flightReady == false) {
+                        statusBox.flightMode = MAV_MODE_PREFLIGHT;
+
+                        vTaskSuspend(controlManualHandler);
+                        vTaskResume(controlPreFlightHandler);
+
+                        temp = subscribe.status()->flightReady;
                 }
+                vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }

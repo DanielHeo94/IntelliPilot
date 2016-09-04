@@ -95,4 +95,7 @@ System::Subscribe subscribe;
 System::Communicate communicate;
 System::Control control;
 
+Attitude_t attitudeBox;
+Status_t statusBox;
+
 IC_Motors motors;

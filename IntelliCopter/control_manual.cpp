@@ -22,7 +22,6 @@ void System::Control::controlManual(void *arg) {
                                             subscribe.servoOutput());
 
         for(;; ) {
-
                 attitude_control.Compute();
 
                 motors.rotate(subscribe.servoOutput()->a,

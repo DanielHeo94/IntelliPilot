@@ -15,7 +15,6 @@ void System::Control::controlPreFlight(void *arg) {
 
         for (;; ) {
                 motors.stop();
-
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }

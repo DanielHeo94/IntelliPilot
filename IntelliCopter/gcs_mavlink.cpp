@@ -171,7 +171,7 @@ void System::Communicate::processCommandLong() {
 
 								switch (commandLong.command) {
 								case MAV_CMD_COMPONENT_ARM_DISARM:
-																statusBox.flightReady = true;
+																statusBox.flightReady = !statusBox.flightReady;
 																break;
 
 								default:

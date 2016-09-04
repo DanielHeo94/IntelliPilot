@@ -44,7 +44,7 @@ void System::createTasks() {
 
     #if (TASK_GET_STATUS == 1)
         Serial.print("\t\tTASK_GET_STATUS");
-        portBASE_TYPE pPubStatus = xTaskCreate(publish.status, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+        portBASE_TYPE pPubStatus = xTaskCreate(publish.status, NULL, configMINIMAL_STACK_SIZE + 128, NULL, 1, NULL);
         Serial.println("\t\t\tSuccess.");
     #endif
 

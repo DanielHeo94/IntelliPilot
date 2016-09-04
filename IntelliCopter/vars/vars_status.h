@@ -14,6 +14,6 @@ struct Status_t {
         int flightMode;
 };
 
-static Status_t statusBox;
+extern Status_t statusBox;
 
 #endif

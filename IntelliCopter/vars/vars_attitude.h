@@ -33,6 +33,6 @@ struct Attitude_t {
         VectorFloat gravity;
 };
 
-static Attitude_t attitudeBox;
+extern Attitude_t attitudeBox;
 
 #endif

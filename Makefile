@@ -45,7 +45,7 @@ NEWMAINFILE:=$(TMPDIR)/$(PROJNAME).ip.cpp
 #our own sourcefiles is the (converted) ino file and any local cpp files
 MYSRCFILES:=$(NEWMAINFILE) $(shell ls *.cpp 2>/dev/null)
 MYSRCFILES+=$(shell ls $(shell pwd)/FreeRTOS_ARM/src/*.c $(shell pwd)/FreeRTOS_ARM/src/utility/*.c)
-MYSRCXXFILES:=$(shell ls $(shell pwd)/IntelliCopter/*.cpp $(shell pwd)/libraries/IC_GPS/*.cpp $(shell pwd)/libraries/IC_InertialSensor/*.cpp $(shell pwd)/libraries/IC_LED/*.cpp $(shell pwd)/libraries/IC_Math/*.cpp $(shell pwd)/libraries/IC_Motors/*.cpp $(shell pwd)/libraries/IC_PID/*.cpp $(shell pwd)/libraries/IC_Radio/*.cpp $(shell pwd)/FreeRTOS_ARM/src/*.cpp $(shell pwd)/libraries/IC_Storage/*.cpp)
+MYSRCXXFILES:=$(shell ls $(shell pwd)/IntelliCopter/*.cpp $(shell pwd)/libraries/IC_GPS/*.cpp $(shell pwd)/libraries/IC_InertialSensor/*.cpp $(shell pwd)/libraries/IC_AttitudeControl/*.cpp $(shell pwd)/libraries/IC_LED/*.cpp $(shell pwd)/libraries/IC_Math/*.cpp $(shell pwd)/libraries/IC_Motors/*.cpp $(shell pwd)/libraries/IC_PID/*.cpp $(shell pwd)/libraries/IC_Radio/*.cpp $(shell pwd)/FreeRTOS_ARM/src/*.cpp $(shell pwd)/libraries/IC_Storage/*.cpp)
 MYOBJFILES:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCFILES))))
 MYOBJFILESXX:=$(addsuffix .o,$(addprefix $(TMPDIR)/,$(notdir $(MYSRCXXFILES))))
 

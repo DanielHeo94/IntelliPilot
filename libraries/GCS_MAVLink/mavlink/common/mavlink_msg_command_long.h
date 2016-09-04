@@ -25,8 +25,6 @@ typedef struct __mavlink_command_long_t {
 #define MAVLINK_MSG_ID_COMMAND_LONG_CRC 152
 #define MAVLINK_MSG_ID_76_CRC 152
 
-
-
 #if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_COMMAND_LONG { \
 	76, \

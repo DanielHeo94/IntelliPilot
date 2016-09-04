@@ -15,17 +15,17 @@
 #define TASK_GET_BEARING                      0 //Warning!!! must NOT be turned off unless you want copter down!
 #define TASK_GET_POSITION                     0
 #define TASK_GET_COMMANDS                     0
-#define TASK_GET_STATUS                       0
+#define TASK_GET_STATUS                       1
 #define TASK_COMM_GCS                         1
-#define TASK_FC_IDLE                          0
-#define TASK_FC_MANUAL_CONTROL                0
+#define TASK_FC_IDLE                          1
+#define TASK_FC_MANUAL_CONTROL                1
 #define TASK_LED_INDICATOR                    0
 #define TASK_BATTERY_CHECK                    0
 
 #define DEBUG_SERIAL_BAUDRATE                 115200
 #define DEBUG_READABLE_QUATERNION             0
 #define DEBUG_READABLE_EULER                  0
-#define DEBUG_READABLE_YAWPITCHROLL           0
+#define DEBUG_READABLE_YAWPITCHROLL           1
 #define DEBUG_RADIO_COMMANDS                  0
 #define DEBUG_BATTERY                         0
 
@@ -39,7 +39,7 @@
 #define FREQUENCY_TASK_GET_BEARING            1
 #define FREQUENCY_TASK_GET_POSITION           0
 #define FREQUENCY_TASK_GET_COMMANDS           100
-#define FREQUENCY_TASK_COMM_GCS               10
+#define FREQUENCY_TASK_COMM_GCS               50
 #define FREQUENCY_TASK_FC_IDLE                200
 #define FREQUENCY_TASK_FC_MANUAL_CONTROL      100
 #define FREQUENCY_TASK_LED_INDICATOR          0

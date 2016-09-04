@@ -14,7 +14,7 @@ void System::createTasks() {
 
     #if (TASK_GET_ATTITUDE == 1)
         Serial.print("\t\tTASK_GET_ATTITUDE");
-        portBASE_TYPE pPubAttitude = xTaskCreate(publish.attitude, NULL, configMINIMAL_STACK_SIZE + 1024, NULL, 1, NULL);
+        portBASE_TYPE pPubAttitude = xTaskCreate(publish.attitude, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);
         Serial.println("\t\tSuccess.");
     #endif
 
@@ -113,11 +113,11 @@ void System::createTasks() {
 }
 
 void System::startScheduler() {
-  
+
         // Start scheduler
         Serial.println("Start scheduler.");
 
-        //vTaskSuspend(task_flight_control_manual);
+        vTaskSuspend(controlManualHandler);
         vTaskStartScheduler();
 
         Serial.println("Insufficient RAM");

@@ -33,8 +33,8 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 																mavlink_msg_heartbeat_pack(SYSTEM_ID, COM_ID, &commonMsg, TYPE, AUTOPILOT_TYPE, (subscribe.status())->flightMode, CUSTOM_MODE, SYSTEM_STATE);
 																sendMessage(commonMsg);
 
-																//mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &sendingMsg, 0, (subscribe.attitude())->ypr.dmp.radians[2], (subscribe.attitude())->ypr.dmp.radians[1], (subscribe.attitude())->ypr.dmp.radians[0], (subscribe.attitude())->gyro.dmp.radians[0], (subscribe.attitude())->gyro.dmp.radians[1], (subscribe.attitude())->gyro.dmp.radians[2]);
-																//sendMessage();
+																mavlink_msg_attitude_pack(SYSTEM_ID, COM_ID, &commonMsg, 0, subscribe.attitude()->ypr.dmp.radians[2], subscribe.attitude()->ypr.dmp.radians[1], subscribe.attitude()->ypr.dmp.radians[0], subscribe.attitude()->gyro.dmp.radians[0], subscribe.attitude()->gyro.dmp.radians[1], subscribe.attitude()->gyro.dmp.radians[2]);
+																sendMessage(commonMsg);
 
 																//mavlink_msg_gps_raw_int_pack(SYSTEM_ID, COM_ID, &sendingMsg, 0, 2, (subscribe.position())->latitude * pow(10, 7), (subscribe.position())->longitude * pow(10, 7), (subscribe.altitude())->gps * 1000, (subscribe.gpsInfo())->hdop, UINT16_MAX, (subscribe.position())->speed * 100, (int)((subscribe.position())->cog) * 100, (subscribe.gpsInfo())->number_of_satellites);
 																//sendMessage();
@@ -56,6 +56,10 @@ void System::Communicate::receiveMsgFromGcs() {
 																switch (receivedMsg.msgid) {
 																case MAVLINK_MSG_ID_COMMAND_INT:
 																								communicate.processCommandInt();
+																								break;
+
+																case MAVLINK_MSG_ID_COMMAND_LONG:
+																								communicate.processCommandLong();
 																								break;
 
 																case MAVLINK_MSG_ID_MISSION_COUNT:
@@ -80,6 +84,18 @@ void System::Communicate::receiveMsgFromGcs() {
 
 																case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
 																								communicate.processMissionClearAll();
+																								break;
+
+																case MAVLINK_MSG_ID_PARAM_REQUEST_READ:
+																								break;
+
+																case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+																								break;
+
+																case MAVLINK_MSG_ID_PARAM_VALUE:
+																								break;
+
+																case MAVLINK_MSG_ID_PARAM_SET:
 																								break;
 
 																default:
@@ -117,4 +133,48 @@ void System::Communicate::sendMessage(mavlink_message_t &msg) {
 								#if (COMMUNICATE_GCS_WIRELESS == 1)
 								Serial3.write(buf, len);
 								#endif
+}
+
+void System::Communicate::processCommandInt() {
+
+								mavlink_command_int_t commandInt;
+								mavlink_command_ack_t commandAck;
+
+								mavlink_msg_command_int_decode(&receivedMsg, &commandInt);
+
+								switch (commandInt.command) {
+								case MAV_CMD_DO_SET_MODE:
+																commandInt.param1;
+																break;
+
+								case MAV_CMD_DO_PARACHUTE:
+																break;
+
+								default:
+																break;
+								}
+
+								commandAck.command = commandInt.command;
+								commandAck.result = MAV_RESULT_ACCEPTED;
+
+								mavlink_msg_command_ack_encode(SYSTEM_ID, COM_ID, &protocolMsg, &commandAck);
+								isTimeoutEnabled = false;
+
+								sendMessage(protocolMsg);
+}
+
+void System::Communicate::processCommandLong() {
+
+								mavlink_command_long_t commandLong;
+
+								mavlink_msg_command_long_decode(&receivedMsg, &commandLong);
+
+								switch (commandLong.command) {
+								case MAV_CMD_COMPONENT_ARM_DISARM:
+																statusBox.flightReady = true;
+																break;
+
+								default:
+																break;
+								}
 }

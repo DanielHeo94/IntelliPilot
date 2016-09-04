@@ -29,6 +29,14 @@ void System::Setup::status() {
 
 void System::Publish::status(void *arg) {
         for(;; ) {
+                if (!statusBox.flightReady) {
+                        statusBox.flightMode = MAV_MODE_PREFLIGHT;
+
+                        vTaskSuspend(controlManualHandler);
+                        vTaskResume(controlPreFlightHandler);
+                }
+
+
                 if (subscribe.commands()->pulseWidth[0] <= (RC_CH1_HIGH + 20) &&
                     subscribe.commands()->pulseWidth[3] >= (RC_CH4_LOW - 20) &&
                     !bArmingProcedureEnalbed) {
@@ -46,7 +54,6 @@ void System::Publish::status(void *arg) {
                     (millis() - tArmingProcedureStart) >= 3000) {
                         if (subscribe.commands()->pulseWidth[4] == RC_CH5_LOW) {
                                 statusBox.flightReady = true;
-
                                 bArmingProcedureEnalbed = false;
                         } else {
                                 // TODO: Alert error message when user tries arming without locating CH5 on manual mode.
@@ -55,19 +62,13 @@ void System::Publish::status(void *arg) {
                            bDisarmingProcedureEnabled &&
                            (millis() - tDisarmingProcedureStart) >= 3000) {
                         statusBox.flightReady = false;
-                        statusBox.flightMode = MAV_MODE_PREFLIGHT;
-
-                        vTaskSuspend(controlManualHandler);
-                        vTaskResume(controlPreFlightHandler);
-
                         bDisarmingProcedureEnabled = false;
                 }
 
                 if (subscribe.status()->flightReady) {
-                        if(subscribe.status()->flightMode != MAV_MODE_MANUAL_ARMED &&
-                           subscribe.commands()->pulseWidth[4] == RC_CH5_LOW) {
+                        if(subscribe.status()->flightMode != MAV_MODE_MANUAL_ARMED //&&
+                           /*subscribe.commands()->pulseWidth[4] == RC_CH5_LOW*/) {
                                 statusBox.flightMode = MAV_MODE_MANUAL_ARMED;
-
                                 vTaskSuspend(controlPreFlightHandler);
                                 vTaskResume(controlManualHandler);
                         } else if (subscribe.commands()->pulseWidth[4] == RC_CH5_MID) {

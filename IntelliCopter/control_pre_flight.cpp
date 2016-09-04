@@ -16,8 +16,6 @@ void System::Control::controlPreFlight(void *arg) {
         for (;; ) {
                 motors.stop();
 
-                Serial.println("Hi");
-
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }

@@ -181,6 +181,8 @@ private:
                 static void sendMessage(mavlink_message_t &msg);
 
                 void processCommandInt();
+                void processCommandLong();
+
                 void processMissionCount();
                 void processMissionItem();
                 void processMissionRequestList();

@@ -20,6 +20,8 @@
 #include <vars/vars_motors.h>
 #include <vars/vars_pid.h>
 
+#include <gains.h>
+
 
 class IC_AttitudeControl {
 public:
@@ -28,7 +30,6 @@ public:
 								void Compute();
 
 private:
-
 								double* _target_yaw;
 								double* _target_pitch;
 								double* _target_roll;

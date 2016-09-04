@@ -11,10 +11,7 @@
 
 class IC_PID
 {
-
-
 public:
-
         //Constants used in some of the functions below
   #define AUTOMATIC 1
   #define MANUAL  0

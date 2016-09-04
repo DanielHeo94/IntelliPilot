@@ -25,33 +25,6 @@ void System::Setup::loadWaypoints() {
 								for(int i = 0; i < communicate.missionCount.count; i++) waypointsList.pushBack(temp[i]);
 }
 
-void System::Communicate::processCommandInt() {
-
-								mavlink_command_int_t commandInt;
-								mavlink_command_ack_t commandAck;
-
-								mavlink_msg_command_int_decode(&receivedMsg, &commandInt);
-								switch (commandInt.command) {
-								case MAV_CMD_DO_SET_MODE:
-																commandInt.param1;
-																break;
-
-								case MAV_CMD_DO_PARACHUTE:
-																break;
-
-								default:
-																break;
-								}
-
-								commandAck.command = commandInt.command;
-								commandAck.result = MAV_RESULT_ACCEPTED;
-
-								mavlink_msg_command_ack_encode(SYSTEM_ID, COM_ID, &protocolMsg, &commandAck);
-								isTimeoutEnabled = false;
-
-								sendMessage(protocolMsg);
-}
-
 void System::Communicate::processMissionCount() {
 
 								mavlink_mission_request_t missionRequest;

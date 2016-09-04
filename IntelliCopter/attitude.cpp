@@ -113,9 +113,13 @@ void System::Publish::attitude(void *arg) {
                         attitudeBox.euler.dmp.degrees[1] = math.radiantodegree(attitudeBox.euler.dmp.radians[1]);
                         attitudeBox.euler.dmp.degrees[2] = math.radiantodegree(attitudeBox.euler.dmp.radians[2]);
 
-                        attitudeBox.gyro.dmp.radians[0] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[0] = (float) gyro[0]);
-                        attitudeBox.gyro.dmp.radians[1] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[1] = (float) gyro[1]);
-                        attitudeBox.gyro.dmp.radians[2] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[2] = (float) gyro[2]);
+                        attitudeBox.gyro.dmp.degrees[0] = (float) gyro[0];
+                        attitudeBox.gyro.dmp.degrees[1] = (float) gyro[1];
+                        attitudeBox.gyro.dmp.degrees[2] = (float) gyro[2];
+
+                        attitudeBox.gyro.dmp.radians[0] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[0]);
+                        attitudeBox.gyro.dmp.radians[1] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[1]);
+                        attitudeBox.gyro.dmp.radians[2] = math.degreetoradian(attitudeBox.gyro.dmp.degrees[2]);
 
                         #if (DEBUG_READABLE_QUATERNION == 1)
                         Serial.print("quat\t");

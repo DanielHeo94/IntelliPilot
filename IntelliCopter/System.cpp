@@ -81,8 +81,7 @@ void System::start() {
 }
 
 void System::Setup::load() {
-								uint8_t first = storage.read(0);
-								if(first) {
+								if(storage.read(0)) {
 																storage.write(0, 0);
 								} else {
 																_setup.loadWaypoints();

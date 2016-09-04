@@ -150,13 +150,13 @@ $(TMPDIR)/core.a: $(TMPDIR)/core $(COREOBJS) $(COREOBJSXX)
 
 #link our own object files with core to form the elf file
 $(TMPDIR)/$(PROJNAME).elf: $(TMPDIR)/core.a $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES)
-	@echo -n " Link object files with core to form the elf file..."
+	@echo -n " Link object files with core to form the elf"
 	@$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ADIR)/$(SAM)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,$(NEWMAINFILE).map -o $@ -L$(TMPDIR) -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols -Wl,--start-group $(TMPDIR)/core/syscalls_sam3.c.o $(MYOBJFILESXX) $(MYOBJFILES) $(ADIR)/$(SAM)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a $(TMPDIR)/core.a -Wl,--end-group
 	@echo "\t✔"
 
 #copy from the hex to our bin file
 $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
-	@echo "Copy from the hex to bin file..."
+	@echo "Copy from the hex to binary..."
 	@$(ADIR)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-objcopy -O binary $< $@
 	@echo "Done. ( ͡° ͜ʖ ͡°)"
 

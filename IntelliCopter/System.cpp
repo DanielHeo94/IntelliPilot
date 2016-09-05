@@ -98,4 +98,6 @@ System::Control control;
 Attitude_t attitudeBox;
 Status_t statusBox;
 
+list<mavlink_mission_item_t> waypointsList;
+
 IC_Motors motors;

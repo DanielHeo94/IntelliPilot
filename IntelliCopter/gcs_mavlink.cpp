@@ -52,7 +52,7 @@ void System::Communicate::transferMsgToGcs(void *arg) {
 }
 
 void System::Communicate::receiveMsgFromGcs() {
-								if (communicate.getParams()) {
+								if (communicate.handleMessage()) {
 																switch (receivedMsg.msgid) {
 																case MAVLINK_MSG_ID_COMMAND_INT:
 																								communicate.processCommandInt();
@@ -90,6 +90,7 @@ void System::Communicate::receiveMsgFromGcs() {
 																								break;
 
 																case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+																								communicate.processParamRequestList();
 																								break;
 
 																case MAVLINK_MSG_ID_PARAM_VALUE:
@@ -104,7 +105,7 @@ void System::Communicate::receiveMsgFromGcs() {
 								}
 }
 
-uint8_t System::Communicate::getParams() {
+uint8_t System::Communicate::handleMessage() {
 								if (isTimeoutEnabled) {
 																char buf;
 
@@ -171,7 +172,8 @@ void System::Communicate::processCommandLong() {
 
 								switch (commandLong.command) {
 								case MAV_CMD_COMPONENT_ARM_DISARM:
-																statusBox.flightReady = !statusBox.flightReady;
+																if(subscribe.status()->flightMode == MAV_MODE_PREFLIGHT) statusBox.flightReady = true;
+																else if(subscribe.status()->flightMode == MAV_MODE_MANUAL_ARMED) statusBox.flightReady = false;
 																break;
 
 								default:

@@ -9,18 +9,20 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+#include "defines.h"
+
 // Turn on/off tasks you need to
-#define TASK_GET_ATTITUDE                     0 //Warning!!! must NOT be turned off unless you want copter down!
-#define TASK_GET_ALTITUDE                     0 //Warning!!! must NOT be turned off unless you want copter down!
-#define TASK_GET_BEARING                      0 //Warning!!! must NOT be turned off unless you want copter down!
-#define TASK_GET_POSITION                     0
-#define TASK_GET_COMMANDS                     0
-#define TASK_GET_STATUS                       1
-#define TASK_COMM_GCS                         1
-#define TASK_FC_IDLE                          1
-#define TASK_FC_MANUAL_CONTROL                1
-#define TASK_LED_INDICATOR                    0
-#define TASK_BATTERY_CHECK                    0
+#define TASK_GET_ATTITUDE                     DISABLED //Warning!!! must NOT be turned off unless you want copter down!
+#define TASK_GET_ALTITUDE                     DISABLED //Warning!!! must NOT be turned off unless you want copter down!
+#define TASK_GET_BEARING                      DISABLED //Warning!!! must NOT be turned off unless you want copter down!
+#define TASK_GET_POSITION                     DISABLED
+#define TASK_GET_COMMANDS                     DISABLED
+#define TASK_GET_STATUS                       ENABLED
+#define TASK_COMM_GCS                         ENABLED
+#define TASK_FC_IDLE                          ENABLED
+#define TASK_FC_MANUAL_CONTROL                ENABLED
+#define TASK_LED_INDICATOR                    DISABLED
+#define TASK_BATTERY_CHECK                    DISABLED
 
 #define DEBUG_SERIAL_BAUDRATE                 115200
 #define DEBUG_READABLE_QUATERNION             0

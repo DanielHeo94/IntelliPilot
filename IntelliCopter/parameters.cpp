@@ -7,3 +7,10 @@
 //
 
 #include "System.h"
+
+void System::Communicate::processParamRequestList() {
+
+        mavlink_param_request_list_t paramRequestList;
+
+        
+}

@@ -103,6 +103,7 @@ public:
                 void gcs_mavlink();
 private:
                 void loadWaypoints();
+                void loadParameters();
         };
 
         class Publish {
@@ -177,7 +178,7 @@ private:
                 static mavlink_message_t commonMsg;
                 static mavlink_message_t protocolMsg;
 
-                uint8_t getParams();
+                uint8_t handleMessage();
                 static void sendMessage(mavlink_message_t &msg);
 
                 void processCommandInt();
@@ -189,6 +190,8 @@ private:
                 void processMissionRequest();
                 void processMissionAck();
                 void processMissionClearAll();
+
+                void processParamRequestList();
         };
 
         class Control {

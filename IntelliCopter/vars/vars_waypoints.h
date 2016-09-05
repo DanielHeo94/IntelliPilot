@@ -12,6 +12,6 @@
 #include <IC_DataStructure/List.h>
 #include <GCS_MAVLink/mavlink/common/mavlink.h>
 
-static list<mavlink_mission_item_t> waypointsList;
+extern list<mavlink_mission_item_t> waypointsList;
 
 #endif

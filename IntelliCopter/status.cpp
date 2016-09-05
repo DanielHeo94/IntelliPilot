@@ -90,3 +90,5 @@ void System::Publish::status(void *arg) {
                 vTaskDelayUntil(&xLastWakeTime, xWakePeriod);
         }
 }
+
+Status_t statusBox;
